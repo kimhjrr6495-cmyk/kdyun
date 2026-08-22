@@ -122,11 +122,11 @@
 }
 
 /* ROLLBACK CANDIDATE: 상점 등급별 네온. 카드 배경은 중립을 유지하고 외곽광만 단계적으로 강화 */
-.stage95-visual-test .shop-offer-card.rarity-common:not(:disabled) {
+.stage95-visual-test .shop-offer-card.rarity-common {
   box-shadow: 0 2px 8px rgba(26, 29, 35, 0.06);
 }
 
-.stage95-visual-test .shop-offer-card.rarity-rare:not(:disabled) {
+.stage95-visual-test .shop-offer-card.rarity-rare {
   border-color: rgba(63, 111, 198, 0.62);
   box-shadow:
     inset 0 0 0 1px rgba(63, 111, 198, 0.07),
@@ -134,7 +134,7 @@
     0 4px 13px rgba(26, 29, 35, 0.07);
 }
 
-.stage95-visual-test .shop-offer-card.rarity-epic:not(:disabled) {
+.stage95-visual-test .shop-offer-card.rarity-epic {
   border-color: rgba(118, 86, 197, 0.70);
   box-shadow:
     inset 0 0 0 1px rgba(118, 86, 197, 0.09),
@@ -142,7 +142,7 @@
     0 5px 15px rgba(26, 29, 35, 0.08);
 }
 
-.stage95-visual-test .shop-offer-card.rarity-legendary:not(:disabled) {
+.stage95-visual-test .shop-offer-card.rarity-legendary {
   border-color: rgba(190, 137, 24, 0.82);
   box-shadow:
     inset 0 0 0 1px rgba(190, 137, 24, 0.12),
