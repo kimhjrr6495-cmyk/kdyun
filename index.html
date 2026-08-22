@@ -4,19 +4,19 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>DEADLINE — 슬롯 로그라이트</title>
-  <link rel="stylesheet" href="style.css?v=0.5.3" />
-  <link rel="stylesheet" href="vault.css?v=0.5.3" />
+  <link rel="stylesheet" href="style.css?v=0.5.4" />
+  <link rel="stylesheet" href="vault.css?v=0.5.4" />
 </head>
 <body>
   <main class="app-shell">
     <header class="topbar">
       <div class="brand-block">
-        <span class="eyebrow">통제 시장 시스템 · 버전 v0.5.3</span>
+        <span class="eyebrow">통제 시장 시스템 · 버전 v0.5.4</span>
         <h1>DEADLINE</h1>
       </div>
 
       <div class="top-status" aria-label="게임 상태">
-        <div class="status-chip">버전 <strong>v0.5.3</strong></div>
+        <div class="status-chip">버전 <strong>v0.5.4</strong></div>
         <div class="status-chip">마감 <strong id="deadlineStatus">1</strong></div>
         <div class="status-chip">라운드 <strong id="roundStatus">1 / 3</strong></div>
         <div class="status-chip">회전 <strong id="spinStatus">선택 대기</strong></div>
@@ -26,7 +26,7 @@
     </header>
 
     <section class="game-layout">
-      <aside class="panel info-panel">
+      <aside class="panel info-panel finance-panel">
         <section id="deadlineAccountSection" class="deadline-account-section">
           <div class="vault-heading">
             <span class="label">마감 계좌</span>
@@ -34,7 +34,7 @@
           </div>
 
           <div class="deadline-value-action-row">
-            <div class="deadline-account-values">
+            <div class="deadline-account-values" aria-label="마감 납부 금액">
               <strong id="deadlinePaidValue">$ 0</strong>
               <span>/ <b id="deadlineTargetValue">$ 80</b></span>
             </div>
@@ -47,46 +47,36 @@
           <button id="deadlineConfirmButton" class="deadline-confirm-button" disabled>마감 확정</button>
         </section>
 
-        <section>
+        <section class="wallet-section">
           <span class="label">지갑</span>
           <div id="walletValue" class="money-value small">$ 0</div>
           <div class="progress-copy">자유롭게 사용할 수 있는 자금</div>
         </section>
 
-        <section id="vaultSection" class="bank-section vault-section">
-          <div class="vault-heading">
+        <section id="vaultSection" class="vault-section vault-chamber">
+          <div class="vault-heading vault-door-heading">
             <span class="label">금고</span>
-            <span id="vaultRoundCopy" class="vault-round-copy">예치 없음</span>
+            <span id="vaultLockState" class="vault-lock-state">비어 있음</span>
           </div>
 
-          <div class="vault-main-value-row">
-            <div id="bankValue" class="money-value small">$ 0</div>
-            <div id="vaultRateValue" class="vault-rate-value"></div>
+          <div class="vault-door-body">
+            <div class="vault-lock-symbol" aria-hidden="true">
+              <span class="vault-lock-shackle"></span>
+              <span class="vault-lock-body"></span>
+            </div>
+            <div class="vault-balance-block">
+              <div id="bankValue" class="money-value small vault-money-value">$ 0</div>
+              <div id="vaultRateValue" class="vault-current-rate">현재 이자 -</div>
+            </div>
           </div>
+
+          <div class="vault-divider"></div>
+          <div id="vaultRoundCopy" class="vault-round-copy">남은 라운드 -</div>
           <div id="vaultTicketProgress" class="vault-ticket-progress">티켓 -</div>
         </section>
 
-        <section class="mini-grid">
-          <div class="mini-card">
-            <span class="label">행운</span>
-            <strong>0</strong>
-          </div>
-          <div class="mini-card">
-            <span class="label">패턴 배율</span>
-            <strong>×1.00</strong>
-          </div>
-          <div class="mini-card">
-            <span class="label">전체 배율</span>
-            <strong>×1.00</strong>
-          </div>
-          <div class="mini-card">
-            <span class="label">현재 방식</span>
-            <strong id="modeStatus">-</strong>
-          </div>
-        </section>
-
         <p id="panelNote" class="panel-note">
-          마감 계좌는 직접 납부해야 하며, 금고 설정은 라운드 시작 화면에서 할 수 있습니다.
+          마감 계좌는 직접 납부해야 하며, 잠긴 금고는 남은 라운드가 끝날 때까지 열 수 없습니다.
         </p>
       </aside>
 
@@ -135,21 +125,36 @@
     </section>
   </main>
 
-  <aside class="items-preview" aria-label="아이템 패널 미리보기">
+  <aside class="items-preview" aria-label="아이템 및 상태 패널">
     <div class="drawer-header">
+      <strong>아이템</strong>
+      <span>상태 / 보유 목록</span>
+    </div>
+
+    <section class="drawer-stats">
+      <span class="drawer-section-label">현재 상태</span>
+      <div class="drawer-stat-grid">
+        <div><span>행운</span><strong>0</strong></div>
+        <div><span>패턴 배율</span><strong>×1.00</strong></div>
+        <div><span>전체 배율</span><strong>×1.00</strong></div>
+        <div><span>현재 방식</span><strong id="modeStatus">-</strong></div>
+      </div>
+    </section>
+
+    <div class="drawer-item-heading">
       <strong>보유 아이템 0 / 6</strong>
-      <span>미리보기</span>
+      <span>5단계 미리보기</span>
     </div>
     <div class="empty-slots">
       <div>비어 있음</div><div>비어 있음</div><div>비어 있음</div>
       <div>비어 있음</div><div>비어 있음</div><div>비어 있음</div>
     </div>
-    <p>현재는 화면만 존재합니다. 실제 아이템 시스템은 후속 단계에서 구현합니다.</p>
+    <p>실제 아이템 효과와 상점은 후속 단계에서 구현합니다.</p>
   </aside>
 
-  <script src="data.js?v=0.5.3"></script>
-  <script src="effects.js?v=0.5.3"></script>
-  <script src="game.js?v=0.5.3"></script>
-  <script src="vault.js?v=0.5.3"></script>
+  <script src="data.js?v=0.5.4"></script>
+  <script src="effects.js?v=0.5.4"></script>
+  <script src="game.js?v=0.5.4"></script>
+  <script src="vault.js?v=0.5.4"></script>
 </body>
 </html>
