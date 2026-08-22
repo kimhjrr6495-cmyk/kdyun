@@ -149,21 +149,23 @@
   100% { opacity: 1; transform: scale(1); }
 }
 
-/* 각 아이템 발동 때 릴 외곽만 아주 짧게 반응. 화면 흔들림은 사용하지 않음 */
-.reels-shell.trigger-chain-pulse::before {
-  content: "";
-  position: absolute;
-  inset: -4px;
-  z-index: 13;
-  pointer-events: none;
-  border: 1px solid rgba(0, 212, 146, 0.42);
-  border-radius: 17px;
+/* 각 아이템 발동 때 릴 외곽만 아주 짧게 반응.
+   잭팟 프레임이 사용하는 ::before/::after와 충돌하지 않도록 shell 자체 shadow만 사용합니다. */
+.reels-shell.trigger-chain-pulse {
   animation: triggerShellPulse 210ms ease-out both;
 }
 
 @keyframes triggerShellPulse {
-  0% { opacity: 0.95; transform: scale(0.996); box-shadow: 0 0 12px rgba(0, 212, 146, 0.10); }
-  100% { opacity: 0; transform: scale(1.008); box-shadow: 0 0 24px rgba(0, 212, 146, 0); }
+  0% {
+    box-shadow:
+      0 0 0 1px rgba(0, 212, 146, 0.44),
+      0 0 14px rgba(0, 212, 146, 0.12);
+  }
+  100% {
+    box-shadow:
+      0 0 0 7px rgba(0, 212, 146, 0),
+      0 0 26px rgba(0, 212, 146, 0);
+  }
 }
 
 .trigger-final-chip {
@@ -222,7 +224,6 @@
   color: #2F806F;
 }
 
-/* 상점 설명에서 연쇄 아이템은 note의 [연쇄]가 눈에 띄도록 텍스트 리듬만 살짝 강화 */
 .shop-offer-card small,
 .shop-owned-card small {
   line-height: 1.45;
@@ -231,7 +232,7 @@
 @media (prefers-reduced-motion: reduce) {
   .trigger-feed-chip,
   .trigger-chain-hud,
-  .reels-shell.trigger-chain-pulse::before {
+  .reels-shell.trigger-chain-pulse {
     animation-duration: 1ms !important;
   }
 }
