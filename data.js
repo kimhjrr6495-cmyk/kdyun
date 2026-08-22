@@ -1,15 +1,14 @@
-// DEADLINE — Stage 4
-// 라운드 / 마감 루프와 점수 계산에 필요한 공용 게임 데이터.
+// DEADLINE — Stage 5
+// 라운드 / 마감 / 경제 시스템과 점수 계산에 필요한 공용 게임 데이터.
 
 "use strict";
 
 const GAME_DATA = {
-  version: "v0.4.0",
-  stage: 4,
+  version: "v0.5.0",
+  stage: 5,
   board: { columns: 5, rows: 3 },
 
-  // Stage 3부터 실제 점수 계산에 사용합니다.
-  // 등장 확률 가중치는 아직 연결하지 않고 현재는 동일 확률입니다.
+  // 실제 점수 계산에 사용합니다. 등장 확률 가중치는 아직 연결하지 않습니다.
   symbols: [
     { id: "CH", code: "CH", name: "체리", value: 2, multiplier: 1 },
     { id: "CO", code: "CO", name: "코인", value: 2, multiplier: 1 },
@@ -28,8 +27,7 @@ const GAME_DATA = {
     easing: "cubic-bezier(0.16, 1, 0.3, 1)"
   },
 
-  // 점수 공식:
-  // 심볼 가치 × 심볼 배율 × 패턴 포함 칸 수 × 패턴 기본값 × 패턴 배율 × 전체 배율
+  // 심볼 가치 × 심볼 배율 × 패턴 칸 수 × 패턴 기본값 × 패턴 배율 × 전체 배율.
   // 겹쳐 성립하는 패턴은 각각 계산해 모두 합산합니다.
   scoring: {
     patternMultiplier: 1,
@@ -50,7 +48,6 @@ const GAME_DATA = {
     X: { name: "X", baseValue: 8 }
   },
 
-  // Stage 4 라운드 / 마감 구조.
   deadline: {
     roundsPerDeadline: 3,
     targets: [
@@ -83,8 +80,16 @@ const GAME_DATA = {
     }
   },
 
-  // 개발 중 판정/점수 검수용 임시 샘플.
-  // 실제 라운드 회전 수와 지갑에는 영향을 주지 않습니다.
+  // Stage 5 경제 규칙.
+  // 지갑만 라운드 종료 시 이자를 받고, 금고는 이자가 없습니다.
+  // 마감 정산은 지갑에서 먼저 납부하고 부족분을 금고에서 가져갑니다.
+  economy: {
+    walletInterestRate: 0.05,
+    earlyPaymentTicketPerUnusedRound: 2,
+    settlementPriority: ["wallet", "bank"]
+  },
+
+  // 개발 중 판정/점수 검수용 임시 샘플. 지갑/회전 수/티켓에는 영향 없음.
   patternTests: [
     { key: "H3", symbolId: "CH", coords: [[0, 1], [1, 1], [2, 1]] },
     { key: "H4", symbolId: "CH", coords: [[0, 1], [1, 1], [2, 1], [3, 1]] },
