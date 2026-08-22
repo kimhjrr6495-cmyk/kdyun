@@ -1,0 +1,111 @@
+/* DEADLINE v0.9.1 — 아이템 발동 알림 / 심볼 참조 이모지 고정 */
+
+.stage91-item-alert {
+  position: absolute;
+  left: 50%;
+  top: 12px;
+  z-index: 26;
+  min-width: 164px;
+  max-width: min(300px, calc(100% - 28px));
+  min-height: 52px;
+  padding: 9px 12px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  transform: translate(-50%, -7px) scale(0.97);
+  opacity: 0;
+  border: 1px solid rgba(26, 29, 35, 0.14);
+  border-radius: 13px;
+  background: rgba(18, 21, 27, 0.94);
+  color: #FFFFFF;
+  box-shadow: 0 12px 30px rgba(18, 21, 27, 0.18);
+  backdrop-filter: blur(8px);
+  pointer-events: none;
+  transition: opacity 95ms ease, transform 150ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.stage91-item-alert[hidden] {
+  display: none !important;
+}
+
+.stage91-item-alert.is-open {
+  opacity: 1;
+  transform: translate(-50%, 0) scale(1);
+}
+
+.stage91-item-alert-icon {
+  width: 34px;
+  height: 34px;
+  flex: 0 0 34px;
+  display: grid;
+  place-items: center;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 9px;
+  background: rgba(255, 255, 255, 0.08);
+  font-family: "Apple Color Emoji", "Segoe UI Emoji", "Noto Color Emoji", sans-serif;
+  font-size: 20px;
+  line-height: 1;
+}
+
+.stage91-item-alert-copy {
+  min-width: 0;
+  display: grid;
+  gap: 2px;
+}
+
+.stage91-item-alert-copy small {
+  font-size: 7px;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  opacity: 0.48;
+}
+
+.stage91-item-alert-copy strong {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 12px;
+  font-weight: 950;
+}
+
+.stage91-item-alert.rarity-rare {
+  border-color: rgba(88, 132, 222, 0.52);
+}
+
+.stage91-item-alert.rarity-epic {
+  border-color: rgba(143, 105, 221, 0.56);
+}
+
+.stage91-item-alert.rarity-legendary {
+  border-color: rgba(207, 157, 46, 0.64);
+  box-shadow: 0 12px 30px rgba(18, 21, 27, 0.18), 0 0 18px rgba(207, 157, 46, 0.13);
+}
+
+/* 리롤 중 동적 재렌더가 발생해도 심볼 참조 칸은 이모지 크기를 유지 */
+.reference-name.reference-symbol-emoji {
+  font-family: "Apple Color Emoji", "Segoe UI Emoji", "Noto Color Emoji", sans-serif;
+  font-size: 15px;
+  line-height: 1;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .stage91-item-alert {
+    transition-duration: 1ms !important;
+  }
+}
+
+@media (max-width: 700px) {
+  .stage91-item-alert {
+    top: 8px;
+    min-width: 150px;
+    min-height: 48px;
+    padding: 8px 10px;
+  }
+
+  .stage91-item-alert-icon {
+    width: 31px;
+    height: 31px;
+    flex-basis: 31px;
+    font-size: 18px;
+  }
+}
