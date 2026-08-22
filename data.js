@@ -4,7 +4,7 @@
 "use strict";
 
 const GAME_DATA = {
-  version: "v0.7.3",
+  version: "v0.7.4",
   stage: 7,
   board: { columns: 5, rows: 3 },
 
