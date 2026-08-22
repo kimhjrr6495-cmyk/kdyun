@@ -4,7 +4,7 @@
 "use strict";
 
 const GAME_DATA = {
-  version: "v0.6.6",
+  version: "v0.6.7",
   stage: 6,
   board: { columns: 5, rows: 3 },
 
@@ -80,7 +80,7 @@ const GAME_DATA = {
     }
   },
 
-  // Stage 6.6에서도 준비 → 자금 관리/상점 → 7회/3회 선택 → 시작 흐름을 유지합니다.
+  // Stage 6.7에서도 준비 → 자금 관리/상점 → 7회/3회 선택 → 시작 흐름을 유지합니다.
   economy: {
     depositUnitRatio: 0.05,
     earlyPaymentTicketPerUnusedRound: 2,
