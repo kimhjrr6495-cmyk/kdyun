@@ -1,3 +1,4 @@
+.deadline-account-section,
 .vault-section {
   display: grid;
   gap: 10px;
@@ -32,12 +33,58 @@
   color: var(--ink);
 }
 
+.vault-state-badge.is-funding {
+  border-color: rgba(0, 212, 146, 0.55);
+  background: rgba(0, 212, 146, 0.06);
+  color: var(--gain);
+}
+
+.vault-state-badge.is-funded {
+  border-color: var(--gain);
+  background: rgba(0, 212, 146, 0.08);
+  color: var(--gain);
+}
+
+.deadline-account-values {
+  display: flex;
+  align-items: baseline;
+  gap: 7px;
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: "tnum" 1;
+}
+
+.deadline-account-values > strong {
+  font-size: 30px;
+  font-weight: 950;
+  letter-spacing: -0.05em;
+}
+
+.deadline-account-values > span {
+  font-size: 12px;
+  font-weight: 850;
+  opacity: 0.45;
+}
+
 .vault-status-copy {
   min-height: 16px;
   font-size: 10px;
   font-weight: 800;
   line-height: 1.45;
   opacity: 0.58;
+}
+
+.deadline-actions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+}
+
+.deadline-actions button {
+  min-width: 0;
+  font-size: 10px;
+}
+
+.deadline-preview {
+  min-height: 0 !important;
 }
 
 .vault-term-grid {
@@ -74,16 +121,17 @@
   box-shadow: inset 0 0 0 1px rgba(0, 212, 146, 0.12);
 }
 
-.vault-deposit-actions {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+#vaultDepositUnitButton {
+  width: 100%;
+  font-size: 10px;
 }
 
-.vault-deposit-actions button {
-  min-width: 0;
-  padding-left: 7px;
-  padding-right: 7px;
+.vault-ticket-progress {
+  min-height: 16px;
   font-size: 10px;
+  font-weight: 850;
+  line-height: 1.45;
+  color: var(--gain);
 }
 
 .vault-preview {
@@ -111,5 +159,9 @@
 @media (max-width: 560px) {
   .vault-term-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .deadline-actions {
+    grid-template-columns: 1fr;
   }
 }
