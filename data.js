@@ -4,7 +4,7 @@
 "use strict";
 
 const GAME_DATA = {
-  version: "v0.6.1",
+  version: "v0.6.2",
   stage: 6,
   board: { columns: 5, rows: 3 },
 
@@ -80,7 +80,7 @@ const GAME_DATA = {
     }
   },
 
-  // Stage 6.1에서는 라운드 준비 화면에서 납부/금고/상점을 먼저 정리한 뒤
+  // Stage 6.2에서는 라운드 준비 화면에서 납부/금고/상점을 먼저 정리한 뒤
   // 7회(+1T) 또는 3회(+3T)를 선택하고 시작 버튼으로 확정합니다.
   economy: {
     depositUnitRatio: 0.05,
