@@ -4,7 +4,7 @@
 "use strict";
 
 const GAME_DATA = {
-  version: "v0.3.1",
+  version: "v0.3.2",
   stage: 3,
   board: { columns: 5, rows: 3 },
 
@@ -28,10 +28,10 @@ const GAME_DATA = {
     easing: "cubic-bezier(0.16, 1, 0.3, 1)"
   },
 
-  // v0.3.1 점수 공식:
+  // v0.3.2 점수 공식:
   // 심볼 기본 가치 × 심볼 배율 × 패턴 포함 칸 수 × 패턴 기본값 × 패턴 배율 × 전체 배율
-  // JACKPOT의 12도 '잭팟 전용 최종 배율'이 아니라 패턴 기본값입니다.
-  // 따라서 앞으로 패턴 배율/전체 배율이 오르면 JACKPOT에도 동일하게 적용됩니다.
+  // 겹쳐서 동시에 성립하는 패턴은 각각 계산해 모두 합산합니다.
+  // 예: V = 대각선 2개 + V / JACKPOT = 모든 성립 패턴 + JACKPOT 보너스.
   scoring: {
     patternMultiplier: 1,
     globalMultiplier: 1,
