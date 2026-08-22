@@ -1,4 +1,4 @@
-/* Stage 6.6 — 머신 전체 준비 잠금 / 중앙 리롤 선택 / 상점 활성 강조 */
+/* Stage 6.7 — 머신 준비 잠금 / 하단 중앙 리롤 선택 / 상점 활성 강조 */
 
 .machine-panel {
   position: relative;
@@ -22,7 +22,7 @@
   background: #E1E5EA !important;
 }
 
-/* 기존 단계에서 만든 딤 레이어를 다시 사용하되 머신 본문을 확실히 잠금 */
+/* 기존 단계의 머신 딤을 유지 */
 .machine-panel.round-prep-active .machine-stage::after,
 .machine-panel.is-round-prep .machine-stage::after,
 .machine-panel.is-awaiting-start .machine-stage::after {
@@ -30,7 +30,9 @@
   background: rgba(26, 29, 35, 0.18) !important;
 }
 
-.machine-panel.round-prep-active .slot-machine {
+/* 선택 UI는 흐리지 않고, 실제 릴/정산 내용만 비활성처럼 보이게 처리 */
+.machine-panel.round-prep-active .reels,
+.machine-panel.round-prep-active .settlement-readout {
   pointer-events: none;
   opacity: 0.56;
   filter: grayscale(0.12);
@@ -57,17 +59,20 @@
   filter: none !important;
 }
 
-/* 7회/3회 선택은 릴 15칸이 아니라 오른쪽 머신 패널 전체의 시각적 중앙 */
+/* 실제 5×3 릴이 위치 기준 */
+.reels-shell {
+  position: relative;
+  width: 100%;
+}
+
+/* 네가 표시한 가운데 열의 맨 아래 칸 중심: 가로 50%, 세로 약 83% */
 .round-prep-panel {
   position: absolute;
-  top: 58px;
-  right: 0;
-  bottom: 66px;
-  left: 0;
+  left: 50%;
+  top: 83.333%;
   z-index: 18;
-  display: grid;
-  place-items: center;
-  padding: 22px;
+  width: min(500px, calc(100% - 34px));
+  transform: translate(-50%, -50%);
   pointer-events: none;
 }
 
@@ -76,7 +81,7 @@
 }
 
 .round-prep-choice-group {
-  width: min(540px, calc(100% - 40px));
+  width: 100%;
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 12px;
@@ -91,13 +96,14 @@
   font-size: 11px;
   font-weight: 950;
   letter-spacing: 0.08em;
-  opacity: 0.78;
+  opacity: 0.82;
 }
 
+/* 이전보다 가로로 넓고 낮게 잡아 버튼이 답답하지 않게 함 */
 .round-mode-select {
   min-width: 0;
-  min-height: 92px;
-  padding: 14px 18px;
+  min-height: 80px;
+  padding: 12px 22px;
   display: grid;
   place-items: center;
   align-content: center;
@@ -188,19 +194,16 @@
 
 @media (max-width: 700px) {
   .round-prep-panel {
-    top: 58px;
-    bottom: 118px;
-    padding: 14px;
+    width: min(440px, calc(100% - 20px));
   }
 
   .round-prep-choice-group {
-    width: min(430px, calc(100% - 16px));
     gap: 8px;
   }
 
   .round-mode-select {
-    min-height: 76px;
-    padding: 11px 12px;
+    min-height: 72px;
+    padding: 10px 14px;
   }
 
   .round-mode-select strong {
