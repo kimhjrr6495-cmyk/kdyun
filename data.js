@@ -4,7 +4,7 @@
 "use strict";
 
 const GAME_DATA = {
-  version: "v0.1.3",
+  version: "v0.1.4",
   stage: 1,
   board: { columns: 5, rows: 3 },
 
@@ -21,14 +21,15 @@ const GAME_DATA = {
   ],
 
   // Stage 1 릴 감각 조절값.
-  // v0.1.3: 모든 릴이 함께 도는 공통 구간을 약 0.3초 늘렸습니다.
-  // 첫 릴은 약 1.55초에 멈추고 이후 릴은 0.155초 간격으로 순차 정지합니다.
-  // 최종 사운드/정지 이펙트가 들어갈 때 다시 미세조정할 예정입니다.
+  // v0.1.4: 4·5번 릴의 끝부분 감속이 너무 길게 느껴지는 문제를 조정했습니다.
+  // 정지 시점은 유지하면서 4·5번 릴만 더 빠른 감속 곡선을 사용합니다.
   reelMotion: {
     baseDuration: 1550,
     stopGap: 155,
     travelSymbols: 18,
-    easing: "cubic-bezier(0.16, 1, 0.3, 1)"
+    easing: "cubic-bezier(0.16, 1, 0.3, 1)",
+    lateReelStartIndex: 3,
+    lateEasing: "cubic-bezier(0.22, 0.78, 0.32, 1)"
   },
 
   palette: {
