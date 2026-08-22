@@ -4,20 +4,20 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>DEADLINE — 슬롯 로그라이트</title>
-  <link rel="stylesheet" href="style.css?v=0.5.5" />
-  <link rel="stylesheet" href="vault.css?v=0.5.5" />
-  <link rel="stylesheet" href="stage55.css?v=0.5.5" />
+  <link rel="stylesheet" href="style.css?v=0.5.6" />
+  <link rel="stylesheet" href="vault.css?v=0.5.6" />
+  <link rel="stylesheet" href="stage55.css?v=0.5.6" />
 </head>
 <body>
   <main class="app-shell">
     <header class="topbar">
       <div class="brand-block">
-        <span class="eyebrow">CONTROLLED MARKET SYSTEM · VERSION v0.5.5</span>
+        <span class="eyebrow">CONTROLLED MARKET SYSTEM · VERSION v0.5.6</span>
         <h1>DEADLINE</h1>
       </div>
 
       <div class="top-status" aria-label="게임 상태">
-        <div class="status-chip">버전 <strong>v0.5.5</strong></div>
+        <div class="status-chip">버전 <strong>v0.5.6</strong></div>
         <div class="status-chip">마감 <strong id="deadlineStatus">1</strong></div>
         <div class="status-chip">라운드 <strong id="roundStatus">1 / 3</strong></div>
         <div class="status-chip">회전 <strong id="spinStatus">선택 대기</strong></div>
@@ -31,7 +31,7 @@
         <section id="deadlineAccountSection" class="deadline-account-section">
           <div class="vault-heading">
             <span class="label">마감 계좌</span>
-            <span id="deadlineStateBadge" class="vault-state-badge">납부 대기</span>
+            <span id="deadlineStateBadge" class="vault-state-badge">대기</span>
           </div>
 
           <div class="deadline-value-action-row">
@@ -42,9 +42,12 @@
             <button id="deadlineDepositButton" class="payment-action" disabled>납부</button>
           </div>
 
-          <div class="progress-track"><span id="progressFill" class="progress-fill"></span></div>
+          <div class="progress-track payment-progress-track" aria-label="마감 납부 진행도">
+            <span id="progressFill" class="progress-fill payment-progress-committed"></span>
+            <span id="progressPendingFill" class="payment-progress-pending"></span>
+          </div>
           <div id="progressCopy" class="progress-copy">$ 0 / $ 80</div>
-          <div id="deadlineWarningCopy" class="deadline-warning-copy">방식을 선택한 뒤 첫 회전 전에 납부할 수 있습니다.</div>
+          <div id="deadlineWarningCopy" class="deadline-warning-copy">미납 금액 $80</div>
           <button id="deadlineConfirmButton" class="deadline-confirm-button legacy-confirm-button" hidden disabled aria-hidden="true">마감 확정</button>
         </section>
 
@@ -57,7 +60,7 @@
         <section id="vaultSection" class="vault-section vault-chamber">
           <div class="vault-heading vault-door-heading">
             <span class="label">금고</span>
-            <span id="vaultLockState" class="vault-lock-state">비어 있음</span>
+            <span id="vaultLockState" class="vault-lock-state">대기</span>
           </div>
 
           <div class="vault-door-body">
@@ -74,11 +77,10 @@
           <div class="vault-divider"></div>
           <div id="vaultRoundCopy" class="vault-round-copy">남은 라운드 -</div>
           <div id="vaultTicketProgress" class="vault-ticket-progress">티켓 -</div>
+          <div id="vaultControls" class="vault-inline-controls" aria-label="금고 설정"></div>
         </section>
 
-        <p id="panelNote" class="panel-note">
-          납부는 라운드 방식을 선택한 뒤 첫 회전을 누르기 전, 또는 0라운드 최종 납부에서만 가능합니다.
-        </p>
+        <p id="panelNote" class="panel-note is-hidden" aria-hidden="true"></p>
       </aside>
 
       <section id="machinePanel" class="panel machine-panel">
@@ -117,9 +119,9 @@
           <div class="flow-card">
             <span id="flowEyebrow" class="flow-eyebrow">마감 1 · 라운드 1 / 3</span>
             <h2 id="flowTitle">라운드 방식 선택</h2>
-            <p id="flowText">이번 라운드의 방식과 금고 사용 여부를 정하세요.</p>
-            <div id="flowOptions" class="flow-options"></div>
-            <small id="flowFooter" class="flow-footer">방식을 고른 뒤 첫 회전 전까지 납부할 수 있습니다.</small>
+            <p id="flowText">이번 라운드의 회전 수를 선택하세요.</p>
+            <div id="flowOptions" class="flow-options mode-only"></div>
+            <small id="flowFooter" class="flow-footer"></small>
           </div>
         </div>
       </section>
@@ -153,10 +155,10 @@
     <p>실제 아이템 효과와 상점은 후속 단계에서 구현합니다.</p>
   </aside>
 
-  <script src="data.js?v=0.5.5"></script>
-  <script src="effects.js?v=0.5.5"></script>
-  <script src="game.js?v=0.5.5"></script>
-  <script src="vault.js?v=0.5.5"></script>
-  <script src="stage55.js?v=0.5.5"></script>
+  <script src="data.js?v=0.5.6"></script>
+  <script src="effects.js?v=0.5.6"></script>
+  <script src="game.js?v=0.5.6"></script>
+  <script src="vault.js?v=0.5.6"></script>
+  <script src="stage55.js?v=0.5.6"></script>
 </body>
 </html>
