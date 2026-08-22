@@ -1,0 +1,432 @@
+/* DEADLINE v1.0.1 — light-only palette / larger contract choices */
+
+:root {
+  color-scheme: light;
+}
+
+html,
+body {
+  background: #F4F7FB !important;
+  color: #111827 !important;
+}
+
+body {
+  --bg: #F4F7FB;
+  --ink: #111827;
+  --line: #CBD5E1;
+  --gain: #0F9F77;
+  --danger: #D94F65;
+  --shadow: 0 4px 16px rgba(15, 23, 42, 0.10);
+}
+
+#stage96ThemeToggle {
+  display: none !important;
+}
+
+.panel,
+.info-panel,
+.reference-rail,
+.machine-panel {
+  background: #FFFFFF !important;
+  border-color: #CBD5E1 !important;
+  color: #111827 !important;
+  box-shadow: 0 6px 20px rgba(15, 23, 42, 0.07) !important;
+}
+
+.deadline-account-section,
+.wallet-section,
+.vault-chamber,
+.reference-section,
+.shop-main-section,
+.shop-owned-panel,
+.settlement-readout,
+.score-readout,
+.round-prep-panel,
+.final-payment-panel,
+.auto-advance-panel {
+  background: #F8FAFC !important;
+  border-color: #D7DEE8 !important;
+  color: #111827 !important;
+}
+
+.machine-header,
+.machine-actions,
+.machine-stage,
+.machine-panel.round-prep-active,
+.machine-panel.round-prep-active .machine-header,
+.machine-panel.round-prep-active .machine-stage,
+.machine-panel.round-prep-active .machine-actions,
+.machine-panel.is-round-prep .machine-stage,
+.machine-panel.is-awaiting-start .machine-stage,
+.machine-panel.is-awaiting-start .machine-actions {
+  background: #FFFFFF !important;
+  color: #111827 !important;
+}
+
+.reels-shell,
+.reel,
+.reel-track,
+.reel-symbol[data-symbol] {
+  background: #F8FAFC !important;
+}
+
+.reel-symbol.pattern-hit,
+.reel-symbol.pattern-sequence-hit,
+.reel-symbol.pattern-fx-hit {
+  background: #EEF7F4 !important;
+}
+
+button,
+.status-chip,
+.vault-state-badge,
+.vault-lock-state {
+  background: #FFFFFF;
+  border-color: #CBD5E1;
+  color: #1F2937;
+}
+
+button:not(:disabled):hover {
+  background: #F1F5F9;
+  border-color: #94A3B8;
+}
+
+#deadlineDepositButton.payment-action,
+.action-shop-button,
+.primary-action {
+  background: #18212E !important;
+  border-color: #18212E !important;
+  color: #FFFFFF !important;
+}
+
+#deadlineDepositButton.payment-action:not(:disabled):hover,
+.action-shop-button:not(:disabled):hover,
+.primary-action:not(:disabled):hover {
+  background: #243041 !important;
+  border-color: #243041 !important;
+}
+
+.shop-offer-card,
+.shop-owned-card {
+  background: #F6F8FB !important;
+  color: #111827 !important;
+  border-color: #CBD5E1 !important;
+}
+
+.shop-offer-card:not(:disabled):hover,
+.shop-owned-card:not(:disabled):hover {
+  background: #EEF2F7 !important;
+  border-color: #94A3B8 !important;
+}
+
+.shop-item-mark,
+.shop-owned-mark {
+  background: #FFFFFF !important;
+  border-color: #D7DEE8 !important;
+  color: #111827 !important;
+}
+
+.stage99-trait-panel {
+  background: #EEF2F7 !important;
+  border-color: #D7DEE8 !important;
+  color: #1F2937 !important;
+}
+
+.shop-offer-card.is-shiny {
+  background:
+    linear-gradient(135deg, rgba(223, 245, 250, .72), rgba(248, 250, 252, .96) 48%, rgba(240, 232, 250, .72)) !important;
+}
+
+.stage99-round-wallet {
+  background: #EDF8F4 !important;
+  border-color: #B9E3D4 !important;
+}
+
+/* ===== CONTRACT MODAL: LIGHT ONLY ===== */
+.flow-overlay.is-contract-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 76;
+  padding: 28px;
+  background: rgba(226, 232, 240, 0.78) !important;
+  backdrop-filter: blur(6px);
+}
+
+.flow-overlay.is-contract-modal .flow-card {
+  position: relative;
+  width: min(1380px, calc(100vw - 56px)) !important;
+  max-height: min(860px, calc(100vh - 56px));
+  overflow: auto;
+  padding: 28px !important;
+  border: 1px solid #CBD5E1 !important;
+  border-radius: 22px;
+  background: #FFFFFF !important;
+  color: #111827 !important;
+  box-shadow: 0 28px 80px rgba(15, 23, 42, 0.18) !important;
+}
+
+.flow-overlay.is-contract-modal .flow-eyebrow {
+  color: #64748B !important;
+}
+
+.flow-overlay.is-contract-modal .flow-card h2 {
+  color: #111827 !important;
+}
+
+.flow-overlay.is-contract-modal .flow-card > p,
+.flow-overlay.is-contract-modal .flow-footer {
+  color: #64748B !important;
+}
+
+.stage100-contract-intro {
+  color: #475569 !important;
+}
+
+.stage100-carry-bonus {
+  border-color: #A7DCCB !important;
+  background: #EEF9F5 !important;
+  color: #0F8A69 !important;
+}
+
+.flow-options.stage100-contract-layout {
+  display: flex !important;
+  flex-direction: column !important;
+  grid-template-columns: none !important;
+  align-items: stretch !important;
+  gap: 16px !important;
+  width: 100% !important;
+}
+
+.stage100-contract-grid {
+  display: grid !important;
+  grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+  gap: 16px !important;
+  width: 100% !important;
+}
+
+.stage100-contract-card {
+  --contract-accent: #718096;
+  --contract-bg: #FFFFFF;
+  min-height: 300px !important;
+  padding: 19px !important;
+  gap: 15px !important;
+  border: 1.5px solid #CBD5E1 !important;
+  border-radius: 17px !important;
+  background: #FFFFFF !important;
+  color: #111827 !important;
+  box-shadow: 0 7px 18px rgba(15, 23, 42, 0.07) !important;
+}
+
+.stage100-contract-card::before {
+  opacity: 0.45 !important;
+  background: linear-gradient(145deg, rgba(100, 116, 139, 0.05), transparent 44%, rgba(100, 116, 139, 0.03)) !important;
+}
+
+.stage100-contract-card:not(:disabled):hover {
+  transform: translateY(-2px);
+  background: #FBFDFF !important;
+  border-color: #94A3B8 !important;
+  box-shadow: 0 13px 28px rgba(15, 23, 42, 0.11) !important;
+}
+
+.stage100-contract-card.tier-standard {
+  --contract-accent: #64748B;
+  background: #FFFFFF !important;
+  border-color: #AEBAC8 !important;
+}
+
+.stage100-contract-card.tier-risk {
+  --contract-accent: #D97745;
+  background: linear-gradient(145deg, rgba(217, 119, 69, 0.075), transparent 48%), #FFFCFA !important;
+  border: 2px solid #D97745 !important;
+  box-shadow: 0 8px 20px rgba(217, 119, 69, 0.10) !important;
+}
+
+.stage100-contract-card.tier-risk:not(:disabled):hover {
+  border-color: #C86232 !important;
+  box-shadow: 0 13px 30px rgba(217, 119, 69, 0.16) !important;
+}
+
+.stage100-contract-card.tier-extreme {
+  --contract-accent: #D14B67;
+  background:
+    radial-gradient(circle at 90% 7%, rgba(209, 75, 103, 0.08), transparent 31%),
+    linear-gradient(145deg, rgba(209, 75, 103, 0.075), transparent 49%),
+    #FFF9FA !important;
+  border: 2px solid #D14B67 !important;
+  box-shadow: 0 9px 22px rgba(209, 75, 103, 0.12) !important;
+  animation: stage101ExtremeLightPulse 3.2s ease-in-out infinite !important;
+}
+
+.stage100-contract-card.tier-extreme:not(:disabled):hover {
+  border-color: #B93755 !important;
+  box-shadow: 0 14px 32px rgba(209, 75, 103, 0.18) !important;
+}
+
+@keyframes stage101ExtremeLightPulse {
+  0%, 100% { box-shadow: 0 9px 22px rgba(209, 75, 103, 0.09); }
+  50% { box-shadow: 0 10px 26px rgba(209, 75, 103, 0.16); }
+}
+
+.stage100-contract-tier {
+  background: #F8FAFC !important;
+  color: #475569 !important;
+}
+
+.tier-risk .stage100-contract-tier {
+  background: #FFF3EC !important;
+  border-color: #F2B18F !important;
+  color: #B8552A !important;
+}
+
+.tier-extreme .stage100-contract-tier {
+  background: #FFF0F3 !important;
+  border-color: #E9A1B1 !important;
+  color: #B83250 !important;
+}
+
+.stage100-contract-category {
+  background: #F8FAFC !important;
+  border-color: #E2E8F0 !important;
+  color: #64748B !important;
+}
+
+.stage100-contract-icon {
+  background: #F8FAFC !important;
+  border-color: #D7DEE8 !important;
+}
+
+.stage100-contract-title-row > strong {
+  color: #111827 !important;
+  font-size: 20px !important;
+}
+
+.stage100-contract-card > p {
+  color: #475569 !important;
+  font-size: 12.5px !important;
+  line-height: 1.62 !important;
+}
+
+.stage100-inline-emphasis {
+  color: #111827 !important;
+  font-weight: 1000 !important;
+}
+
+.tier-risk .stage100-inline-emphasis {
+  color: #B8552A !important;
+}
+
+.tier-extreme .stage100-inline-emphasis {
+  color: #B83250 !important;
+}
+
+.stage100-contract-reward {
+  border-top-color: #E2E8F0 !important;
+}
+
+.stage100-contract-reward > span {
+  color: #64748B !important;
+  font-size: 9px !important;
+}
+
+.stage100-contract-reward > strong {
+  color: #0F9F77 !important;
+  font-size: 12.5px !important;
+}
+
+.stage100-contract-skip {
+  align-self: flex-end !important;
+  justify-self: end !important;
+  width: auto !important;
+  min-width: 144px !important;
+  max-width: 190px !important;
+  min-height: 38px !important;
+  padding: 0 16px !important;
+  border: 1px solid #CBD5E1 !important;
+  border-radius: 10px !important;
+  background: #FFFFFF !important;
+  color: #475569 !important;
+  box-shadow: none !important;
+  font-size: 10.5px !important;
+  font-weight: 900 !important;
+}
+
+.stage100-contract-skip:hover {
+  background: #F1F5F9 !important;
+  color: #111827 !important;
+}
+
+.stage100-contract-status.tier-risk {
+  color: #B8552A !important;
+  border-color: #F2B18F !important;
+  background: #FFF6F1 !important;
+}
+
+.stage100-contract-status.tier-extreme {
+  color: #B83250 !important;
+  border-color: #E9A1B1 !important;
+  background: #FFF2F4 !important;
+  box-shadow: none !important;
+}
+
+.stage100-streak-status {
+  color: #0F8A69 !important;
+  border-color: #A7DCCB !important;
+  background: #EEF9F5 !important;
+}
+
+.stage100-contract-result,
+.stage100-supply-panel {
+  background: #F8FAFC !important;
+  color: #111827 !important;
+}
+
+.stage100-supply-grid button {
+  background: #FFFFFF !important;
+  border-color: #D7DEE8 !important;
+  color: #111827 !important;
+}
+
+.stage100-supply-grid button > small {
+  color: #64748B !important;
+}
+
+.flow-overlay.is-contract-modal .shop-close-button {
+  background: #FFFFFF !important;
+  border-color: #CBD5E1 !important;
+  color: #475569 !important;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .stage100-contract-card.tier-extreme {
+    animation: none !important;
+  }
+}
+
+@media (max-width: 1100px) {
+  .stage100-contract-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  }
+  .stage100-contract-card {
+    min-height: 260px !important;
+  }
+}
+
+@media (max-width: 620px) {
+  .flow-overlay.is-contract-modal {
+    padding: 14px;
+  }
+  .flow-overlay.is-contract-modal .flow-card {
+    width: calc(100vw - 28px) !important;
+    padding: 18px !important;
+  }
+  .stage100-contract-grid {
+    grid-template-columns: 1fr !important;
+  }
+  .stage100-contract-card {
+    min-height: 0 !important;
+  }
+  .stage100-contract-skip {
+    align-self: stretch !important;
+    max-width: none !important;
+  }
+}
