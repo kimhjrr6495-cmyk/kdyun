@@ -37,7 +37,7 @@
     { id:"geometry_only", tier:"EXTREME", category:"PATTERN", icon:"✖️", name:"기하학 시장", note:"V·역V·X·JACKPOT만 지급됩니다. 일반 3칸/가로 패턴은 무효입니다.", effects:fx({type:"ALLOW_PATTERN_KEYS",keys:["V","INV_V","X","JACKPOT"]}), rewards:reward({type:"TICKETS",amount:3},{type:"RARE_GUARANTEE",amount:1}) },
 
     { id:"no_reroll", tier:"RISK", category:"SHOP", icon:"🚫", name:"리롤 금지", note:"이번 마감 동안 상점 새로고침을 사용할 수 없습니다.", effects:fx({type:"NO_SHOP_REROLL"}), rewards:reward({type:"TICKETS",amount:4}) },
-    { id:"one_visit", tier:"RISK", category:"SHOP", icon:"🚪", name:"폐쇄 시장", note:"이번 마감에서 상점은 단 한 번만 열 수 있습니다.", effects:fx({type:"SHOP_MAX_VISITS",count:1}), rewards:reward({type:"TICKETS",amount:4}) },
+    { id:"one_visit", tier:"RISK", category:"SHOP", icon:"🚪", name:"폐쇄 시장", note:"이번 마감에서 상점은 단 한 번만 열 수 있습니다.", effects:fx({type:"SHOP_MAX_VISITS",count:1}), rewards:reward({type:"TICKETS",amount:3},{type:"EXTRA_OFFER",amount:1}) },
     { id:"no_sell", tier:"STANDARD", category:"SHOP", icon:"📦", name:"판매 금지", note:"이번 마감 동안 보유 아이템을 판매할 수 없습니다.", requires:["sellable"], effects:fx({type:"NO_SELL"}), rewards:reward({type:"TICKETS",amount:2}) },
     { id:"rarity_control", tier:"RISK", category:"SHOP", icon:"🚧", name:"희귀품 통제", note:"이번 마감 동안 EPIC·LEGENDARY 아이템을 구매할 수 없습니다.", effects:fx({type:"BLOCK_RARITIES",rarities:["EPIC","LEGENDARY"]}), rewards:reward({type:"TICKETS",amount:4}) },
     { id:"narrow_storage", tier:"RISK", category:"SHOP", icon:"🗄️", name:"좁은 창고", note:"이번 마감 동안 아이템 보유 한도가 2칸 감소합니다.", requires:["items3"], effects:fx({type:"INVENTORY_CAP_MINUS",amount:2}), rewards:reward({type:"TICKETS",amount:4}) },
