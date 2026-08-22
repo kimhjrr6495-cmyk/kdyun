@@ -1,0 +1,168 @@
+/* DEADLINE v0.9.7 — dark-mode cleanup / payment button / continuous deadline progress */
+
+/* Dark mode starts at the root too, so the page edge and scrollbar do not flash white. */
+html.theme-dark-root,
+html.theme-dark-root body {
+  background: #111419 !important;
+}
+
+html.theme-dark-root {
+  color-scheme: dark;
+  scrollbar-color: #59616D #111419;
+}
+
+html.theme-dark-root::-webkit-scrollbar {
+  width: 11px;
+  height: 11px;
+}
+
+html.theme-dark-root::-webkit-scrollbar-track {
+  background: #111419;
+}
+
+html.theme-dark-root::-webkit-scrollbar-thumb {
+  border: 2px solid #111419;
+  border-radius: 999px;
+  background: #59616D;
+}
+
+/* Stage 6.x prep states still carried hard-coded light backgrounds. Override every related state. */
+body.theme-dark .machine-panel.round-prep-active,
+body.theme-dark .machine-panel.round-prep-active .machine-header,
+body.theme-dark .machine-panel.round-prep-active .machine-stage,
+body.theme-dark .machine-panel.round-prep-active .machine-actions,
+body.theme-dark .machine-panel.is-round-prep .machine-stage,
+body.theme-dark .machine-panel.is-round-prep .machine-actions,
+body.theme-dark .machine-panel.is-awaiting-start .machine-stage,
+body.theme-dark .machine-panel.is-awaiting-start .machine-actions {
+  background: #15191F !important;
+  color: var(--ink) !important;
+}
+
+body.theme-dark .machine-panel.round-prep-active .machine-header {
+  border-bottom-color: #39414C !important;
+}
+
+body.theme-dark .machine-panel.round-prep-active .machine-stage::after,
+body.theme-dark .machine-panel.is-round-prep .machine-stage::after,
+body.theme-dark .machine-panel.is-awaiting-start .machine-stage::after {
+  background: rgba(5, 7, 10, 0.30) !important;
+}
+
+body.theme-dark .round-prep-label {
+  color: #E8ECF2 !important;
+}
+
+body.theme-dark .round-mode-select,
+body.theme-dark .round-mode-select.is-selected {
+  background: #171B22 !important;
+  color: #E8ECF2 !important;
+  border-color: #3E4652 !important;
+  box-shadow: 0 7px 22px rgba(0, 0, 0, 0.26) !important;
+}
+
+body.theme-dark .round-mode-select:hover:not(:disabled) {
+  border-color: #697482 !important;
+}
+
+body.theme-dark .round-mode-select.is-selected {
+  border-color: #7A8593 !important;
+  box-shadow:
+    inset 0 0 0 1px rgba(232, 236, 242, 0.10),
+    0 8px 24px rgba(0, 0, 0, 0.30) !important;
+}
+
+body.theme-dark .round-mode-select[data-prep-mode="RISK"].is-selected {
+  border-color: var(--danger) !important;
+  box-shadow:
+    inset 0 0 0 1px rgba(255, 112, 112, 0.16),
+    0 8px 24px rgba(0, 0, 0, 0.30) !important;
+}
+
+/* Dark overlay instead of the light frosted sheet from the base theme. */
+body.theme-dark .flow-overlay {
+  background: rgba(7, 9, 12, 0.80) !important;
+}
+
+body.theme-dark .flow-card {
+  background: rgba(21, 25, 31, 0.985) !important;
+  border-color: #3A424D !important;
+  box-shadow: 0 16px 46px rgba(0, 0, 0, 0.38) !important;
+}
+
+/* Keep prep-disabled controls dark instead of falling back to the old light grey blocks. */
+body.theme-dark .machine-panel.round-prep-active #spinButton:disabled,
+body.theme-dark .action-shop-button,
+body.theme-dark .action-shop-button:disabled {
+  background: #1A1F26 !important;
+  color: rgba(232, 236, 242, 0.42) !important;
+  border-color: #3A424D !important;
+}
+
+body.theme-dark .machine-panel.round-prep-active #spinButton:not(:disabled),
+body.theme-dark .action-shop-button.is-available:not(:disabled) {
+  background: #0F1217 !important;
+  color: #F5F7FA !important;
+  border-color: #343B45 !important;
+  box-shadow: 0 3px 11px rgba(0, 0, 0, 0.30) !important;
+}
+
+/* Payment button now follows the same dark visual language as the shop button. */
+body.theme-dark .deadline-account-section .payment-action:not(:disabled) {
+  background: #0F1217 !important;
+  color: #F5F7FA !important;
+  border-color: #343B45 !important;
+  box-shadow: 0 3px 11px rgba(0, 0, 0, 0.30) !important;
+}
+
+body.theme-dark .deadline-account-section .payment-action:not(:disabled):hover {
+  background: #191E25 !important;
+  border-color: #4B5562 !important;
+}
+
+body.theme-dark .deadline-account-section .payment-action:disabled {
+  background: #1A1F26 !important;
+  color: rgba(232, 236, 242, 0.36) !important;
+  border-color: #343B45 !important;
+  opacity: 1 !important;
+}
+
+/* Make the committed and current-round payment areas one continuous bar.
+   Only the outside ends are rounded; the seam itself is square. */
+.payment-progress-track .payment-progress-committed {
+  border-radius: 999px 0 0 999px !important;
+}
+
+.payment-progress-track .payment-progress-pending {
+  border-radius: 0 999px 999px 0 !important;
+}
+
+/* When either segment fills the whole bar, restore both outer corners cleanly. */
+.payment-progress-track .payment-progress-committed[style*="width: 100%"] {
+  border-radius: 999px !important;
+}
+
+.payment-progress-track .payment-progress-pending[style*="left: 0%"] {
+  border-radius: 999px !important;
+}
+
+body.theme-dark .payment-progress-track {
+  background: #303741 !important;
+}
+
+body.theme-dark .payment-progress-track .payment-progress-committed {
+  background: #5A626E !important;
+}
+
+body.theme-dark .payment-progress-track .payment-progress-pending {
+  background: var(--danger) !important;
+}
+
+/* A few remaining hard-coded light surfaces from older stages. */
+body.theme-dark .items-preview.compact-item-tray,
+body.theme-dark .item-sell-popover,
+body.theme-dark .prep-shop-button {
+  background: #171B22 !important;
+  color: var(--ink) !important;
+  border-color: #3A424D !important;
+}
