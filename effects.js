@@ -1,20 +1,66 @@
-// DEADLINE — Stage 1
-// 이 파일은 후속 이펙트 시스템 전용입니다.
-// 현재 단계에서는 의도적으로 시각/사운드 이펙트를 거의 구현하지 않습니다.
-// 지금 확인할 것은 '릴이 얼마나 자연스럽게 움직이고 멈추는가'입니다.
-//
-// 예정:
-// - Stage 3: 당첨 숫자 카운트업 / 민트 플래시 / 당첨 칸 강조
-// - Stage 8+: 아이템 발동 알림 / 재발동 체인 연출
-// - Stage 12: 릴 정지음, 최종 사운드 폴리싱, 위험 연출,
-//             처리 중..., 잔고 미세 떨림, 서브리미널 문구 등
+// DEADLINE — Stage 3
+// 점수 피드백용 최소 이펙트 모듈.
+// 최종 사운드/고급 연출은 Stage 12에서 다시 다듬습니다.
 
 "use strict";
 
 const EffectsManager = {
-  stage: 1,
-  enabled: false,
-  status: "DEFERRED_FOR_LATER_STAGES"
+  stage: 3,
+  enabled: true,
+
+  easeOutCubic(t) {
+    return 1 - Math.pow(1 - t, 3);
+  },
+
+  animateNumber(element, from, to, options = {}) {
+    if (!element) return Promise.resolve();
+
+    const duration = options.duration ?? 520;
+    const prefix = options.prefix ?? "";
+    const suffix = options.suffix ?? "";
+    const formatter = options.formatter ?? ((value) => Math.round(value).toLocaleString("ko-KR"));
+
+    if (window.matchMedia?.("(prefers-reduced-motion: reduce)").matches || duration <= 0) {
+      element.textContent = `${prefix}${formatter(to)}${suffix}`;
+      return Promise.resolve();
+    }
+
+    return new Promise((resolve) => {
+      const start = performance.now();
+
+      const frame = (now) => {
+        const progress = Math.min(1, (now - start) / duration);
+        const eased = this.easeOutCubic(progress);
+        const value = from + (to - from) * eased;
+        element.textContent = `${prefix}${formatter(value)}${suffix}`;
+
+        if (progress < 1) {
+          requestAnimationFrame(frame);
+        } else {
+          element.textContent = `${prefix}${formatter(to)}${suffix}`;
+          resolve();
+        }
+      };
+
+      requestAnimationFrame(frame);
+    });
+  },
+
+  flashWin(target) {
+    if (!target) return;
+    target.classList.remove("win-flash");
+    void target.offsetWidth;
+    target.classList.add("win-flash");
+    window.setTimeout(() => target.classList.remove("win-flash"), 240);
+  },
+
+  pulseWallet(target) {
+    if (!target) return;
+    target.classList.remove("wallet-gain");
+    void target.offsetWidth;
+    target.classList.add("wallet-gain");
+    window.setTimeout(() => target.classList.remove("wallet-gain"), 360);
+  }
 };
 
 window.EffectsManager = EffectsManager;
