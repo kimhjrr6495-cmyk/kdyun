@@ -221,7 +221,7 @@ const Game = {
     const { columns, rows } = GAME_DATA.board;
 
     // 가로: 하나의 연속 구간에서는 가장 큰 패턴만 인정합니다.
-    // 예: 5연속이면 가로3/4를 별도로 추가하지 않고 H5만 반환합니다.
+    // 세븐 5연속은 일반 H5 대신 JACKPOT으로 승격합니다.
     for (let row = 0; row < rows; row += 1) {
       let col = 0;
       while (col < columns) {
@@ -238,7 +238,12 @@ const Game = {
 
         const length = col - start;
         if (length >= 3) {
-          const key = length >= 5 ? "H5" : length === 4 ? "H4" : "H3";
+          let key;
+          if (length >= 5 && symbol?.id === "SV") key = "JACKPOT";
+          else if (length >= 5) key = "H5";
+          else if (length === 4) key = "H4";
+          else key = "H3";
+
           const coords = Array.from(
             { length },
             (_, offset) => [start + offset, row]
@@ -338,7 +343,11 @@ const Game = {
       return;
     }
 
-    this.patternCount.textContent = `${patterns.length} PATTERN`;
+    const hasJackpot = patterns.some((pattern) => pattern.key === "JACKPOT");
+    this.patternCount.textContent = hasJackpot
+      ? "JACKPOT"
+      : `${patterns.length} PATTERN`;
+
     this.patternList.innerHTML = patterns
       .map(
         (pattern) =>
@@ -347,12 +356,19 @@ const Game = {
       .join("");
 
     this.readoutDetail.textContent =
-      testLabel || "민트색 칸이 현재 감지된 패턴에 포함된 칸입니다.";
+      testLabel ||
+      (hasJackpot
+        ? "세븐 5연속 JACKPOT 감지 · 전용 연출은 후속 단계에서 추가"
+        : "민트색 칸이 현재 감지된 패턴에 포함된 칸입니다.");
   },
 
-  makePatternTestBoard(coords) {
-    const fillerSymbols = GAME_DATA.symbols.filter((symbol) => symbol.id !== "SV");
-    const target = GAME_DATA.symbols.find((symbol) => symbol.id === "SV");
+  makePatternTestBoard(test) {
+    const target = GAME_DATA.symbols.find(
+      (symbol) => symbol.id === test.symbolId
+    );
+    const fillerSymbols = GAME_DATA.symbols.filter(
+      (symbol) => symbol.id !== target.id
+    );
 
     const board = Array.from(
       { length: GAME_DATA.board.columns },
@@ -363,7 +379,7 @@ const Game = {
         )
     );
 
-    coords.forEach(([col, row]) => {
+    test.coords.forEach(([col, row]) => {
       board[col][row] = target;
     });
 
@@ -378,7 +394,7 @@ const Game = {
     const definition = GAME_DATA.patterns[test.key];
 
     this.patternTestIndex = (this.patternTestIndex + 1) % tests.length;
-    this.currentColumns = this.makePatternTestBoard(test.coords);
+    this.currentColumns = this.makePatternTestBoard(test);
     this.renderReels();
     this.evaluateAndRenderPatterns(
       `테스트 보드: ${definition.name} · 버튼을 다시 누르면 다음 패턴`
