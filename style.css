@@ -30,7 +30,7 @@ button {
   color: var(--ink);
   font-weight: 850;
   box-shadow: var(--shadow);
-  transition: transform 100ms ease, opacity 100ms ease, border-color 100ms ease;
+  transition: transform 100ms ease, opacity 100ms ease, border-color 100ms ease, background 100ms ease;
 }
 
 button:not(:disabled) { cursor: pointer; }
@@ -211,7 +211,6 @@ button:disabled { cursor: default; opacity: 0.42; }
   overflow: hidden;
 }
 
-/* Stage 3 최소 당첨 피드백: 화면 흔들림 없이 0.2초 민트 플래시. */
 .machine-panel::after {
   content: "";
   position: absolute;
@@ -321,7 +320,6 @@ button:disabled { cursor: default; opacity: 0.42; }
 
 .reel-settled { border-color: var(--ink); }
 
-/* 판정 칸 강조. 최종 시각 연출은 Stage 12에서 다시 폴리싱합니다. */
 .reel-symbol.pattern-hit {
   background: rgba(0, 212, 146, 0.08);
   box-shadow: inset 0 0 0 1px rgba(0, 212, 146, 0.72);
@@ -452,6 +450,129 @@ button:disabled { cursor: default; opacity: 0.42; }
 
 .action-spacer { flex: 1; }
 
+/* Stage 4: 라운드 선택 / 마감 성공 / 실패 오버레이 */
+.flow-overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 12;
+  display: grid;
+  place-items: center;
+  padding: 28px;
+  background: rgba(247, 248, 250, 0.84);
+  backdrop-filter: blur(8px);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 160ms ease;
+}
+
+.flow-overlay.is-open {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.flow-card {
+  width: min(640px, 100%);
+  padding: 24px;
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  background: rgba(247, 248, 250, 0.98);
+  box-shadow: 0 14px 40px rgba(26, 29, 35, 0.08);
+}
+
+.flow-eyebrow {
+  display: block;
+  margin-bottom: 8px;
+  font-size: 10px;
+  font-weight: 900;
+  letter-spacing: 0.12em;
+  opacity: 0.48;
+}
+
+.flow-card h2 {
+  margin: 0;
+  font-size: 27px;
+  letter-spacing: -0.045em;
+}
+
+.flow-card > p {
+  margin: 8px 0 18px;
+  font-size: 13px;
+  font-weight: 700;
+  line-height: 1.55;
+  opacity: 0.58;
+}
+
+.flow-options {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.flow-choice,
+.flow-primary {
+  min-height: 118px;
+  padding: 16px;
+  text-align: left;
+  background: var(--bg);
+}
+
+.flow-choice {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+}
+
+.flow-choice span,
+.flow-primary span {
+  font-size: 10px;
+  font-weight: 900;
+  letter-spacing: 0.1em;
+  opacity: 0.5;
+}
+
+.flow-choice strong,
+.flow-primary strong {
+  display: block;
+  margin-top: 4px;
+  font-size: 20px;
+  letter-spacing: -0.035em;
+}
+
+.flow-choice small {
+  margin-top: 7px;
+  font-size: 10px;
+  font-weight: 750;
+  opacity: 0.5;
+}
+
+.flow-choice:hover { border-color: var(--ink); }
+.flow-choice.risk { border-color: rgba(255, 92, 92, 0.42); }
+.flow-choice.risk:hover { border-color: var(--danger); }
+
+.flow-primary {
+  grid-column: 1 / -1;
+  width: 100%;
+  min-height: 94px;
+  border-color: var(--ink);
+  background: var(--ink);
+  color: var(--bg);
+}
+
+.flow-primary.danger {
+  border-color: var(--danger);
+  background: var(--danger);
+}
+
+.flow-footer {
+  display: block;
+  margin-top: 13px;
+  font-size: 10px;
+  font-weight: 750;
+  line-height: 1.5;
+  opacity: 0.42;
+}
+
 .items-edge-tab {
   position: absolute;
   right: 0;
@@ -480,7 +601,7 @@ button:disabled { cursor: default; opacity: 0.42; }
   box-shadow: -1px 0 3px rgba(0, 0, 0, 0.06);
   transform: translateX(calc(100% - 8px));
   transition: transform 180ms ease;
-  z-index: 10;
+  z-index: 20;
 }
 
 .items-preview:hover { transform: translateX(0); }
@@ -539,4 +660,6 @@ button:disabled { cursor: default; opacity: 0.42; }
   .settlement-readout > strong { font-size: 36px; }
   .score-line { align-items: flex-start; flex-direction: column; gap: 1px; }
   .score-line code { text-align: left; }
+  .flow-options { grid-template-columns: 1fr; }
+  .flow-primary { grid-column: auto; }
 }
