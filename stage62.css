@@ -1,0 +1,433 @@
+/* Stage 6.2 — 상점 전용 모달 / 지갑 티켓 / 판매 모달 */
+
+/* 지갑: 돈과 티켓을 같은 줄에 배치 */
+.wallet-balance-row {
+  margin-top: 4px;
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 14px;
+}
+
+.wallet-balance-row .money-value {
+  margin: 0;
+}
+
+.wallet-ticket-value {
+  flex: 0 0 auto;
+  display: inline-flex;
+  align-items: baseline;
+  gap: 4px;
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: "tnum" 1;
+}
+
+.wallet-ticket-value span {
+  font-size: 10px;
+  font-weight: 950;
+  opacity: 0.42;
+}
+
+.wallet-ticket-value strong {
+  font-size: 18px;
+  font-weight: 950;
+  letter-spacing: -0.04em;
+}
+
+/* 준비 패널은 리롤 횟수 선택만 담당 */
+.round-prep-panel {
+  justify-content: flex-start;
+}
+
+/* 하단 우측 상점 버튼 */
+.action-shop-button {
+  min-width: 92px;
+  box-shadow: none;
+  border-color: rgba(26, 29, 35, 0.2);
+}
+
+.action-shop-button.is-available {
+  border-color: #1A1D23;
+  background: #F7F8FA;
+  color: #1A1D23;
+}
+
+.action-shop-button.is-available:hover {
+  background: #FFFFFF;
+}
+
+/* 상점은 화면 중앙 전용 모달 */
+.flow-overlay.is-shop-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 70;
+  padding: 28px;
+  background: rgba(17, 20, 25, 0.42);
+  backdrop-filter: blur(4px);
+}
+
+.flow-overlay.is-shop-modal .flow-card {
+  position: relative;
+  width: min(920px, 100%);
+  max-height: min(820px, calc(100vh - 56px));
+  overflow: auto;
+  padding: 22px;
+  border-color: rgba(26, 29, 35, 0.12);
+  border-radius: 18px;
+  background: #F7F8FA;
+  box-shadow: 0 28px 80px rgba(17, 20, 25, 0.24);
+}
+
+.flow-overlay.is-shop-modal .flow-eyebrow,
+.flow-overlay.is-shop-modal .flow-footer {
+  display: none;
+}
+
+.flow-overlay.is-shop-modal .flow-card h2 {
+  margin-right: 48px;
+  font-size: 30px;
+}
+
+.flow-overlay.is-shop-modal .flow-card > p {
+  margin: 6px 48px 18px 0;
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  opacity: 1;
+}
+
+.shop-ticket-balance {
+  display: inline-flex;
+  align-items: center;
+  min-height: 26px;
+  padding: 5px 9px;
+  border-radius: 999px;
+  background: #1A1D23;
+  color: #F7F8FA;
+  font-size: 11px;
+  font-weight: 950;
+}
+
+.shop-owned-count {
+  font-size: 10px;
+  font-weight: 850;
+  opacity: 0.48;
+}
+
+.shop-close-button {
+  position: absolute;
+  right: 18px;
+  top: 18px;
+  z-index: 3;
+  width: 34px;
+  height: 34px;
+  min-width: 34px;
+  min-height: 34px;
+  padding: 0;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  border-color: rgba(26, 29, 35, 0.14);
+  background: rgba(26, 29, 35, 0.04);
+  box-shadow: none;
+  font-size: 20px;
+  line-height: 1;
+}
+
+.shop-close-button:hover {
+  background: rgba(26, 29, 35, 0.09);
+}
+
+.flow-options.shop-layout {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 14px;
+}
+
+.shop-main-section,
+.shop-owned-panel {
+  display: grid;
+  gap: 12px;
+  padding: 15px;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  background: #FFFFFF;
+}
+
+.shop-main-heading {
+  align-items: center;
+}
+
+.shop-section-heading > div {
+  min-width: 0;
+}
+
+.shop-section-heading > div > span,
+.shop-section-heading > div > small {
+  display: block;
+}
+
+.shop-section-heading > div > span {
+  font-size: 11px;
+  font-weight: 950;
+  letter-spacing: -0.01em;
+}
+
+.shop-section-heading > div > small {
+  margin-top: 2px;
+  font-size: 9px;
+  font-weight: 750;
+  opacity: 0.42;
+}
+
+.shop-reroll-compact {
+  flex: 0 0 auto;
+  width: auto;
+  min-height: 32px;
+  padding: 7px 10px;
+  border-color: rgba(26, 29, 35, 0.14);
+  background: #F7F8FA;
+  box-shadow: none;
+  font-size: 9px;
+}
+
+.shop-offer-grid {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.shop-offer-card {
+  min-height: 190px;
+  padding: 14px;
+  border-radius: 13px;
+  background: #F7F8FA;
+  transition: transform 120ms ease, border-color 120ms ease, box-shadow 120ms ease;
+}
+
+.shop-offer-card:not(:disabled):hover {
+  transform: translateY(-2px);
+  border-color: rgba(26, 29, 35, 0.42);
+  box-shadow: 0 8px 20px rgba(26, 29, 35, 0.08);
+}
+
+.shop-item-mark {
+  width: 42px;
+  height: 42px;
+  display: grid;
+  place-items: center;
+  border: 1px solid rgba(26, 29, 35, 0.1);
+  border-radius: 11px;
+  background: #FFFFFF;
+  font-size: 16px;
+  font-weight: 950;
+}
+
+.shop-offer-card strong {
+  margin-top: 12px;
+  font-size: 17px;
+}
+
+.shop-offer-card small {
+  margin-top: 7px;
+  font-size: 10px;
+  line-height: 1.55;
+  opacity: 0.56;
+}
+
+.shop-offer-card b {
+  padding-top: 14px;
+  font-size: 13px;
+  color: var(--gain);
+}
+
+.shop-owned-large-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.shop-owned-card {
+  min-width: 0;
+  min-height: 92px;
+  padding: 10px;
+  display: grid;
+  grid-template-columns: 38px minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 9px;
+  text-align: left;
+  border: 1px solid var(--line);
+  border-radius: 11px;
+  background: #F7F8FA;
+  box-shadow: none;
+}
+
+.shop-owned-card:not(.is-empty):hover {
+  border-color: rgba(26, 29, 35, 0.36);
+  background: #FFFFFF;
+}
+
+.shop-owned-mark {
+  width: 38px;
+  height: 38px;
+  display: grid;
+  place-items: center;
+  border-radius: 9px;
+  border: 1px solid rgba(26, 29, 35, 0.09);
+  background: #FFFFFF;
+  font-size: 14px;
+  font-weight: 950;
+}
+
+.shop-owned-card > div {
+  min-width: 0;
+}
+
+.shop-owned-card strong,
+.shop-owned-card small,
+.shop-owned-card b {
+  display: block;
+}
+
+.shop-owned-card strong {
+  font-size: 11px;
+}
+
+.shop-owned-card small {
+  margin-top: 3px;
+  font-size: 8px;
+  line-height: 1.35;
+  opacity: 0.46;
+}
+
+.shop-owned-card b {
+  font-size: 9px;
+  color: var(--gain);
+  white-space: nowrap;
+}
+
+.shop-owned-card.is-empty {
+  display: grid;
+  grid-template-columns: 1fr;
+  place-items: center;
+  color: rgba(26, 29, 35, 0.28);
+  background: rgba(26, 29, 35, 0.018);
+  font-size: 9px;
+  font-weight: 850;
+}
+
+/* 판매 UI: 작은 팝오버 대신 화면 중앙 큰 확인 모달 */
+.item-sell-popover {
+  position: fixed;
+  inset: 0;
+  z-index: 90;
+  width: auto;
+  padding: 24px;
+  display: grid;
+  place-items: center;
+  border: 0;
+  border-radius: 0;
+  background: rgba(17, 20, 25, 0.46);
+  box-shadow: none;
+}
+
+.item-sell-popover[hidden] {
+  display: none !important;
+}
+
+.item-sell-card {
+  width: min(430px, calc(100vw - 40px));
+  padding: 22px;
+  border: 1px solid rgba(26, 29, 35, 0.12);
+  border-radius: 16px;
+  background: #F7F8FA;
+  box-shadow: 0 24px 70px rgba(17, 20, 25, 0.24);
+}
+
+.item-sell-card > strong {
+  font-size: 22px;
+  letter-spacing: -0.04em;
+}
+
+.item-sell-card > span {
+  margin-top: 8px;
+  font-size: 11px;
+  line-height: 1.55;
+  opacity: 0.58;
+}
+
+.item-sell-price-grid {
+  margin-top: 16px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+
+.item-sell-price-grid > div {
+  padding: 11px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: #FFFFFF;
+}
+
+.item-sell-price-grid small,
+.item-sell-price-grid b {
+  display: block;
+}
+
+.item-sell-price-grid small {
+  font-size: 8px;
+  font-weight: 850;
+  opacity: 0.42;
+}
+
+.item-sell-price-grid b {
+  margin-top: 4px;
+  font-size: 14px;
+}
+
+.item-sell-price-grid .sell-price b {
+  color: var(--gain);
+}
+
+.item-sell-actions {
+  margin-top: 14px;
+  grid-template-columns: 1.45fr 1fr;
+}
+
+.item-sell-actions button {
+  min-height: 42px;
+  font-size: 10px;
+}
+
+@media (max-width: 760px) {
+  .flow-overlay.is-shop-modal {
+    padding: 12px;
+  }
+
+  .flow-overlay.is-shop-modal .flow-card {
+    max-height: calc(100vh - 24px);
+    padding: 16px;
+  }
+
+  .shop-offer-grid,
+  .shop-owned-large-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 480px) {
+  .shop-offer-grid,
+  .shop-owned-large-grid,
+  .item-sell-price-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .shop-main-heading {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .shop-reroll-compact {
+    align-self: flex-end;
+  }
+}
