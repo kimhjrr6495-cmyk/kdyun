@@ -1,0 +1,115 @@
+/* Stage 5.5 — 납부 구간 / 0라운드 / 재화 플로팅 */
+
+.legacy-confirm-button {
+  display: none !important;
+}
+
+.deadline-account-section.is-final-payment {
+  border-color: rgba(255, 92, 92, 0.9);
+  box-shadow:
+    inset 0 0 0 1px rgba(255, 92, 92, 0.09),
+    0 0 0 3px rgba(255, 92, 92, 0.035);
+}
+
+.final-payment-panel,
+.auto-advance-panel {
+  grid-column: 1 / -1;
+  min-height: 118px;
+  padding: 18px;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  background: var(--bg);
+  display: grid;
+  align-content: center;
+  gap: 7px;
+  text-align: left;
+}
+
+.final-payment-panel {
+  border-color: rgba(255, 92, 92, 0.42);
+}
+
+.final-payment-panel > span,
+.auto-advance-panel > span {
+  font-size: 10px;
+  font-weight: 850;
+  opacity: 0.52;
+}
+
+.final-payment-panel > strong,
+.auto-advance-panel > strong {
+  font-size: 22px;
+  font-weight: 950;
+  letter-spacing: -0.045em;
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: "tnum" 1;
+}
+
+.final-payment-panel > small {
+  font-size: 10px;
+  font-weight: 750;
+  line-height: 1.5;
+  color: var(--danger);
+}
+
+.auto-advance-panel {
+  border-color: rgba(0, 212, 146, 0.38);
+}
+
+.auto-advance-panel > strong {
+  color: var(--gain);
+}
+
+.currency-gain-host {
+  position: relative;
+}
+
+.currency-gain-float {
+  position: absolute;
+  z-index: 40;
+  display: block;
+  pointer-events: none;
+  white-space: nowrap;
+  color: var(--gain);
+  font-size: 12px;
+  font-weight: 950;
+  line-height: 1;
+  letter-spacing: -0.02em;
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: "tnum" 1;
+  text-shadow: 0 1px 0 rgba(247, 248, 250, 0.9);
+  opacity: 0;
+  transform: translate(-50%, calc(-5px - (var(--gain-stack, 0) * 10px)));
+  animation: currencyGainFloat var(--gain-duration, 1500ms) ease-out forwards;
+}
+
+@keyframes currencyGainFloat {
+  0% {
+    opacity: 0;
+    transform: translate(-50%, calc(-2px - (var(--gain-stack, 0) * 10px)));
+  }
+  10% {
+    opacity: 1;
+  }
+  72% {
+    opacity: 0.88;
+  }
+  100% {
+    opacity: 0;
+    transform: translate(-50%, calc(-38px - (var(--gain-stack, 0) * 14px)));
+  }
+}
+
+.deadline-account-section .currency-gain-float {
+  color: var(--gain);
+}
+
+.vault-chamber .currency-gain-float {
+  color: var(--gain);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .currency-gain-float {
+    animation-duration: 180ms !important;
+  }
+}
