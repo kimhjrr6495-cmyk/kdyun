@@ -26,7 +26,7 @@ const Game = {
     this.renderReels();
     this.bindInputs();
 
-    console.info("DEADLINE Stage 1: reel motion loaded.");
+    console.info(`DEADLINE ${GAME_DATA.version}: reel motion loaded.`);
   },
 
   bindInputs() {
@@ -118,8 +118,6 @@ const Game = {
     const config = GAME_DATA.reelMotion;
     const symbolHeight = reel.clientHeight / GAME_DATA.board.rows;
 
-    // 현재 보이는 3칸 다음에 충분한 임시 심볼을 붙이고,
-    // 마지막 3칸은 실제 최종 결과로 고정합니다.
     const startColumn = this.currentColumns[index];
     const middleCount = config.travelSymbols;
     const middle = Array.from({ length: middleCount }, () => this.randomSymbol());
@@ -129,12 +127,12 @@ const Game = {
     track.style.transform = "translate3d(0, 0, 0)";
     track.innerHTML = sequence.map((symbol) => this.symbolHTML(symbol)).join("");
 
-    // 마지막 결과 3칸이 정확히 뷰포트에 들어오도록 이동 거리 계산.
     const finalStartIndex = sequence.length - GAME_DATA.board.rows;
     const distance = finalStartIndex * symbolHeight;
     const duration = config.baseDuration + index * config.stopGap;
+    const easing =
+      index >= config.lateReelStartIndex ? config.lateEasing : config.easing;
 
-    // 레이아웃 반영 후 transition 시작.
     void track.offsetHeight;
 
     return new Promise((resolve) => {
@@ -164,12 +162,11 @@ const Game = {
 
       requestAnimationFrame(() => {
         requestAnimationFrame(() => {
-          track.style.transition = `transform ${duration}ms ${config.easing}`;
+          track.style.transition = `transform ${duration}ms ${easing}`;
           track.style.transform = `translate3d(0, -${distance}px, 0)`;
         });
       });
 
-      // transitionend가 누락되는 브라우저 상황 대비 안전장치.
       window.setTimeout(finish, duration + 120);
     });
   }
