@@ -3,84 +3,67 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>DEADLINE — Slot Roguelite</title>
-  <link rel="stylesheet" href="style.css?v=0.5.2" />
-  <link rel="stylesheet" href="vault.css?v=0.5.2" />
+  <title>DEADLINE — 슬롯 로그라이트</title>
+  <link rel="stylesheet" href="style.css?v=0.5.3" />
+  <link rel="stylesheet" href="vault.css?v=0.5.3" />
 </head>
 <body>
   <main class="app-shell">
     <header class="topbar">
       <div class="brand-block">
-        <span class="eyebrow">CONTROLLED MARKET SYSTEM · VERSION v0.5.2</span>
+        <span class="eyebrow">통제 시장 시스템 · 버전 v0.5.3</span>
         <h1>DEADLINE</h1>
       </div>
 
       <div class="top-status" aria-label="게임 상태">
-        <div class="status-chip">버전 <strong>v0.5.2</strong></div>
+        <div class="status-chip">버전 <strong>v0.5.3</strong></div>
         <div class="status-chip">마감 <strong id="deadlineStatus">1</strong></div>
         <div class="status-chip">라운드 <strong id="roundStatus">1 / 3</strong></div>
         <div class="status-chip">회전 <strong id="spinStatus">선택 대기</strong></div>
         <div class="status-chip">티켓 <strong id="ticketStatus">0</strong></div>
+        <div id="deadlineRiskChip" class="status-chip danger-chip is-hidden">마감 위험</div>
       </div>
     </header>
 
     <section class="game-layout">
       <aside class="panel info-panel">
-        <section class="deadline-account-section">
+        <section id="deadlineAccountSection" class="deadline-account-section">
           <div class="vault-heading">
-            <span class="label">마감 계좌 · DEADLINE ACCOUNT</span>
-            <span id="deadlineStateBadge" class="vault-state-badge">OPEN</span>
+            <span class="label">마감 계좌</span>
+            <span id="deadlineStateBadge" class="vault-state-badge">납부 진행 중</span>
           </div>
-          <div class="deadline-account-values">
-            <strong id="deadlinePaidValue">$ 0</strong>
-            <span>/ <b id="deadlineTargetValue">$ 80</b></span>
+
+          <div class="deadline-value-action-row">
+            <div class="deadline-account-values">
+              <strong id="deadlinePaidValue">$ 0</strong>
+              <span>/ <b id="deadlineTargetValue">$ 80</b></span>
+            </div>
+            <button id="deadlineDepositButton" class="payment-action" disabled>납부</button>
           </div>
+
           <div class="progress-track"><span id="progressFill" class="progress-fill"></span></div>
           <div id="progressCopy" class="progress-copy">$ 0 / $ 80</div>
-          <div id="deadlineDepositUnitCopy" class="vault-status-copy">1회 납부 $4 · 목표의 5%</div>
-          <div class="button-row deadline-actions">
-            <button id="deadlineDepositButton" class="secondary-action" disabled>+5% 납부</button>
-            <button id="deadlineConfirmButton" disabled>마감 확정</button>
-          </div>
-          <div class="vault-preview deadline-preview">납부한 금액은 다시 출금할 수 없습니다.</div>
+          <div id="deadlineWarningCopy" class="deadline-warning-copy">미납 금액 $80</div>
+          <button id="deadlineConfirmButton" class="deadline-confirm-button" disabled>마감 확정</button>
         </section>
 
         <section>
-          <span class="label">지갑 · 유동 자금</span>
+          <span class="label">지갑</span>
           <div id="walletValue" class="money-value small">$ 0</div>
-          <div class="progress-copy">회전 보상 / 마감 납부 / 금고 예치에 사용</div>
+          <div class="progress-copy">자유롭게 사용할 수 있는 자금</div>
         </section>
 
-        <section class="bank-section vault-section">
+        <section id="vaultSection" class="bank-section vault-section">
           <div class="vault-heading">
-            <span class="label">금고 · TERM DEPOSIT</span>
-            <span id="vaultStateBadge" class="vault-state-badge">READY</span>
+            <span class="label">금고</span>
+            <span id="vaultRoundCopy" class="vault-round-copy">예치 없음</span>
           </div>
 
-          <div id="bankValue" class="money-value small">$ 0</div>
-          <div id="vaultStatusCopy" class="vault-status-copy">예치 없음 · 기간을 선택하세요.</div>
-
-          <div id="vaultTermGrid" class="vault-term-grid" aria-label="예치 기간 선택">
-            <button class="vault-term-button" data-vault-term="2">
-              <strong>2R</strong><small>만기 +30%</small>
-            </button>
-            <button class="vault-term-button" data-vault-term="3">
-              <strong>3R</strong><small>만기 +45%</small>
-            </button>
-            <button class="vault-term-button" data-vault-term="4">
-              <strong>4R</strong><small>만기 +65%</small>
-            </button>
-            <button class="vault-term-button" data-vault-term="5">
-              <strong>5R</strong><small>만기 +90%</small>
-            </button>
+          <div class="vault-main-value-row">
+            <div id="bankValue" class="money-value small">$ 0</div>
+            <div id="vaultRateValue" class="vault-rate-value"></div>
           </div>
-
-          <button id="vaultDepositUnitButton" class="secondary-action" disabled>+5% 예치</button>
-          <div id="vaultTicketProgress" class="vault-ticket-progress">목표의 50% 예치마다 티켓 +1</div>
-
-          <div id="vaultPreview" class="vault-preview">
-            기간을 선택하면 현재 목표 기준 예치 단위가 표시됩니다.
-          </div>
+          <div id="vaultTicketProgress" class="vault-ticket-progress">티켓 -</div>
         </section>
 
         <section class="mini-grid">
@@ -97,20 +80,20 @@
             <strong>×1.00</strong>
           </div>
           <div class="mini-card">
-            <span class="label">현재 모드</span>
+            <span class="label">현재 방식</span>
             <strong id="modeStatus">-</strong>
           </div>
         </section>
 
         <p id="panelNote" class="panel-note">
-          5.2 단계입니다. 마감과 금고 모두 현재 목표액의 5% 단위로 돈을 넣습니다. 금고는 목표의 50%를 예치할 때마다 티켓 +1, 마감 계좌는 100%를 채우면 확정할 수 있습니다.
+          마감 계좌는 직접 납부해야 하며, 금고 설정은 라운드 시작 화면에서 할 수 있습니다.
         </p>
       </aside>
 
       <section id="machinePanel" class="panel machine-panel">
         <div class="machine-header">
           <strong>5 × 3 시장 연동 릴</strong>
-          <span id="stageStatus">STAGE 5 · CAPITAL ALLOCATION</span>
+          <span id="stageStatus">5단계 · 자금 배분</span>
         </div>
 
         <div class="machine-stage">
@@ -122,9 +105,9 @@
               <strong id="payoutValue">+ $ 0</strong>
               <div id="patternList" class="pattern-list" aria-live="polite"></div>
               <div id="scoreBreakdown" class="score-breakdown" aria-live="polite">
-                라운드 모드를 선택하면 회전을 시작할 수 있습니다.
+                라운드 방식을 선택하면 회전을 시작할 수 있습니다.
               </div>
-              <small id="readoutDetail">NORMAL 또는 RISK를 선택하세요.</small>
+              <small id="readoutDetail">일반 또는 위험을 선택하세요.</small>
             </div>
           </div>
         </div>
@@ -137,15 +120,15 @@
           <button disabled>출금하기</button>
         </div>
 
-        <div class="items-edge-tab">ITEMS</div>
+        <div class="items-edge-tab">아이템</div>
 
         <div id="flowOverlay" class="flow-overlay is-open" aria-live="polite">
           <div class="flow-card">
-            <span id="flowEyebrow" class="flow-eyebrow">ROUND 1 / 3</span>
+            <span id="flowEyebrow" class="flow-eyebrow">마감 1 · 라운드 1 / 3</span>
             <h2 id="flowTitle">라운드 방식 선택</h2>
-            <p id="flowText">이번 라운드에서 사용할 회전 수와 티켓 보상을 선택하세요.</p>
+            <p id="flowText">이번 라운드의 방식과 금고 사용 여부를 정하세요.</p>
             <div id="flowOptions" class="flow-options"></div>
-            <small id="flowFooter" class="flow-footer">마감 납부와 금고 예치는 왼쪽 패널에서 관리합니다.</small>
+            <small id="flowFooter" class="flow-footer">금고를 사용하지 않아도 바로 라운드를 시작할 수 있습니다.</small>
           </div>
         </div>
       </section>
@@ -158,15 +141,15 @@
       <span>미리보기</span>
     </div>
     <div class="empty-slots">
-      <div>EMPTY</div><div>EMPTY</div><div>EMPTY</div>
-      <div>EMPTY</div><div>EMPTY</div><div>EMPTY</div>
+      <div>비어 있음</div><div>비어 있음</div><div>비어 있음</div>
+      <div>비어 있음</div><div>비어 있음</div><div>비어 있음</div>
     </div>
-    <p>현재는 UI만 존재합니다. 실제 아이템 시스템은 후속 단계에서 구현합니다.</p>
+    <p>현재는 화면만 존재합니다. 실제 아이템 시스템은 후속 단계에서 구현합니다.</p>
   </aside>
 
-  <script src="data.js?v=0.5.2"></script>
-  <script src="effects.js?v=0.5.2"></script>
-  <script src="game.js?v=0.5.2"></script>
-  <script src="vault.js?v=0.5.2"></script>
+  <script src="data.js?v=0.5.3"></script>
+  <script src="effects.js?v=0.5.3"></script>
+  <script src="game.js?v=0.5.3"></script>
+  <script src="vault.js?v=0.5.3"></script>
 </body>
 </html>
