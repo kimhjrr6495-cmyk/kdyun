@@ -1,0 +1,214 @@
+/* DEADLINE v1.0.6 — spin HUD / round profit relocation / contract overlay count / pattern payout pop */
+
+/* ===== SLOT META ROW ===== */
+#stage105SlotMeta.stage105-slot-meta {
+  left: 18px !important;
+  right: 18px !important;
+  width: auto !important;
+  height: 34px !important;
+  display: flex !important;
+  align-items: center !important;
+  gap: 9px !important;
+}
+
+#stage105SpinMeta.stage105-spin-meta {
+  min-width: 0 !important;
+  height: 30px !important;
+  padding: 0 !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  color: #475569 !important;
+  font-size: 11px !important;
+  font-weight: 900 !important;
+}
+
+#stage105SpinMeta.stage105-spin-meta.is-active {
+  color: #111827 !important;
+}
+
+.stage105-contract-dock {
+  min-width: 32px !important;
+  min-height: 30px !important;
+  align-items: center !important;
+}
+
+/* 기존 이모지 위쪽 외부 숫자는 숨기고, 숫자를 이모지 자체 위에 겹칩니다. */
+.stage105-contract-dock .stage104-contract-rounds {
+  display: none !important;
+}
+
+.stage105-contract-dock .stage104-contract-hud {
+  width: 30px !important;
+  min-width: 30px !important;
+  margin: 0 !important;
+  display: grid !important;
+  place-items: center !important;
+}
+
+.stage105-contract-dock .stage104-contract-icon {
+  position: relative !important;
+  width: 28px !important;
+  height: 28px !important;
+  overflow: visible !important;
+}
+
+.stage106-contract-overlay-count {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  display: grid;
+  place-items: center;
+  color: #111827;
+  font-size: 10px;
+  line-height: 1;
+  font-weight: 1000;
+  font-variant-numeric: tabular-nums;
+  pointer-events: none;
+  text-shadow:
+    0 0 2px #fff,
+    0 0 4px #fff,
+    0 1px 0 rgba(255,255,255,.9);
+}
+
+.stage104-contract-hud.tier-risk .stage106-contract-overlay-count {
+  color: #9A3F1D;
+}
+
+.stage104-contract-hud.tier-extreme .stage106-contract-overlay-count {
+  color: #B91C3C;
+}
+
+/* ===== ROUND PROFIT — EXACT CENTER OF META ROW ===== */
+.stage106-round-profit-dock {
+  position: absolute;
+  left: 50%;
+  top: 0;
+  height: 34px;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+  z-index: 25;
+}
+
+#stage106RoundProfitDock #stage99RoundWallet {
+  width: auto !important;
+  min-width: 0 !important;
+  height: 30px !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 8px !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  color: #475569 !important;
+  white-space: nowrap !important;
+}
+
+#stage106RoundProfitDock #stage99RoundWallet > span {
+  color: #64748B !important;
+  font-size: 10px !important;
+  font-weight: 850 !important;
+}
+
+#stage106RoundProfitDock #stage99RoundWallet > strong {
+  color: #009B72 !important;
+  font-size: 12px !important;
+  font-weight: 1000 !important;
+}
+
+/* 하단에는 패턴 테스트 / 상점만 남고, 기존 수익 카드 공간은 차지하지 않습니다. */
+.machine-actions {
+  align-items: center !important;
+}
+
+.machine-actions #patternTestButton,
+.machine-actions #actionShopButton {
+  align-self: center !important;
+}
+
+/* ===== PATTERN PAYOUT POP ===== */
+.pattern-impact-banner {
+  display: none !important;
+}
+
+.stage106-pattern-payout-layer {
+  position: absolute;
+  inset: 0;
+  z-index: 35;
+  overflow: visible;
+  pointer-events: none;
+}
+
+.stage106-pattern-payout {
+  position: absolute;
+  transform: translate(-50%, -50%);
+  color: #00A97A;
+  font-size: 18px;
+  line-height: 1;
+  font-weight: 1000;
+  letter-spacing: -0.02em;
+  white-space: nowrap;
+  text-shadow:
+    0 1px 0 rgba(255,255,255,.95),
+    0 0 8px rgba(0,169,122,.20);
+  animation: stage106PatternPayoutPop 880ms cubic-bezier(.16,1,.3,1) forwards;
+  will-change: transform, opacity;
+}
+
+.stage106-pattern-payout.is-retrigger {
+  font-size: 16px;
+}
+
+@keyframes stage106PatternPayoutPop {
+  0% {
+    opacity: 0;
+    transform: translate(-50%, -34%) scale(.84);
+  }
+  18% {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1.08);
+  }
+  58% {
+    opacity: 1;
+    transform: translate(-50%, -62%) scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform: translate(-50%, -95%) scale(.98);
+  }
+}
+
+@media (max-width: 760px) {
+  #stage105SlotMeta.stage105-slot-meta {
+    left: 13px !important;
+    right: 13px !important;
+  }
+
+  #stage105SpinMeta.stage105-spin-meta {
+    font-size: 10px !important;
+  }
+
+  #stage106RoundProfitDock #stage99RoundWallet {
+    gap: 5px !important;
+  }
+
+  #stage106RoundProfitDock #stage99RoundWallet > span {
+    font-size: 9px !important;
+  }
+
+  #stage106RoundProfitDock #stage99RoundWallet > strong {
+    font-size: 11px !important;
+  }
+
+  .stage106-pattern-payout {
+    font-size: 16px;
+  }
+}
