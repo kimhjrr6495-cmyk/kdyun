@@ -4,7 +4,7 @@
 "use strict";
 
 const GAME_DATA = {
-  version: "v0.2.0",
+  version: "v0.2.1",
   stage: 2,
   board: { columns: 5, rows: 3 },
 
@@ -33,6 +33,7 @@ const GAME_DATA = {
     H3: { name: "가로 3", multiplier: 1 },
     H4: { name: "가로 4", multiplier: 2 },
     H5: { name: "가로 5", multiplier: 4 },
+    JACKPOT: { name: "JACKPOT", multiplier: 12 },
     V3: { name: "세로 3", multiplier: 1.5 },
     DIAG: { name: "대각선", multiplier: 2 },
     V: { name: "V", multiplier: 6 },
@@ -41,15 +42,17 @@ const GAME_DATA = {
   },
 
   // 2단계 검증용 임시 샘플. 패턴 테스트 버튼으로 순환합니다.
+  // 일반 패턴은 체리로 검사하고, JACKPOT만 세븐 5연속으로 검사합니다.
   patternTests: [
-    { key: "H3", coords: [[0, 1], [1, 1], [2, 1]] },
-    { key: "H4", coords: [[0, 1], [1, 1], [2, 1], [3, 1]] },
-    { key: "H5", coords: [[0, 1], [1, 1], [2, 1], [3, 1], [4, 1]] },
-    { key: "V3", coords: [[2, 0], [2, 1], [2, 2]] },
-    { key: "DIAG", coords: [[0, 0], [1, 1], [2, 2]] },
-    { key: "V", coords: [[0, 0], [1, 1], [2, 2], [3, 1], [4, 0]] },
-    { key: "INV_V", coords: [[0, 2], [1, 1], [2, 0], [3, 1], [4, 2]] },
-    { key: "X", coords: [[0, 0], [4, 0], [2, 1], [0, 2], [4, 2]] }
+    { key: "H3", symbolId: "CH", coords: [[0, 1], [1, 1], [2, 1]] },
+    { key: "H4", symbolId: "CH", coords: [[0, 1], [1, 1], [2, 1], [3, 1]] },
+    { key: "H5", symbolId: "CH", coords: [[0, 1], [1, 1], [2, 1], [3, 1], [4, 1]] },
+    { key: "V3", symbolId: "CH", coords: [[2, 0], [2, 1], [2, 2]] },
+    { key: "DIAG", symbolId: "CH", coords: [[0, 0], [1, 1], [2, 2]] },
+    { key: "V", symbolId: "CH", coords: [[0, 0], [1, 1], [2, 2], [3, 1], [4, 0]] },
+    { key: "INV_V", symbolId: "CH", coords: [[0, 2], [1, 1], [2, 0], [3, 1], [4, 2]] },
+    { key: "X", symbolId: "CH", coords: [[0, 0], [4, 0], [2, 1], [0, 2], [4, 2]] },
+    { key: "JACKPOT", symbolId: "SV", coords: [[0, 1], [1, 1], [2, 1], [3, 1], [4, 1]] }
   ],
 
   palette: {
