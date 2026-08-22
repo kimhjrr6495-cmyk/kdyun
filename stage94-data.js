@@ -26,7 +26,7 @@
   const STAGE94_ITEMS = [
     {
       id: "joker_card", name: "조커 카드", icon: "🃏", category: "WILD", rarity: "RARE", price: 4,
-      note: "WILD 기본 등장 가중치 +2%p",
+      note: "WILD 등장 가중치 +2",
       effect: { type: "wild_weight_add", amount: 2 }
     },
     {
@@ -47,7 +47,7 @@
     },
     {
       id: "overclock", name: "오버클럭", icon: "⚠️", category: "ERROR", rarity: "RARE", price: 4,
-      note: "ERROR 등장 가중치 +3%p · 모든 지급액 ×1.20",
+      note: "ERROR 등장 가중치 +3 · 모든 지급액 ×1.20",
       effect: { type: "global_mult", factor: 1.2, errorWeightAdd: 3 }
     },
     {
@@ -78,7 +78,7 @@
     },
     {
       id: "chaos_chip", name: "카오스 칩", icon: "🎲", category: "특수", rarity: "EPIC", price: 5,
-      note: "WILD와 ERROR 등장 가중치 각각 +2%p",
+      note: "WILD와 ERROR 등장 가중치 각각 +2",
       effect: { type: "special_weight_shift", wildAdd: 2, errorAdd: 2 }
     },
     {
