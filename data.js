@@ -1,15 +1,15 @@
-// DEADLINE — Stage 3
-// 점수 계산에 필요한 공용 게임 데이터.
+// DEADLINE — Stage 4
+// 라운드 / 마감 루프와 점수 계산에 필요한 공용 게임 데이터.
 
 "use strict";
 
 const GAME_DATA = {
-  version: "v0.3.2",
-  stage: 3,
+  version: "v0.4.0",
+  stage: 4,
   board: { columns: 5, rows: 3 },
 
-  // Stage 3부터 기본 가치와 심볼 배율을 실제 점수 계산에 사용합니다.
-  // 등장 확률 가중치는 아직 연결하지 않고, 현재 회전 결과는 기존처럼 동일 확률입니다.
+  // Stage 3부터 실제 점수 계산에 사용합니다.
+  // 등장 확률 가중치는 아직 연결하지 않고 현재는 동일 확률입니다.
   symbols: [
     { id: "CH", code: "CH", name: "체리", value: 2, multiplier: 1 },
     { id: "CO", code: "CO", name: "코인", value: 2, multiplier: 1 },
@@ -28,10 +28,9 @@ const GAME_DATA = {
     easing: "cubic-bezier(0.16, 1, 0.3, 1)"
   },
 
-  // v0.3.2 점수 공식:
-  // 심볼 기본 가치 × 심볼 배율 × 패턴 포함 칸 수 × 패턴 기본값 × 패턴 배율 × 전체 배율
-  // 겹쳐서 동시에 성립하는 패턴은 각각 계산해 모두 합산합니다.
-  // 예: V = 대각선 2개 + V / JACKPOT = 모든 성립 패턴 + JACKPOT 보너스.
+  // 점수 공식:
+  // 심볼 가치 × 심볼 배율 × 패턴 포함 칸 수 × 패턴 기본값 × 패턴 배율 × 전체 배율
+  // 겹쳐 성립하는 패턴은 각각 계산해 모두 합산합니다.
   scoring: {
     patternMultiplier: 1,
     globalMultiplier: 1,
@@ -51,8 +50,41 @@ const GAME_DATA = {
     X: { name: "X", baseValue: 8 }
   },
 
-  // 개발 중 판정/점수 검증용 임시 샘플.
-  // 실제 플레이 경제에는 반영하지 않고 '점수 미리보기'만 합니다.
+  // Stage 4 라운드 / 마감 구조.
+  deadline: {
+    roundsPerDeadline: 3,
+    targets: [
+      80,
+      220,
+      700,
+      2500,
+      10000,
+      50000,
+      250000,
+      1500000,
+      12000000,
+      120000000
+    ],
+    modes: {
+      NORMAL: {
+        id: "NORMAL",
+        name: "NORMAL",
+        spins: 6,
+        tickets: 1,
+        description: "6회전 · 티켓 +1"
+      },
+      RISK: {
+        id: "RISK",
+        name: "RISK",
+        spins: 3,
+        tickets: 3,
+        description: "3회전 · 티켓 +3"
+      }
+    }
+  },
+
+  // 개발 중 판정/점수 검수용 임시 샘플.
+  // 실제 라운드 회전 수와 지갑에는 영향을 주지 않습니다.
   patternTests: [
     { key: "H3", symbolId: "CH", coords: [[0, 1], [1, 1], [2, 1]] },
     { key: "H4", symbolId: "CH", coords: [[0, 1], [1, 1], [2, 1], [3, 1]] },
