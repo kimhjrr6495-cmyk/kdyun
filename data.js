@@ -4,7 +4,7 @@
 "use strict";
 
 const GAME_DATA = {
-  version: "v0.5.7",
+  version: "v0.5.8",
   stage: 5,
   board: { columns: 5, rows: 3 },
 
@@ -80,9 +80,9 @@ const GAME_DATA = {
     }
   },
 
-  // Stage 5.7 경제 규칙.
-  // 라운드 방식 선택 뒤 첫 회전 전이 자금 배분 구간입니다.
-  // 금고/마감계좌는 이 구간에서 조작되고 첫 회전 순간 잠깁니다.
+  // Stage 5.8 경제 규칙.
+  // 라운드 방식 선택 후 자금 배분 구간을 거친 뒤 별도 시작 버튼으로 라운드를 확정합니다.
+  // 시작 버튼은 회전을 소비하지 않으며, 시작 이후에만 실제 리롤을 사용할 수 있습니다.
   economy: {
     depositUnitRatio: 0.05,
     earlyPaymentTicketPerUnusedRound: 2,
