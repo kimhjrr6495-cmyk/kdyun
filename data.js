@@ -4,7 +4,7 @@
 "use strict";
 
 const GAME_DATA = {
-  version: "v0.7.0",
+  version: "v0.7.1",
   stage: 7,
   board: { columns: 5, rows: 3 },
 
@@ -108,166 +108,26 @@ const GAME_DATA = {
 
   // Stage 7 첫 20개 아이템. 같은 아이템을 여러 개 보유하면 효과가 중첩됩니다.
   items: [
-    {
-      id: "cherry_sticker",
-      name: "체리 스티커",
-      category: "심볼",
-      price: 1,
-      note: "체리 패턴의 심볼 가치 +1",
-      effect: { type: "symbol_value", symbolId: "CH", amount: 1 }
-    },
-    {
-      id: "coin_polish",
-      name: "코인 광택제",
-      category: "심볼",
-      price: 1,
-      note: "코인 패턴의 심볼 가치 +1",
-      effect: { type: "symbol_value", symbolId: "CO", amount: 1 }
-    },
-    {
-      id: "bell_hammer",
-      name: "벨 해머",
-      category: "심볼",
-      price: 2,
-      note: "벨 패턴의 심볼 가치 +2",
-      effect: { type: "symbol_value", symbolId: "BL", amount: 2 }
-    },
-    {
-      id: "star_lens",
-      name: "스타 렌즈",
-      category: "심볼",
-      price: 2,
-      note: "스타 패턴의 심볼 가치 +2",
-      effect: { type: "symbol_value", symbolId: "ST", amount: 2 }
-    },
-    {
-      id: "diamond_cutter",
-      name: "다이아 커터",
-      category: "심볼",
-      price: 3,
-      note: "다이아 패턴의 심볼 가치 +3",
-      effect: { type: "symbol_value", symbolId: "DM", amount: 3 }
-    },
-    {
-      id: "crown_seal",
-      name: "크라운 인장",
-      category: "심볼",
-      price: 3,
-      note: "크라운 패턴의 심볼 가치 +3",
-      effect: { type: "symbol_value", symbolId: "CR", amount: 3 }
-    },
-    {
-      id: "seven_stamp",
-      name: "세븐 스탬프",
-      category: "심볼",
-      price: 4,
-      note: "세븐 패턴의 심볼 가치 +4",
-      effect: { type: "symbol_value", symbolId: "SV", amount: 4 }
-    },
-    {
-      id: "horizontal_wire",
-      name: "가로 배선",
-      category: "패턴",
-      price: 2,
-      note: "가로 3/4/5 점수 ×1.20",
-      effect: { type: "pattern_mult", keys: ["H3", "H4", "H5"], factor: 1.2 }
-    },
-    {
-      id: "vertical_wire",
-      name: "세로 배선",
-      category: "패턴",
-      price: 2,
-      note: "세로 3 점수 ×1.25",
-      effect: { type: "pattern_mult", keys: ["V3"], factor: 1.25 }
-    },
-    {
-      id: "diagonal_ruler",
-      name: "사선 자",
-      category: "패턴",
-      price: 2,
-      note: "대각선 점수 ×1.30",
-      effect: { type: "pattern_mult", keys: ["DIAG"], factor: 1.3 }
-    },
-    {
-      id: "v_frame",
-      name: "V 프레임",
-      category: "패턴",
-      price: 3,
-      note: "V / 역 V 점수 ×1.30",
-      effect: { type: "pattern_mult", keys: ["V", "INV_V"], factor: 1.3 }
-    },
-    {
-      id: "x_bridge",
-      name: "X 브릿지",
-      category: "패턴",
-      price: 3,
-      note: "X 패턴 점수 ×1.35",
-      effect: { type: "pattern_mult", keys: ["X"], factor: 1.35 }
-    },
-    {
-      id: "jackpot_fuse",
-      name: "잭팟 퓨즈",
-      category: "패턴",
-      price: 5,
-      note: "잭팟 점수 ×1.50",
-      effect: { type: "pattern_mult", keys: ["JACKPOT"], factor: 1.5 }
-    },
-    {
-      id: "market_amp",
-      name: "시장 증폭기",
-      category: "전체",
-      price: 3,
-      note: "모든 패턴 점수 ×1.08",
-      effect: { type: "global_mult", factor: 1.08 }
-    },
-    {
-      id: "premium_terminal",
-      name: "프리미엄 터미널",
-      category: "전체",
-      price: 5,
-      note: "모든 패턴 점수 ×1.15",
-      effect: { type: "global_mult", factor: 1.15 }
-    },
-    {
-      id: "opening_alert",
-      name: "개장 알림",
-      category: "조건",
-      price: 2,
-      note: "라운드 첫 리롤 점수 ×1.25",
-      effect: { type: "conditional_mult", condition: "FIRST_SPIN", factor: 1.25 }
-    },
-    {
-      id: "closing_bell",
-      name: "마감 벨",
-      category: "조건",
-      price: 3,
-      note: "라운드 마지막 리롤 점수 ×1.35",
-      effect: { type: "conditional_mult", condition: "LAST_SPIN", factor: 1.35 }
-    },
-    {
-      id: "diverse_portfolio",
-      name: "분산 포트폴리오",
-      category: "조건",
-      price: 3,
-      note: "결과에 서로 다른 심볼 6종 이상이면 점수 ×1.25",
-      effect: { type: "conditional_mult", condition: "DIVERSE_6", factor: 1.25 }
-    },
-    {
-      id: "ticket_punch",
-      name: "티켓 펀치",
-      category: "경제",
-      price: 4,
-      note: "라운드 시작 시 선택 보상 티켓 +1",
-      effect: { type: "mode_ticket_bonus", amount: 1 }
-    },
-    {
-      id: "refresh_coupon",
-      name: "새로고침 쿠폰",
-      category: "경제",
-      price: 3,
-      note: "상점 새로고침 비용 -1T · 최소 1T",
-      effect: { type: "shop_reroll_discount", amount: 1 }
-    }
+    { id: "cherry_sticker", name: "체리 스티커", category: "심볼", price: 1, note: "체리 패턴의 심볼 가치 +1", effect: { type: "symbol_value", symbolId: "CH", amount: 1 } },
+    { id: "coin_polish", name: "코인 광택제", category: "심볼", price: 1, note: "코인 패턴의 심볼 가치 +1", effect: { type: "symbol_value", symbolId: "CO", amount: 1 } },
+    { id: "bell_hammer", name: "벨 해머", category: "심볼", price: 2, note: "벨 패턴의 심볼 가치 +2", effect: { type: "symbol_value", symbolId: "BL", amount: 2 } },
+    { id: "star_lens", name: "스타 렌즈", category: "심볼", price: 2, note: "스타 패턴의 심볼 가치 +2", effect: { type: "symbol_value", symbolId: "ST", amount: 2 } },
+    { id: "diamond_cutter", name: "다이아 커터", category: "심볼", price: 3, note: "다이아 패턴의 심볼 가치 +3", effect: { type: "symbol_value", symbolId: "DM", amount: 3 } },
+    { id: "crown_seal", name: "크라운 인장", category: "심볼", price: 3, note: "크라운 패턴의 심볼 가치 +3", effect: { type: "symbol_value", symbolId: "CR", amount: 3 } },
+    { id: "seven_stamp", name: "세븐 스탬프", category: "심볼", price: 4, note: "세븐 패턴의 심볼 가치 +4", effect: { type: "symbol_value", symbolId: "SV", amount: 4 } },
+    { id: "horizontal_wire", name: "가로 배선", category: "패턴", price: 2, note: "가로 3/4/5 점수 ×1.20", effect: { type: "pattern_mult", keys: ["H3", "H4", "H5"], factor: 1.2 } },
+    { id: "vertical_wire", name: "세로 배선", category: "패턴", price: 2, note: "세로 3 점수 ×1.25", effect: { type: "pattern_mult", keys: ["V3"], factor: 1.25 } },
+    { id: "diagonal_ruler", name: "사선 자", category: "패턴", price: 2, note: "대각선 점수 ×1.30", effect: { type: "pattern_mult", keys: ["DIAG"], factor: 1.3 } },
+    { id: "v_frame", name: "V 프레임", category: "패턴", price: 3, note: "V / 역 V 점수 ×1.30", effect: { type: "pattern_mult", keys: ["V", "INV_V"], factor: 1.3 } },
+    { id: "x_bridge", name: "X 브릿지", category: "패턴", price: 3, note: "X 패턴 점수 ×1.35", effect: { type: "pattern_mult", keys: ["X"], factor: 1.35 } },
+    { id: "jackpot_fuse", name: "잭팟 퓨즈", category: "패턴", price: 5, note: "잭팟 점수 ×1.50", effect: { type: "pattern_mult", keys: ["JACKPOT"], factor: 1.5 } },
+    { id: "market_amp", name: "시장 증폭기", category: "전체", price: 3, note: "모든 패턴 점수 ×1.08", effect: { type: "global_mult", factor: 1.08 } },
+    { id: "premium_terminal", name: "프리미엄 터미널", category: "전체", price: 5, note: "모든 패턴 점수 ×1.15", effect: { type: "global_mult", factor: 1.15 } },
+    { id: "opening_alert", name: "개장 알림", category: "조건", price: 2, note: "라운드 첫 리롤 점수 ×1.25", effect: { type: "conditional_mult", condition: "FIRST_SPIN", factor: 1.25 } },
+    { id: "closing_bell", name: "마감 벨", category: "조건", price: 3, note: "라운드 마지막 리롤 점수 ×1.35", effect: { type: "conditional_mult", condition: "LAST_SPIN", factor: 1.35 } },
+    { id: "diverse_portfolio", name: "분산 포트폴리오", category: "조건", price: 3, note: "결과에 서로 다른 심볼 6종 이상이면 점수 ×1.25", effect: { type: "conditional_mult", condition: "DIVERSE_6", factor: 1.25 } },
+    { id: "ticket_punch", name: "티켓 펀치", category: "경제", price: 4, note: "라운드 시작 시 선택 보상 티켓 +1", effect: { type: "mode_ticket_bonus", amount: 1 } },
+    { id: "refresh_coupon", name: "새로고침 쿠폰", category: "경제", price: 3, note: "상점 새로고침 비용 -1T · 최소 1T", effect: { type: "shop_reroll_discount", amount: 1 } }
   ],
 
   patternTests: [
