@@ -1,4 +1,4 @@
-// DEADLINE — Stage 5.2 capital allocation layer
+// DEADLINE — Stage 5.3 자금 배분 / 금고 복리 / 마감 경고 계층
 "use strict";
 
 (() => {
@@ -17,23 +17,23 @@
   const baseUpdateAll = Game.updateAllUI;
 
   Game.init = function () {
+    this.deadlineAccountSection = document.querySelector("#deadlineAccountSection");
     this.deadlineStateBadge = document.querySelector("#deadlineStateBadge");
     this.deadlinePaidValue = document.querySelector("#deadlinePaidValue");
-    this.deadlineDepositUnitCopy = document.querySelector("#deadlineDepositUnitCopy");
+    this.deadlineWarningCopy = document.querySelector("#deadlineWarningCopy");
     this.deadlineDepositButton = document.querySelector("#deadlineDepositButton");
     this.deadlineConfirmButton = document.querySelector("#deadlineConfirmButton");
+    this.deadlineRiskChip = document.querySelector("#deadlineRiskChip");
 
-    this.vaultStateBadge = document.querySelector("#vaultStateBadge");
-    this.vaultStatusCopy = document.querySelector("#vaultStatusCopy");
+    this.vaultSection = document.querySelector("#vaultSection");
+    this.vaultRoundCopy = document.querySelector("#vaultRoundCopy");
+    this.vaultRateValue = document.querySelector("#vaultRateValue");
     this.vaultTicketProgress = document.querySelector("#vaultTicketProgress");
-    this.vaultPreview = document.querySelector("#vaultPreview");
-    this.vaultTermButtons = [...document.querySelectorAll("[data-vault-term]")];
-    this.vaultDepositUnitButton = document.querySelector("#vaultDepositUnitButton");
 
     baseInit.call(this);
-    this.stageStatus.textContent = "STAGE 5 · CAPITAL ALLOCATION";
+    this.stageStatus.textContent = "5단계 · 자금 배분";
     this.updateAllUI();
-    console.info(`DEADLINE ${GAME_DATA.version}: capital allocation loaded.`);
+    console.info(`DEADLINE ${GAME_DATA.version}: Stage 5.3 loaded.`);
   };
 
   Game.bindInputs = function () {
@@ -42,12 +42,16 @@
     this.deadlineDepositButton.addEventListener("click", () => this.depositDeadlineUnit());
     this.deadlineConfirmButton.addEventListener("click", () => this.settleDeadline("EARLY"));
 
-    this.vaultTermButtons.forEach((button) => {
-      button.addEventListener("click", () => {
-        this.selectVaultTerm(Number(button.dataset.vaultTerm));
-      });
+    this.flowOptions.addEventListener("click", (event) => {
+      const termButton = event.target.closest("button[data-vault-term]");
+      if (termButton) {
+        this.selectVaultTerm(Number(termButton.dataset.vaultTerm));
+        return;
+      }
+
+      const depositButton = event.target.closest("button[data-vault-deposit]");
+      if (depositButton) this.depositVaultUnit();
     });
-    this.vaultDepositUnitButton.addEventListener("click", () => this.depositVaultUnit());
   };
 
   Game.spin = async function () {
@@ -68,6 +72,7 @@
     }
 
     baseStartRound.call(this, modeId);
+    this.stageStatus.textContent = "5단계 · 자금 배분";
   };
 
   Game.canUseEconomyControls = function () {
@@ -84,12 +89,16 @@
     return Math.max(1, Math.round(target * GAME_DATA.economy.depositUnitRatio));
   };
 
-  Game.getVaultTicketThreshold = function (target = this.deadlineTarget) {
-    return Math.max(1, Math.round(target * GAME_DATA.economy.vaultTicketThresholdRatio));
-  };
-
   Game.getVaultTerm = function (rounds) {
     return GAME_DATA.economy.vaultTerms[String(rounds)] || null;
+  };
+
+  Game.getVaultCurrentRate = function (deposit = this.vaultDeposit) {
+    if (!deposit) return 0;
+    const term = this.getVaultTerm(deposit.termRounds);
+    if (!term) return 0;
+    const index = Math.min(deposit.completedRounds, term.roundRates.length - 1);
+    return term.roundRates[index] ?? 0;
   };
 
   Game.selectVaultTerm = function (rounds) {
@@ -106,6 +115,7 @@
 
   Game.canFundVault = function () {
     if (!this.canUseEconomyControls() || this.currentMode) return false;
+    if (!this.flowOverlay.classList.contains("is-open")) return false;
     if (this.vaultDeposit) return this.vaultDeposit.state === "FUNDING";
     return Boolean(this.selectedVaultTerm);
   };
@@ -119,19 +129,16 @@
       const term = this.getVaultTerm(this.selectedVaultTerm);
       if (!term) return;
 
-      const referenceTarget = this.deadlineTarget;
       deposit = {
         state: "FUNDING",
-        referenceDeadline: this.deadlineNumber,
-        referenceTarget,
-        depositUnit: this.getDepositUnit(referenceTarget),
-        ticketThreshold: this.getVaultTicketThreshold(referenceTarget),
-        principal: 0,
-        awardedTicketMilestones: 0,
         termRounds: term.rounds,
+        depositUnit: this.getDepositUnit(),
+        principal: 0,
+        currentAmount: 0,
+        completedRounds: 0,
         roundsRemaining: term.rounds,
-        rate: term.rate,
-        maturityAmount: 0
+        ticketsEarned: 0,
+        totalTickets: term.totalTickets
       };
       this.vaultDeposit = deposit;
       this.selectedVaultTerm = null;
@@ -142,28 +149,23 @@
 
     this.wallet -= amount;
     deposit.principal += amount;
-    deposit.maturityAmount = Math.round(deposit.principal * (1 + deposit.rate));
-    this.bank = deposit.principal;
+    deposit.currentAmount += amount;
+    this.bank = deposit.currentAmount;
 
-    const reachedMilestones = Math.floor(deposit.principal / deposit.ticketThreshold);
-    const ticketGain = Math.max(0, reachedMilestones - deposit.awardedTicketMilestones);
-
-    if (ticketGain > 0) {
-      this.tickets += ticketGain;
-      deposit.awardedTicketMilestones = reachedMilestones;
-    }
-
-    this.readoutDetail.textContent = ticketGain > 0
-      ? `금고 +$${amount.toLocaleString("ko-KR")} · 목표 50% 구간 달성 · 티켓 +${ticketGain}`
-      : `금고 +$${amount.toLocaleString("ko-KR")} · 현재 예치 $${deposit.principal.toLocaleString("ko-KR")}`;
+    this.readoutDetail.textContent =
+      `금고에 $${amount.toLocaleString("ko-KR")} 예치 · 현재 $${deposit.currentAmount.toLocaleString("ko-KR")}`;
 
     this.updateAllUI();
   };
 
   Game.lockVaultFunding = function () {
-    if (!this.vaultDeposit || this.vaultDeposit.state !== "FUNDING") return false;
-    this.vaultDeposit.state = "LOCKED";
-    this.vaultDeposit.roundsRemaining = this.vaultDeposit.termRounds;
+    const deposit = this.vaultDeposit;
+    if (!deposit || deposit.state !== "FUNDING" || deposit.currentAmount <= 0) return false;
+
+    deposit.state = "LOCKED";
+    deposit.completedRounds = 0;
+    deposit.roundsRemaining = deposit.termRounds;
+    this.bank = deposit.currentAmount;
     return true;
   };
 
@@ -171,30 +173,60 @@
     const deposit = this.vaultDeposit;
     if (!deposit || deposit.state !== "LOCKED") return null;
 
-    deposit.roundsRemaining -= 1;
+    const term = this.getVaultTerm(deposit.termRounds);
+    if (!term) return null;
 
-    if (deposit.roundsRemaining > 0) {
-      return { type: "TICK", ...deposit };
+    const roundNumber = deposit.completedRounds + 1;
+    const rate = term.roundRates[roundNumber - 1] ?? 0;
+    const before = deposit.currentAmount;
+    const interest = Math.max(0, Math.floor(before * rate));
+    const after = before + interest;
+
+    deposit.currentAmount = after;
+    deposit.completedRounds = roundNumber;
+    deposit.roundsRemaining = Math.max(0, deposit.termRounds - roundNumber);
+    this.bank = after;
+
+    const ticketGain = term.ticketRounds.includes(roundNumber) ? 1 : 0;
+    if (ticketGain > 0) {
+      this.tickets += ticketGain;
+      deposit.ticketsEarned += ticketGain;
     }
 
-    const matured = { ...deposit };
-    this.wallet += matured.maturityAmount;
-    this.bank = 0;
-    this.vaultDeposit = null;
-    EffectsManager.pulseWallet(this.walletValue);
+    const event = {
+      type: deposit.roundsRemaining <= 0 ? "MATURED" : "TICK",
+      before,
+      after,
+      interest,
+      rate,
+      roundNumber,
+      ticketGain,
+      termRounds: deposit.termRounds,
+      ticketsEarned: deposit.ticketsEarned,
+      totalTickets: deposit.totalTickets
+    };
 
-    return { type: "MATURED", ...matured };
+    if (event.type === "MATURED") {
+      this.wallet += after;
+      this.bank = 0;
+      this.vaultDeposit = null;
+      EffectsManager.pulseWallet(this.walletValue);
+    }
+
+    return event;
   };
 
   Game.describeVaultEvent = function (event) {
     if (!event) return "금고 변동 없음";
 
-    if (event.type === "TICK") {
-      return `금고 ${event.roundsRemaining}R 남음 · 만기 $${event.maturityAmount.toLocaleString("ko-KR")}`;
+    const rateText = Math.round(event.rate * 100);
+    const ticketText = event.ticketGain > 0 ? ` · 티켓 +${event.ticketGain}` : "";
+
+    if (event.type === "MATURED") {
+      return `금고 만기 · $${event.before.toLocaleString("ko-KR")} + ${rateText}% (+$${event.interest.toLocaleString("ko-KR")}) → $${event.after.toLocaleString("ko-KR")}${ticketText}`;
     }
 
-    const profit = event.maturityAmount - event.principal;
-    return `금고 만기 +$${event.maturityAmount.toLocaleString("ko-KR")} · 수익 +$${profit.toLocaleString("ko-KR")}`;
+    return `금고 · $${event.before.toLocaleString("ko-KR")} + ${rateText}% (+$${event.interest.toLocaleString("ko-KR")}) → $${event.after.toLocaleString("ko-KR")}${ticketText}`;
   };
 
   Game.depositDeadlineUnit = function () {
@@ -210,7 +242,7 @@
     this.deadlinePaid += amount;
 
     this.readoutDetail.textContent =
-      `마감 계좌 +$${amount.toLocaleString("ko-KR")} · $${this.deadlinePaid.toLocaleString("ko-KR")} / $${this.deadlineTarget.toLocaleString("ko-KR")}`;
+      `마감 계좌 납부 · $${this.deadlinePaid.toLocaleString("ko-KR")} / $${this.deadlineTarget.toLocaleString("ko-KR")}`;
 
     this.updateAllUI();
   };
@@ -254,33 +286,92 @@
 
     const normal = GAME_DATA.deadline.modes.NORMAL;
     const risk = GAME_DATA.deadline.modes.RISK;
-    const vaultStatus = this.vaultDeposit
-      ? this.vaultDeposit.state === "LOCKED"
-        ? ` · 금고 $${this.vaultDeposit.principal.toLocaleString("ko-KR")} / ${this.vaultDeposit.roundsRemaining}R 잠금`
-        : ` · 금고 $${this.vaultDeposit.principal.toLocaleString("ko-KR")} 예치 준비`
-      : "";
 
+    this.flowOptions.classList.add("has-vault-setup");
     this.flowEyebrow.textContent =
-      `DEADLINE ${this.deadlineNumber} · ROUND ${this.round} / ${this.roundsPerDeadline}`;
-    this.flowTitle.textContent = "라운드 방식 선택";
+      `마감 ${this.deadlineNumber} · 라운드 ${this.round} / ${this.roundsPerDeadline}`;
+    this.flowTitle.textContent = this.round === this.roundsPerDeadline
+      ? "마지막 라운드 선택"
+      : "라운드 방식 선택";
     this.flowText.textContent =
-      `마감 $${this.deadlinePaid.toLocaleString("ko-KR")} / $${this.deadlineTarget.toLocaleString("ko-KR")} · 지갑 $${this.wallet.toLocaleString("ko-KR")}${vaultStatus}`;
+      `마감 $${this.deadlinePaid.toLocaleString("ko-KR")} / $${this.deadlineTarget.toLocaleString("ko-KR")} · 지갑 $${this.wallet.toLocaleString("ko-KR")}`;
+
     this.flowOptions.innerHTML = `
-      <button class="flow-choice" data-action="start-round" data-mode="NORMAL">
-        <span>${normal.name}</span><strong>${normal.spins} SPINS</strong>
-        <small>티켓 +${normal.tickets} · 안정적인 선택</small>
-      </button>
-      <button class="flow-choice risk" data-action="start-round" data-mode="RISK">
-        <span>${risk.name}</span><strong>${risk.spins} SPINS</strong>
-        <small>티켓 +${risk.tickets} · 적은 회전, 높은 보상</small>
-      </button>`;
+      <div class="round-choice-layout">
+        <section class="round-mode-block">
+          <span class="round-block-title">라운드</span>
+          <div class="round-mode-grid">
+            <button class="flow-choice" data-action="start-round" data-mode="NORMAL">
+              <span>${normal.name}</span>
+              <strong>${normal.spins}회전</strong>
+              <small>티켓 +${normal.tickets} · 안정적인 선택</small>
+            </button>
+            <button class="flow-choice risk" data-action="start-round" data-mode="RISK">
+              <span>${risk.name}</span>
+              <strong>${risk.spins}회전</strong>
+              <small>티켓 +${risk.tickets} · 적은 회전, 높은 보상</small>
+            </button>
+          </div>
+        </section>
+        <aside id="roundVaultSetup" class="round-vault-setup"></aside>
+      </div>
+    `;
 
     this.flowFooter.textContent = note
-      ? `${note} · 마감 납부/금고 예치는 왼쪽 패널에서 관리`
-      : "마감 납부/금고 예치는 왼쪽 패널에서 관리합니다.";
+      ? `${note} · 금고를 사용하지 않아도 바로 라운드를 시작할 수 있습니다.`
+      : "금고를 사용하지 않아도 바로 라운드를 시작할 수 있습니다.";
 
+    this.renderRoundVaultSetup();
     this.openFlowOverlay();
     this.updateFinancialControls();
+  };
+
+  Game.renderRoundVaultSetup = function () {
+    const panel = this.flowOptions?.querySelector("#roundVaultSetup");
+    if (!panel) return;
+
+    const deposit = this.vaultDeposit;
+
+    if (deposit?.state === "LOCKED") {
+      const rate = this.getVaultCurrentRate(deposit);
+      panel.innerHTML = `
+        <div class="round-vault-heading">
+          <span>금고</span>
+          <b>예치 중</b>
+        </div>
+        <div class="round-vault-locked-value">$${deposit.currentAmount.toLocaleString("ko-KR")} <small>+ (${Math.round(rate * 100)}%)</small></div>
+        <div class="round-vault-copy">남은 라운드 ${deposit.roundsRemaining} / ${deposit.termRounds}</div>
+        <div class="round-vault-ticket">티켓 ${deposit.ticketsEarned} / ${deposit.totalTickets}</div>
+      `;
+      return;
+    }
+
+    const funding = deposit?.state === "FUNDING" ? deposit : null;
+    const selectedTerm = funding?.termRounds || this.selectedVaultTerm;
+    const unit = funding?.depositUnit || this.getDepositUnit();
+    const currentAmount = funding?.currentAmount || 0;
+    const canDeposit = this.canFundVault() && this.wallet >= unit;
+
+    panel.innerHTML = `
+      <div class="round-vault-heading">
+        <span>금고</span>
+        <b>${funding ? "예치 준비 중" : "선택"}</b>
+      </div>
+      <div class="round-vault-terms">
+        <button data-vault-term="2" class="round-vault-term ${selectedTerm === 2 ? "is-selected" : ""}" ${funding ? "disabled" : ""}>
+          <strong>2라운드</strong><small>15% · 15% · 티켓 +1</small>
+        </button>
+        <button data-vault-term="4" class="round-vault-term ${selectedTerm === 4 ? "is-selected" : ""}" ${funding ? "disabled" : ""}>
+          <strong>4라운드</strong><small>15% · 15% · 25% · 25%</small>
+        </button>
+      </div>
+      <div class="round-vault-info">
+        <span>예치 단위 <strong>$${unit.toLocaleString("ko-KR")}</strong></span>
+        <span>현재 예치금 <strong>$${currentAmount.toLocaleString("ko-KR")}</strong></span>
+      </div>
+      <button class="round-vault-deposit" data-vault-deposit="1" ${!selectedTerm || !canDeposit ? "disabled" : ""}>예치</button>
+      <div class="round-vault-help">${selectedTerm ? "라운드를 시작하면 예치가 잠깁니다." : "기다릴 라운드를 먼저 선택하세요."}</div>
+    `;
   };
 
   Game.getUnusedRoundCount = function (trigger) {
@@ -319,18 +410,19 @@
   Game.showDeadlineSuccess = function (settlement) {
     this.spinButton.disabled = true;
     this.patternTestButton.disabled = true;
-    this.stageStatus.textContent = "STAGE 5 · DEADLINE FUNDED";
+    this.stageStatus.textContent = "5단계 · 마감 정산 완료";
+    this.flowOptions.classList.remove("has-vault-setup");
 
     const isLast = this.deadlineIndex >= GAME_DATA.deadline.targets.length - 1;
     const label = settlement.trigger === "EARLY" ? "마감 확정" : "마감 정산";
     const bonus = settlement.bonusTickets
-      ? `미사용 라운드 ${settlement.unusedRounds}개 · +${settlement.bonusTickets}T`
+      ? `미사용 라운드 ${settlement.unusedRounds}개 · 티켓 +${settlement.bonusTickets}`
       : "미사용 라운드 보너스 없음";
     const locked = this.vaultDeposit
-      ? ` · 금고 ${this.vaultDeposit.roundsRemaining}R 잠금 유지`
+      ? ` · 금고 ${this.vaultDeposit.roundsRemaining}라운드 남음`
       : "";
 
-    this.flowEyebrow.textContent = `DEADLINE ${this.deadlineNumber} FUNDED`;
+    this.flowEyebrow.textContent = `마감 ${this.deadlineNumber} 정산 완료`;
     this.flowTitle.textContent = `${label} 완료`;
     this.flowText.textContent =
       `마감 계좌 $${settlement.paid.toLocaleString("ko-KR")} / $${settlement.target.toLocaleString("ko-KR")} · 지갑 $${this.wallet.toLocaleString("ko-KR")}${locked}`;
@@ -339,15 +431,15 @@
       this.runComplete = true;
       this.flowOptions.innerHTML = `
         <button class="flow-primary" data-action="restart-run">
-          <span>STAGE 5 LOOP CLEAR</span>
+          <span>5단계 반복 완료</span>
           <strong>처음부터 다시 테스트</strong>
         </button>`;
-      this.flowFooter.textContent = `${bonus} · 최종 엔딩/Endless는 Stage 12에서 구현합니다.`;
+      this.flowFooter.textContent = `${bonus} · 최종 엔딩과 무한 모드는 12단계에서 구현합니다.`;
     } else {
       const nextTarget = GAME_DATA.deadline.targets[this.deadlineIndex + 1];
       this.flowOptions.innerHTML = `
         <button class="flow-primary" data-action="next-deadline">
-          <span>NEXT DEADLINE</span>
+          <span>다음 마감</span>
           <strong>다음 목표 $${nextTarget.toLocaleString("ko-KR")}</strong>
         </button>`;
       this.flowFooter.textContent = bonus;
@@ -355,27 +447,28 @@
 
     this.openFlowOverlay();
     this.updateAllUI();
-    this.spinStatus.textContent = "PAID";
+    this.spinStatus.textContent = "납부 완료";
   };
 
   Game.showGameOver = function () {
     this.gameOver = true;
     this.spinButton.disabled = true;
     this.patternTestButton.disabled = true;
-    this.stageStatus.textContent = "STAGE 5 · GAME OVER";
+    this.stageStatus.textContent = "5단계 · 게임 오버";
+    this.flowOptions.classList.remove("has-vault-setup");
 
     const shortfall = Math.max(0, this.deadlineTarget - this.deadlinePaid);
     const locked = this.vaultDeposit
-      ? ` · 금고 $${this.vaultDeposit.principal.toLocaleString("ko-KR")}는 ${this.vaultDeposit.state === "LOCKED" ? `${this.vaultDeposit.roundsRemaining}R 잠금` : "예치 준비"}`
+      ? ` · 금고 $${this.vaultDeposit.currentAmount.toLocaleString("ko-KR")} 예치 중`
       : "";
 
-    this.flowEyebrow.textContent = `DEADLINE ${this.deadlineNumber} FAILED`;
-    this.flowTitle.textContent = "GAME OVER";
+    this.flowEyebrow.textContent = `마감 ${this.deadlineNumber} 실패`;
+    this.flowTitle.textContent = "게임 오버";
     this.flowText.textContent =
-      `마감 계좌에 $${shortfall.toLocaleString("ko-KR")} 미납 · 지갑 $${this.wallet.toLocaleString("ko-KR")}${locked}`;
+      `미납 금액 $${shortfall.toLocaleString("ko-KR")} · 지갑 $${this.wallet.toLocaleString("ko-KR")}${locked}`;
     this.flowOptions.innerHTML = `
       <button class="flow-primary danger" data-action="restart-run">
-        <span>RESTART</span>
+        <span>다시 시작</span>
         <strong>처음부터 다시 시작</strong>
       </button>`;
     this.flowFooter.textContent = `${this.roundsPerDeadline}라운드를 모두 사용했습니다.`;
@@ -396,7 +489,7 @@
     this.isResolvingRound = false;
     this.lastSettlement = null;
     this.selectedVaultTerm = null;
-    this.stageStatus.textContent = "STAGE 5 · CAPITAL ALLOCATION";
+    this.stageStatus.textContent = "5단계 · 자금 배분";
     this.updateAllUI();
     this.showRoundChoice();
   };
@@ -409,7 +502,7 @@
     this.bank = 0;
 
     baseRestart.call(this);
-    this.stageStatus.textContent = "STAGE 5 · CAPITAL ALLOCATION";
+    this.stageStatus.textContent = "5단계 · 자금 배분";
     this.updateAllUI();
   };
 
@@ -418,8 +511,8 @@
       this.walletValue.textContent = `$ ${this.wallet.toLocaleString("ko-KR")}`;
     }
 
-    this.bankValue.textContent =
-      `$ ${(this.vaultDeposit?.principal || 0).toLocaleString("ko-KR")}`;
+    const vaultAmount = this.vaultDeposit?.currentAmount || 0;
+    this.bankValue.textContent = `$ ${vaultAmount.toLocaleString("ko-KR")}`;
     this.deadlinePaidValue.textContent = `$ ${this.deadlinePaid.toLocaleString("ko-KR")}`;
     this.deadlineTargetValue.textContent = `$ ${this.deadlineTarget.toLocaleString("ko-KR")}`;
 
@@ -435,14 +528,51 @@
     const settled = Boolean(this.lastSettlement);
     const full = this.deadlinePaid >= this.deadlineTarget;
     const remaining = Math.max(0, this.deadlineTarget - this.deadlinePaid);
-    const unit = this.getDepositUnit();
-    const nextAmount = Math.min(unit, remaining);
+    const nextAmount = Math.min(this.getDepositUnit(), remaining);
+    const insufficient = !full && nextAmount > 0 && this.wallet < nextAmount;
+    const warning = !full && !settled && this.round === 2;
+    const critical = !full && !settled && this.round >= this.roundsPerDeadline;
+
+    this.deadlineAccountSection.classList.toggle("is-warning", warning);
+    this.deadlineAccountSection.classList.toggle("is-critical", critical);
+    this.deadlineAccountSection.classList.toggle("is-funded", full);
+    this.progressFill.classList.toggle("is-danger", critical);
 
     this.deadlineStateBadge.classList.toggle("is-funded", full);
-    this.deadlineStateBadge.textContent = settled ? "SETTLED" : full ? "FUNDED" : "OPEN";
-    this.deadlineDepositUnitCopy.textContent = full
-      ? "목표 납부 완료 · 마감 확정 가능"
-      : `1회 납부 $${unit.toLocaleString("ko-KR")} · 목표의 5% · 미납 $${remaining.toLocaleString("ko-KR")}`;
+    this.deadlineStateBadge.classList.toggle("is-danger", critical);
+    this.deadlineStateBadge.textContent = settled
+      ? "정산 완료"
+      : full
+        ? "납부 완료"
+        : "납부 진행 중";
+
+    let warningText = `미납 금액 $${remaining.toLocaleString("ko-KR")}`;
+    let warningActive = false;
+
+    if (settled) {
+      warningText = "정산 완료";
+    } else if (full) {
+      const bonus =
+        this.getUnusedRoundCount("EARLY") *
+        GAME_DATA.economy.earlyPaymentTicketPerUnusedRound;
+      warningText = bonus > 0
+        ? `납부 완료 · 지금 확정하면 티켓 +${bonus}`
+        : "납부 완료 · 마감 확정 가능";
+    } else if (critical) {
+      warningText = `경고 · 마지막 라운드 · 미납 금액 $${remaining.toLocaleString("ko-KR")}`;
+      warningActive = true;
+    } else if (warning) {
+      warningText = `납부가 필요합니다 · 미납 금액 $${remaining.toLocaleString("ko-KR")}`;
+      warningActive = true;
+    }
+
+    if (insufficient && !settled && !full) {
+      warningText += " · 잔액 부족";
+      warningActive = true;
+    }
+
+    this.deadlineWarningCopy.textContent = warningText;
+    this.deadlineWarningCopy.classList.toggle("is-danger", warningActive);
 
     const canDeposit =
       this.canUseEconomyControls() &&
@@ -451,105 +581,57 @@
       this.wallet >= nextAmount;
 
     this.deadlineDepositButton.disabled = !canDeposit;
-    this.deadlineDepositButton.textContent = full
-      ? "납부 완료"
-      : `+5% 납부 · $${nextAmount.toLocaleString("ko-KR")}`;
+    this.deadlineDepositButton.textContent = "납부";
 
     const canConfirm = this.canUseEconomyControls() && full;
     this.deadlineConfirmButton.disabled = !canConfirm;
+    this.deadlineConfirmButton.textContent = "마감 확정";
 
-    if (canConfirm) {
-      const bonus =
-        this.getUnusedRoundCount("EARLY") *
-        GAME_DATA.economy.earlyPaymentTicketPerUnusedRound;
-      this.deadlineConfirmButton.textContent = bonus
-        ? `마감 확정 · +${bonus}T`
-        : "마감 확정";
-    } else {
-      this.deadlineConfirmButton.textContent = "마감 확정";
-    }
+    this.deadlineRiskChip.classList.toggle("is-hidden", !critical);
   };
 
   Game.updateVaultUI = function () {
-    if (!this.vaultStateBadge) return;
+    if (!this.vaultRoundCopy) return;
 
     const deposit = this.vaultDeposit;
-    const canChooseTerm =
-      this.canUseEconomyControls() &&
-      !this.currentMode &&
-      !deposit;
 
-    this.vaultTermButtons.forEach((button) => {
-      const term = Number(button.dataset.vaultTerm);
-      button.classList.toggle("is-selected", !deposit && this.selectedVaultTerm === term);
-      button.disabled = !canChooseTerm;
-    });
-
-    if (deposit) {
-      const profit = deposit.maturityAmount - deposit.principal;
-      const nextTicketAt = (deposit.awardedTicketMilestones + 1) * deposit.ticketThreshold;
-      const nextTicketRemaining = Math.max(0, nextTicketAt - deposit.principal);
-
-      if (deposit.state === "FUNDING") {
-        this.vaultStateBadge.textContent = "FUNDING";
-        this.vaultStateBadge.classList.remove("is-locked");
-        this.vaultStateBadge.classList.add("is-funding");
-        this.vaultStatusCopy.textContent =
-          `${deposit.termRounds}R 상품 · 예치 $${deposit.principal.toLocaleString("ko-KR")} · 다음 라운드 시작 시 잠금`;
-        this.vaultPreview.innerHTML =
-          `만기 예상 <strong>$${deposit.maturityAmount.toLocaleString("ko-KR")}</strong> · +${Math.round(deposit.rate * 100)}% · 기준 목표 $${deposit.referenceTarget.toLocaleString("ko-KR")}`;
-      } else {
-        this.vaultStateBadge.textContent = "LOCKED";
-        this.vaultStateBadge.classList.add("is-locked");
-        this.vaultStateBadge.classList.remove("is-funding");
-        this.vaultStatusCopy.textContent =
-          `남은 ${deposit.roundsRemaining} ROUND · 원금 $${deposit.principal.toLocaleString("ko-KR")} · +${Math.round(deposit.rate * 100)}%`;
-        this.vaultPreview.innerHTML =
-          `만기 수령 <strong>$${deposit.maturityAmount.toLocaleString("ko-KR")}</strong> · 수익 +$${profit.toLocaleString("ko-KR")} · 중도출금 불가`;
-      }
-
-      this.vaultTicketProgress.textContent =
-        `티켓 +${deposit.awardedTicketMilestones} 획득 · 다음 +1T까지 $${nextTicketRemaining.toLocaleString("ko-KR")} 예치`;
-    } else {
-      this.vaultStateBadge.textContent = "READY";
-      this.vaultStateBadge.classList.remove("is-locked", "is-funding");
-
-      if (this.selectedVaultTerm) {
-        const term = this.getVaultTerm(this.selectedVaultTerm);
-        const unit = this.getDepositUnit();
-        const threshold = this.getVaultTicketThreshold();
-        this.vaultStatusCopy.textContent = `${term.rounds}라운드 상품 선택됨`;
-        this.vaultPreview.innerHTML =
-          `1회 예치 <strong>$${unit.toLocaleString("ko-KR")}</strong> · +${Math.round(term.rate * 100)}% · 목표 50%($${threshold.toLocaleString("ko-KR")})마다 +1T`;
-      } else {
-        this.vaultStatusCopy.textContent = "예치 없음 · 기간을 선택하세요.";
-        this.vaultPreview.textContent =
-          "기간 선택 → 목표의 5%씩 예치 → 다음 라운드 시작 시 잠금";
-      }
-
-      this.vaultTicketProgress.textContent = "목표의 50% 예치마다 티켓 +1";
+    if (!deposit) {
+      this.vaultRoundCopy.textContent = "예치 없음";
+      this.vaultRateValue.textContent = "";
+      this.vaultTicketProgress.textContent = "티켓 -";
+      this.vaultSection.classList.remove("is-active", "is-funding");
+      return;
     }
 
-    const fundingDeposit = this.vaultDeposit?.state === "FUNDING"
-      ? this.vaultDeposit
-      : null;
-    const depositUnit = fundingDeposit?.depositUnit || this.getDepositUnit();
-    const canDeposit =
-      this.canFundVault() &&
-      this.wallet >= depositUnit;
+    const rate = this.getVaultCurrentRate(deposit);
+    this.vaultRateValue.textContent = `+ (${Math.round(rate * 100)}%)`;
+    this.vaultTicketProgress.textContent =
+      `티켓 ${deposit.ticketsEarned} / ${deposit.totalTickets}`;
 
-    this.vaultDepositUnitButton.disabled = !canDeposit;
-    this.vaultDepositUnitButton.textContent =
-      `+5% 예치 · $${depositUnit.toLocaleString("ko-KR")}`;
+    if (deposit.state === "FUNDING") {
+      this.vaultRoundCopy.textContent = `${deposit.termRounds}라운드 · 예치 준비`;
+      this.vaultSection.classList.add("is-funding");
+      this.vaultSection.classList.remove("is-active");
+    } else {
+      this.vaultRoundCopy.textContent =
+        `남은 라운드 ${deposit.roundsRemaining} / ${deposit.termRounds}`;
+      this.vaultSection.classList.add("is-active");
+      this.vaultSection.classList.remove("is-funding");
+    }
   };
 
   Game.updateFinancialControls = function () {
     this.updateDeadlineUI();
     this.updateVaultUI();
+    this.renderRoundVaultSetup();
   };
 
   Game.updateAllUI = function () {
     baseUpdateAll.call(this);
+
+    if (this.gameOver) this.spinStatus.textContent = "게임 오버";
+    else if (this.runComplete) this.spinStatus.textContent = "완료";
+
     this.updateFinancialControls();
   };
 })();
