@@ -1,0 +1,29 @@
+/* Stage 7 — 아이템 효과 피드백 / 리롤 선택 후 상점 잠금 */
+
+.score-item-effects {
+  display: block;
+  margin-top: 5px;
+  font-size: 9px;
+  line-height: 1.45;
+  font-weight: 800;
+  color: var(--gain);
+  opacity: 0.9;
+}
+
+.action-shop-button.is-mode-locked,
+.machine-panel.round-prep-active .action-shop-button.is-mode-locked {
+  border-color: #D8DCE2 !important;
+  background: #FFFFFF !important;
+  color: rgba(26, 29, 35, 0.38) !important;
+  box-shadow: none !important;
+  cursor: not-allowed;
+}
+
+.shop-offer-card small,
+.shop-owned-card small {
+  opacity: 0.7;
+}
+
+.shop-offer-card b {
+  font-variant-numeric: tabular-nums;
+}
