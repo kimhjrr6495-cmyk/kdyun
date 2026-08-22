@@ -1,6 +1,6 @@
 // DEADLINE — Stage 3
 // 패턴 점수를 계산하고 실제 회전 보상을 지갑에 반영합니다.
-// 마감/라운드/상점/아이템 로직은 아직 연결하지 않습니다.
+// v0.3.2: 겹쳐 성립하는 패턴은 모두 합산하며 JACKPOT도 추가 보너스로 계산합니다.
 
 "use strict";
 
@@ -47,8 +47,7 @@ const Game = {
     this.patternTestButton.addEventListener("click", () => this.showNextPatternTest());
 
     window.addEventListener("keydown", (event) => {
-      if (event.code !== "Space") return;
-      if (event.repeat) return;
+      if (event.code !== "Space" || event.repeat) return;
 
       const target = event.target;
       const isTyping =
@@ -57,7 +56,6 @@ const Game = {
         target?.isContentEditable;
 
       if (isTyping) return;
-
       event.preventDefault();
       this.spin();
     });
@@ -143,7 +141,6 @@ const Game = {
     const track = reel.querySelector(".reel-track");
     const config = GAME_DATA.reelMotion;
     const symbolHeight = reel.clientHeight / GAME_DATA.board.rows;
-
     const startColumn = this.currentColumns[index];
     const middle = Array.from(
       { length: config.travelSymbols },
@@ -167,14 +164,12 @@ const Game = {
       const finish = () => {
         if (settled) return;
         settled = true;
-
         track.removeEventListener("transitionend", onEnd);
         track.style.transition = "none";
         track.style.transform = "translate3d(0, 0, 0)";
         track.innerHTML = finalColumn
           .map((symbol, row) => this.symbolHTML(symbol, index, row))
           .join("");
-
         reel.classList.add("reel-settled");
         window.setTimeout(() => reel.classList.remove("reel-settled"), 90);
         resolve();
@@ -228,20 +223,18 @@ const Game = {
     const found = [];
     const { columns, rows } = GAME_DATA.board;
 
-    // JACKPOT: 15칸 전체가 같은 심볼이면 다른 패턴보다 우선합니다.
+    // JACKPOT 여부는 먼저 기억만 해두고, 일반 패턴을 전부 검사한 뒤 마지막에 추가합니다.
+    // 따라서 15칸 동일 심볼이면 가로/세로/대각선/V/역V/X + JACKPOT이 모두 합산됩니다.
     const allCoords = [];
     for (let col = 0; col < columns; col += 1) {
       for (let row = 0; row < rows; row += 1) {
         allCoords.push([col, row]);
       }
     }
-
     const jackpotSymbol = this.matchCoordinates(allCoords);
-    if (jackpotSymbol) {
-      return [this.makePattern("JACKPOT", allCoords, jackpotSymbol)];
-    }
 
-    // 가로: 동일 연속 구간에서는 가장 큰 패턴만 인정합니다.
+    // 가로: 같은 연속 구간 안에서는 가장 큰 가로 패턴만 인정합니다.
+    // 예: 5연속은 H5 하나이며 H3/H4를 추가로 만들지 않습니다.
     for (let row = 0; row < rows; row += 1) {
       let col = 0;
       while (col < columns) {
@@ -275,7 +268,7 @@ const Game = {
       if (symbol) found.push(this.makePattern("V3", coords, symbol));
     }
 
-    // 3칸 대각선 ↘ / ↗
+    // 대각선 3칸: 가능한 ↘ / ↗ 구간을 모두 검사합니다.
     for (let startCol = 0; startCol <= columns - 3; startCol += 1) {
       const down = [
         [startCol, 0],
@@ -294,6 +287,7 @@ const Game = {
       if (upSymbol) found.push(this.makePattern("DIAG", up, upSymbol));
     }
 
+    // V와 역V는 구성 대각선과 별개로 추가 점수를 받습니다.
     const specialShapes = [
       {
         key: "V",
@@ -313,6 +307,11 @@ const Game = {
       const symbol = this.matchCoordinates(coords);
       if (symbol) found.push(this.makePattern(key, coords, symbol));
     });
+
+    // JACKPOT은 일반 패턴을 대체하지 않고 마지막 보너스 패턴으로 추가합니다.
+    if (jackpotSymbol) {
+      found.push(this.makePattern("JACKPOT", allCoords, jackpotSymbol));
+    }
 
     return found;
   },
@@ -413,7 +412,7 @@ const Game = {
     }
 
     const { scored, total } = this.scorePatterns(patterns);
-    const jackpot = scored[0]?.key === "JACKPOT";
+    const jackpot = scored.some((pattern) => pattern.key === "JACKPOT");
 
     this.patternList.innerHTML = scored
       .map(
@@ -428,7 +427,6 @@ const Game = {
 
     const oldWallet = this.wallet;
     const newWallet = creditWallet ? oldWallet + total : oldWallet;
-
     if (creditWallet) this.wallet = newWallet;
 
     if (total > 0) {
@@ -457,7 +455,7 @@ const Game = {
     if (creditWallet) {
       this.updateWalletUI(false);
       this.readoutDetail.textContent = jackpot
-        ? `JACKPOT 정산 완료 · 패턴 배율 ×${this.formatMultiplier(GAME_DATA.scoring.patternMultiplier)} 적용 · 지갑 +$${total.toLocaleString("ko-KR")}`
+        ? `JACKPOT + 모든 성립 패턴 합산 완료 · 지갑 +$${total.toLocaleString("ko-KR")}`
         : `정산 완료 · 패턴 배율 ×${this.formatMultiplier(GAME_DATA.scoring.patternMultiplier)} 적용 · 지갑 +$${total.toLocaleString("ko-KR")}`;
     } else {
       this.readoutDetail.textContent =
@@ -523,7 +521,9 @@ const Game = {
 
     await this.evaluateAndRenderScore({
       creditWallet: false,
-      testLabel: `테스트: ${definition.name} · 패턴 배율 ×${this.formatMultiplier(GAME_DATA.scoring.patternMultiplier)} · 지갑 미반영`
+      testLabel: test.fullBoard
+        ? "JACKPOT 테스트 · 모든 일반 패턴 점수 + JACKPOT 보너스를 합산합니다."
+        : `테스트: ${definition.name} · 겹쳐 성립하는 패턴도 모두 합산 · 지갑 미반영`
     });
 
     this.patternTestButton.textContent =
