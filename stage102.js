@@ -35,6 +35,17 @@
     }
   };
 
+  Game.applyStage102RoundInteractionLocks = function () {
+    const roundLocked = Boolean(this.roundStarted || this.isSpinning || this.isResolvingRound);
+    if (!roundLocked) return;
+
+    const depositButton = this.deadlineDepositButton || document.querySelector("#deadlineDepositButton");
+    const shopButton = this.actionShopButton || document.querySelector("#actionShopButton");
+
+    if (depositButton) depositButton.disabled = true;
+    if (shopButton) shopButton.disabled = true;
+  };
+
   Game.updateStage102VersionUI = function () {
     const eyebrow = document.querySelector(".brand-block .eyebrow");
     if (eyebrow) eyebrow.textContent = "CONTROLLED MARKET SYSTEM · VERSION v1.0.2";
@@ -46,6 +57,7 @@
   Game.updateAllUI = function (...args) {
     const result = previousUpdateAllUI.apply(this, args);
     this.applyStage102ControlLayout();
+    this.applyStage102RoundInteractionLocks();
     this.updateStage102VersionUI();
     return result;
   };
@@ -53,6 +65,7 @@
   Game.init = function () {
     previousInit.call(this);
     this.applyStage102ControlLayout();
+    this.applyStage102RoundInteractionLocks();
     this.updateStage102VersionUI();
     this.stage = 10;
     this.status = "CONTRACTS_CONTROL_LAYOUT_POLISH";
@@ -66,6 +79,7 @@
   Game.restartRun = function (...args) {
     const result = previousRestartRun.apply(this, args);
     this.applyStage102ControlLayout();
+    this.applyStage102RoundInteractionLocks();
     this.updateStage102VersionUI();
     this.stage = 10;
     this.updateAllUI?.();
