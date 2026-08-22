@@ -85,7 +85,6 @@
     (GAME_DATA.symbols || []).forEach((symbol) => {
       const base = BASE_WEIGHTS_94[symbol.id] ?? 0.01;
       if (symbol.id === ERROR_ID) {
-        // Luck이 높을수록 ERROR는 줄어듭니다.
         result[symbol.id] = Math.max(0.15, base / (1 + luck * 0.75));
         return;
       }
@@ -110,7 +109,6 @@
     return result;
   };
 
-  // ERROR에는 기존 GOLDEN/TICKET/REPEAT/CHAIN Modifier를 붙이지 않습니다.
   Game.rollStage90ModifiersForSymbol = function (symbol) {
     if (symbol?.id === ERROR_ID) return [];
     return previousRollStage90ModifiersForSymbol.call(this, symbol);
@@ -205,7 +203,6 @@
         }
       });
 
-      // WILD가 두 심볼 사이에 놓여 양쪽 후보를 동시에 만들면, 더 긴 패턴 → 더 가치 높은 심볼 순으로 하나를 선택합니다.
       candidates.sort((a, b) =>
         b.length - a.length ||
         (Number(b.target.value) || 0) - (Number(a.target.value) || 0) ||
@@ -270,7 +267,6 @@
     });
     if (jackpot) found.push(this.makeStage94Pattern("JACKPOT", allCoords, jackpot));
 
-    // 같은 종류/같은 좌표/같은 심볼 패턴은 한 번만 정산합니다.
     const seen = new Set();
     return found.filter((pattern) => {
       const coordKey = pattern.coords.map(([col, row]) => `${col}:${row}`).join("|");
@@ -351,10 +347,24 @@
     const multiplier = this.getStage90ChanceMultiplier?.() || 1;
     const attempts = 1 + (this.getStage90ChanceExtraAttempts?.() || 0);
     const finalChance = Math.min(0.95, Math.max(0, (Number(chance) || 0) * multiplier));
+    let success = false;
+
     for (let i = 0; i < attempts; i += 1) {
-      if (Math.random() < finalChance) return true;
+      if (Math.random() < finalChance) {
+        success = true;
+        break;
+      }
     }
-    return false;
+
+    if (success) {
+      if (this.stage90Stats) this.stage90Stats.chanceProcs += 1;
+      (this.getStage90ItemsByEffect?.("chance_growth") || []).forEach((cat) => {
+        const step = Number(cat.effect?.step) || 0;
+        cat.stage90Growth = Math.min(2, (Number(cat.stage90Growth) || 0) + step);
+      });
+    }
+
+    return success;
   };
 
   Game.queueStage94ItemCard = function (item) {
@@ -370,14 +380,12 @@
     if (!initialErrors.length) return;
     this.stage94ErrorCellsSeen += initialErrors.length;
 
-    // 오류 수집기는 변환되기 전 실제 ERROR 등장 수를 저장합니다.
     this.getStage90ItemsByEffect?.("error_bank").forEach((item) => {
       const amount = Math.max(0, Number(item.effect?.amount) || 0) * initialErrors.length;
       item.stage90StoredCash = Math.max(0, Number(item.stage90StoredCash) || 0) + amount;
       if (amount > 0) this.queueStage94ItemCard(item);
     });
 
-    // 디버거: 매 리롤 첫 ERROR를 정상 심볼로 변환합니다.
     const debuggers = this.getStage90ItemsByEffect?.("error_convert_first") || [];
     let convertBudget = Math.min(
       GAME_DATA.stage94?.maxErrorConversionsPerSpin ?? 8,
@@ -392,7 +400,6 @@
       debuggers.forEach((item) => this.queueStage94ItemCard(item));
     }
 
-    // 백업 파일: 같은 좌표의 직전 보드 심볼을 복원합니다.
     const backupItems = this.getStage90ItemsByEffect?.("error_restore_chance") || [];
     for (const item of backupItems) {
       let activated = false;
@@ -406,7 +413,6 @@
       if (activated) this.queueStage94ItemCard(item);
     }
 
-    // 불안정한 조커: 남은 ERROR를 확률적으로 WILD로 변환합니다.
     const unstableItems = this.getStage90ItemsByEffect?.("error_to_wild_chance") || [];
     const wildSymbol = this.getStage94SpecialSymbol(WILD_ID);
     for (const item of unstableItems) {
@@ -428,7 +434,15 @@
     this.stage94ErrorEventCount += 1;
     this.showStage90Event?.("error", "⚠️ ERROR EVENT", `${errors.length}개 감지`);
 
-    // 커널 패닉이 있으면 ERROR EVENT의 모든 ERROR를 WILD로 정리하고 나머지 이벤트는 종료합니다.
+    // ERROR EVENT 기반 추가 지급은 커널 패닉이 있어도 먼저 확정합니다.
+    (this.getStage90ItemsByEffect?.("error_event_cash") || []).forEach((item) => {
+      const bonus = Math.max(0, Number(item.effect?.amountPerError) || 0) * errors.length;
+      if (bonus > 0) {
+        this.stage94PendingCash += bonus;
+        this.queueStage94ItemCard(item);
+      }
+    });
+
     const kernel = (this.getStage90ItemsByEffect?.("error_event_all_to_wild") || [])[0];
     if (kernel && wildSymbol) {
       errors.forEach(([col, row]) => this.replaceStage94Cell(col, row, wildSymbol));
@@ -437,7 +451,6 @@
       return;
     }
 
-    // 글리치 라우터: ERROR 하나와 다른 셀을 교환해 패턴 구성을 다시 흔듭니다.
     const routers = this.getStage90ItemsByEffect?.("error_swap") || [];
     if (routers.length && errors.length) {
       const [errorCol, errorRow] = errors[Math.floor(Math.random() * errors.length)];
@@ -460,7 +473,6 @@
 
     errors = this.getStage94ErrorCells();
 
-    // 기본 ERROR EVENT: 복구 / 소액 보상 / 티켓 중 하나.
     const roll = Math.random();
     if (roll < 0.5 && errors.length) {
       const [col, row] = errors[Math.floor(Math.random() * errors.length)];
@@ -474,15 +486,6 @@
       this.tickets += 1;
       this.showStage90Event?.("ticket", "ERROR 티켓", "+1T");
     }
-
-    // 오류 증폭기: ERROR EVENT가 발생했을 때 남아 있던 ERROR 수만큼 추가 지급합니다.
-    (this.getStage90ItemsByEffect?.("error_event_cash") || []).forEach((item) => {
-      const bonus = Math.max(0, Number(item.effect?.amountPerError) || 0) * errors.length;
-      if (bonus > 0) {
-        this.stage94PendingCash += bonus;
-        this.queueStage94ItemCard(item);
-      }
-    });
 
     this.renderReels?.();
     await this.wait?.(70);
