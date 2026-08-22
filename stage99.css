@@ -1,0 +1,563 @@
+/* DEADLINE v0.9.9 — final Stage 9 UI polish / SHINY layout / escrow / dark palette */
+
+/* ===== DARK PALETTE ===== */
+body.theme-dark {
+  --bg: #0D1117;
+  --ink: #E6EDF3;
+  --line: #303946;
+  --gain: #38D9A9;
+  --danger: #FF6B78;
+  --shadow: 0 3px 12px rgba(0, 0, 0, 0.28);
+  background: #0D1117 !important;
+  color: #E6EDF3;
+}
+
+html.theme-dark-root,
+html.theme-dark-root body {
+  background: #0D1117 !important;
+}
+
+body.theme-dark .panel,
+body.theme-dark .info-panel,
+body.theme-dark .reference-rail,
+body.theme-dark .machine-panel {
+  background: #121820 !important;
+  border-color: #303946 !important;
+}
+
+body.theme-dark .deadline-account-section,
+body.theme-dark .wallet-section,
+body.theme-dark .vault-chamber,
+body.theme-dark .reference-section,
+body.theme-dark .flow-card,
+body.theme-dark .shop-main-section,
+body.theme-dark .shop-owned-panel,
+body.theme-dark .settlement-readout,
+body.theme-dark .score-readout,
+body.theme-dark .round-prep-panel,
+body.theme-dark .final-payment-panel,
+body.theme-dark .auto-advance-panel {
+  background: #151B23 !important;
+  border-color: #303946 !important;
+  color: #E6EDF3 !important;
+}
+
+body.theme-dark .machine-header,
+body.theme-dark .machine-actions,
+body.theme-dark .machine-stage,
+body.theme-dark .machine-panel.round-prep-active,
+body.theme-dark .machine-panel.round-prep-active .machine-header,
+body.theme-dark .machine-panel.round-prep-active .machine-stage,
+body.theme-dark .machine-panel.round-prep-active .machine-actions,
+body.theme-dark .machine-panel.is-round-prep .machine-stage,
+body.theme-dark .machine-panel.is-awaiting-start .machine-stage,
+body.theme-dark .machine-panel.is-awaiting-start .machine-actions {
+  background: #121820 !important;
+}
+
+body.theme-dark .reels-shell,
+body.theme-dark .reel,
+body.theme-dark .reel-track,
+body.theme-dark .reel-symbol[data-symbol] {
+  background: #151B23 !important;
+}
+
+body.theme-dark .reel-symbol.pattern-hit,
+body.theme-dark .reel-symbol.pattern-sequence-hit,
+body.theme-dark .reel-symbol.pattern-fx-hit {
+  background: #202936 !important;
+}
+
+body.theme-dark button,
+body.theme-dark .status-chip,
+body.theme-dark .vault-state-badge,
+body.theme-dark .vault-lock-state {
+  background: #181F28;
+  border-color: #303946;
+  color: #E6EDF3;
+}
+
+body.theme-dark button:not(:disabled):hover {
+  background: #202936;
+  border-color: #475466;
+}
+
+body.theme-dark .flow-overlay {
+  background: rgba(5, 8, 12, 0.82) !important;
+}
+
+body.theme-dark .flow-card {
+  box-shadow: 0 22px 70px rgba(0, 0, 0, 0.46) !important;
+}
+
+/* ===== SHINY SHOP CARD — FIXED SIZE / READABLE GRID ===== */
+.shop-offer-card.stage99-offer-card {
+  height: 202px !important;
+  min-height: 202px !important;
+  max-height: 202px !important;
+  padding: 12px !important;
+  display: grid !important;
+  grid-template-rows: 22px minmax(0, 1fr) 22px;
+  gap: 9px;
+  overflow: hidden;
+}
+
+.stage99-card-topline {
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.stage99-rarity-label,
+.stage99-shiny-label {
+  display: inline-flex;
+  align-items: center;
+  min-height: 20px;
+  padding: 3px 7px;
+  border-radius: 999px;
+  font-size: 7px;
+  font-weight: 950;
+  letter-spacing: 0.06em;
+  line-height: 1;
+  white-space: nowrap;
+}
+
+.stage99-rarity-label {
+  color: var(--rarity-accent, #69717D);
+  border: 1px solid color-mix(in srgb, var(--rarity-accent, #69717D) 52%, var(--line));
+  background: color-mix(in srgb, var(--rarity-accent, #69717D) 8%, transparent);
+}
+
+.stage99-shiny-label {
+  color: #9BDFF3;
+  border: 1px solid rgba(132, 213, 239, 0.34);
+  background: rgba(82, 166, 198, 0.10);
+}
+
+.stage99-shiny-label.is-empty {
+  visibility: hidden;
+}
+
+.stage99-card-content {
+  min-height: 0;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 108px;
+  gap: 10px;
+  align-items: stretch;
+}
+
+.stage99-card-base {
+  min-width: 0;
+  display: grid;
+  grid-template-rows: 42px auto minmax(0, 1fr);
+  align-content: start;
+}
+
+.stage99-card-base .shop-item-mark {
+  width: 42px;
+  height: 42px;
+  margin: 0;
+}
+
+.stage99-card-base > strong {
+  margin-top: 8px !important;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 15px !important;
+  line-height: 1.2;
+}
+
+.stage99-card-base > small {
+  margin-top: 5px !important;
+  display: -webkit-box !important;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  overflow: hidden;
+  font-size: 8px !important;
+  line-height: 1.42 !important;
+}
+
+.stage99-trait-panel {
+  min-width: 0;
+  padding: 9px;
+  display: grid;
+  grid-template-rows: auto auto minmax(0, 1fr);
+  align-content: start;
+  gap: 4px;
+  border: 1px solid rgba(115, 160, 190, 0.22);
+  border-radius: 10px;
+  text-align: left;
+}
+
+.stage99-trait-panel > span {
+  font-size: 7px;
+  font-weight: 900;
+  letter-spacing: 0.07em;
+  opacity: 0.56;
+}
+
+.stage99-trait-panel > strong {
+  margin: 0 !important;
+  font-size: 10px !important;
+  line-height: 1.25;
+}
+
+.stage99-trait-panel > small {
+  margin: 0 !important;
+  display: -webkit-box !important;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3;
+  overflow: hidden;
+  font-size: 7px !important;
+  line-height: 1.4 !important;
+}
+
+.stage99-trait-panel.is-empty {
+  visibility: hidden;
+}
+
+.stage99-card-price {
+  align-self: end;
+  margin: 0 !important;
+  padding: 0 !important;
+  color: var(--gain) !important;
+  font-size: 11px !important;
+  line-height: 22px;
+}
+
+body.theme-dark .shop-main-section,
+body.theme-dark .shop-owned-panel {
+  background: #121820 !important;
+}
+
+body.theme-dark .shop-offer-card,
+body.theme-dark .shop-owned-card {
+  background: #181F28 !important;
+  color: #E6EDF3 !important;
+  border-color: #34404E !important;
+}
+
+body.theme-dark .shop-offer-card:not(:disabled):hover,
+body.theme-dark .shop-owned-card:not(:disabled):hover {
+  background: #202936 !important;
+  border-color: #4B596B !important;
+}
+
+body.theme-dark .shop-item-mark,
+body.theme-dark .shop-owned-mark {
+  background: #222B35 !important;
+  border-color: #3A4655 !important;
+  color: #E6EDF3 !important;
+}
+
+body.theme-dark .stage99-trait-panel {
+  background: #202936;
+  border-color: #38485A;
+}
+
+body.theme-dark .shop-offer-card.is-shiny {
+  background:
+    linear-gradient(135deg, rgba(24, 37, 50, 0.98), rgba(27, 32, 47, 0.98) 52%, rgba(36, 28, 46, 0.98)) !important;
+}
+
+body.theme-dark .shop-offer-card.is-shiny::before {
+  opacity: 0.52;
+}
+
+body.theme-dark .shop-owned-card.is-empty {
+  background: #121820 !important;
+}
+
+.stage99-shop-heading .stage96-coin-reroll {
+  flex: 0 0 154px;
+  width: 154px;
+  min-width: 154px;
+  max-width: 154px;
+  white-space: nowrap;
+}
+
+/* ===== DEADLINE ACCOUNT — MINIMAL COPY / NO WRAP ===== */
+#deadlineAccountSection #progressCopy,
+#deadlineAccountSection #deadlineWarningCopy {
+  display: none !important;
+}
+
+.deadline-value-action-row {
+  display: grid !important;
+  grid-template-columns: minmax(0, 1fr) 64px;
+  align-items: center;
+  gap: 7px !important;
+}
+
+.deadline-account-values {
+  min-width: 0;
+  display: flex !important;
+  align-items: baseline;
+  flex-wrap: nowrap !important;
+  gap: 3px;
+  white-space: nowrap !important;
+  overflow: hidden;
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: "tnum" 1;
+}
+
+.deadline-account-values > strong,
+.deadline-account-values > span,
+.deadline-account-values > span > b {
+  white-space: nowrap !important;
+  flex: 0 0 auto;
+}
+
+.deadline-account-values.stage99-money-long > strong,
+.deadline-account-values.stage99-money-long > span {
+  font-size: 13px !important;
+  letter-spacing: -0.055em;
+}
+
+.deadline-account-values.stage99-money-very-long > strong,
+.deadline-account-values.stage99-money-very-long > span {
+  font-size: 10.5px !important;
+  letter-spacing: -0.065em;
+}
+
+#deadlineDepositButton.payment-action {
+  width: 64px;
+  min-width: 64px;
+  max-width: 64px;
+  padding-left: 7px;
+  padding-right: 7px;
+}
+
+/* ===== REMOVE MID-PATTERN TEXT BANNER ===== */
+.pattern-impact-banner {
+  display: none !important;
+}
+
+/* ===== STABLE MACHINE + ROUND ESCROW ===== */
+.machine-panel {
+  height: 690px !important;
+  min-height: 690px !important;
+  max-height: 690px !important;
+}
+
+.slot-machine {
+  height: 522px !important;
+  min-height: 522px !important;
+  max-height: 522px !important;
+  grid-template-rows: calc(var(--reel-row-height) * 3) 240px !important;
+}
+
+.score-readout,
+.settlement-readout.score-readout {
+  height: 240px !important;
+  min-height: 240px !important;
+  max-height: 240px !important;
+  overflow: hidden !important;
+}
+
+.stage99-round-wallet {
+  width: min(250px, calc(100% - 24px));
+  min-height: 40px;
+  margin: 4px auto 5px;
+  padding: 7px 10px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  border: 1px solid color-mix(in srgb, var(--gain) 26%, var(--line));
+  border-radius: 11px;
+  background: color-mix(in srgb, var(--gain) 5%, var(--bg));
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: "tnum" 1;
+}
+
+.stage99-round-wallet > span {
+  font-size: 8px;
+  font-weight: 900;
+  letter-spacing: 0.05em;
+  opacity: 0.55;
+}
+
+.stage99-round-wallet > strong {
+  color: var(--gain);
+  font-size: 16px !important;
+  font-weight: 950;
+  letter-spacing: -0.04em;
+  white-space: nowrap;
+}
+
+body.theme-dark .stage99-round-wallet {
+  background: #172129;
+  border-color: #285A50;
+}
+
+/* Keep dynamic result areas inside the fixed readout instead of resizing the machine. */
+.score-readout .pattern-list {
+  max-height: 27px !important;
+  overflow: hidden !important;
+  flex-wrap: nowrap !important;
+}
+
+.score-readout .stage90-feed,
+.score-readout .trigger-feed {
+  max-height: 26px !important;
+  overflow: hidden !important;
+  flex-wrap: nowrap !important;
+}
+
+.score-readout .score-breakdown {
+  height: 36px !important;
+  min-height: 36px !important;
+  max-height: 36px !important;
+  overflow: hidden !important;
+}
+
+.score-readout > small {
+  max-height: 17px !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* ===== ROUND ESCROW -> WALLET TRANSFER FX ===== */
+.wallet-section {
+  position: relative;
+  overflow: visible;
+}
+
+.stage99-wallet-transfer-fx {
+  position: fixed;
+  z-index: 120;
+  left: 0;
+  top: 0;
+  pointer-events: none;
+  color: var(--gain);
+  font-size: 20px;
+  font-weight: 1000;
+  letter-spacing: -0.045em;
+  white-space: nowrap;
+  opacity: 0;
+  transform: translate(-50%, -50%) scale(0.88);
+  text-shadow: 0 0 15px color-mix(in srgb, var(--gain) 38%, transparent);
+}
+
+.stage99-wallet-transfer-fx.is-flying {
+  animation: stage99WalletTransfer 520ms cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes stage99WalletTransfer {
+  0% {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(0.84);
+  }
+  14% {
+    opacity: 1;
+    transform: translate(-50%, -54%) scale(1.08);
+  }
+  74% {
+    opacity: 0.95;
+  }
+  100% {
+    opacity: 0;
+    transform:
+      translate(
+        calc(-50% + var(--stage99-transfer-x)),
+        calc(-50% + var(--stage99-transfer-y))
+      )
+      scale(0.72);
+  }
+}
+
+.stage99-wallet-gain-float {
+  position: absolute;
+  z-index: 12;
+  left: 14px;
+  top: 44px;
+  pointer-events: none;
+  color: var(--gain);
+  font-size: 24px;
+  font-weight: 1000;
+  letter-spacing: -0.05em;
+  white-space: nowrap;
+  text-shadow: 0 0 16px color-mix(in srgb, var(--gain) 34%, transparent);
+  animation: stage99WalletGain 1000ms cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes stage99WalletGain {
+  0% { opacity: 0; transform: translateY(10px) scale(0.80); }
+  20% { opacity: 1; transform: translateY(0) scale(1.08); }
+  72% { opacity: 0.92; transform: translateY(-9px) scale(1); }
+  100% { opacity: 0; transform: translateY(-24px) scale(0.92); }
+}
+
+#walletValue.stage99-wallet-receiving {
+  color: var(--gain) !important;
+  text-shadow: 0 0 16px color-mix(in srgb, var(--gain) 32%, transparent);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .stage99-wallet-transfer-fx.is-flying,
+  .stage99-wallet-gain-float {
+    animation-duration: 1ms !important;
+  }
+}
+
+@media (max-width: 760px) {
+  .shop-offer-card.stage99-offer-card {
+    height: 194px !important;
+    min-height: 194px !important;
+    max-height: 194px !important;
+  }
+
+  .stage99-card-content {
+    grid-template-columns: minmax(0, 1fr) 96px;
+    gap: 7px;
+  }
+
+  .stage99-shop-heading .stage96-coin-reroll {
+    flex-basis: 136px;
+    width: 136px;
+    min-width: 136px;
+    max-width: 136px;
+  }
+
+  .machine-panel {
+    height: 670px !important;
+    min-height: 670px !important;
+    max-height: 670px !important;
+  }
+
+  .slot-machine {
+    height: 502px !important;
+    min-height: 502px !important;
+    max-height: 502px !important;
+    grid-template-rows: calc(var(--reel-row-height) * 3) 220px !important;
+  }
+
+  .score-readout,
+  .settlement-readout.score-readout {
+    height: 220px !important;
+    min-height: 220px !important;
+    max-height: 220px !important;
+  }
+}
+
+@media (max-width: 480px) {
+  .stage99-card-content {
+    grid-template-columns: minmax(0, 1fr) 110px;
+  }
+
+  .deadline-value-action-row {
+    grid-template-columns: minmax(0, 1fr) 58px;
+  }
+
+  #deadlineDepositButton.payment-action {
+    width: 58px;
+    min-width: 58px;
+    max-width: 58px;
+  }
+}
