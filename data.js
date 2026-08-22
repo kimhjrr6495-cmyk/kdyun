@@ -4,7 +4,7 @@
 "use strict";
 
 const GAME_DATA = {
-  version: "v0.5.0",
+  version: "v0.5.1",
   stage: 5,
   board: { columns: 5, rows: 3 },
 
@@ -80,13 +80,18 @@ const GAME_DATA = {
     }
   },
 
-  // Stage 5 경제 규칙.
-  // 지갑만 라운드 종료 시 이자를 받고, 금고는 이자가 없습니다.
-  // 마감 정산은 지갑에서 먼저 납부하고 부족분을 금고에서 가져갑니다.
+  // Stage 5.1 경제 규칙.
+  // 지갑은 유동 자금이며 자체 이자는 없습니다.
+  // 금고는 한 번에 1건의 정기예치만 가능하고, 실제로 완료한 라운드만 만기 카운트가 줄어듭니다.
+  // 예치 중인 돈은 마감 목표 계산/정산에 사용할 수 없습니다.
   economy: {
-    walletInterestRate: 0.05,
     earlyPaymentTicketPerUnusedRound: 2,
-    settlementPriority: ["wallet", "bank"]
+    vaultTerms: {
+      2: { rounds: 2, rate: 0.30, tickets: 0 },
+      3: { rounds: 3, rate: 0.45, tickets: 1 },
+      4: { rounds: 4, rate: 0.65, tickets: 2 },
+      5: { rounds: 5, rate: 0.90, tickets: 3 }
+    }
   },
 
   // 개발 중 판정/점수 검수용 임시 샘플. 지갑/회전 수/티켓에는 영향 없음.
