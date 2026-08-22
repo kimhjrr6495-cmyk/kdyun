@@ -4,25 +4,26 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>DEADLINE — 슬롯 로그라이트</title>
-  <link rel="stylesheet" href="style.css?v=0.6.2" />
-  <link rel="stylesheet" href="vault.css?v=0.6.2" />
-  <link rel="stylesheet" href="stage55.css?v=0.6.2" />
-  <link rel="stylesheet" href="stage57.css?v=0.6.2" />
-  <link rel="stylesheet" href="stage58.css?v=0.6.2" />
-  <link rel="stylesheet" href="stage60.css?v=0.6.2" />
-  <link rel="stylesheet" href="stage61.css?v=0.6.2" />
-  <link rel="stylesheet" href="stage62.css?v=0.6.2" />
+  <link rel="stylesheet" href="style.css?v=0.6.3" />
+  <link rel="stylesheet" href="vault.css?v=0.6.3" />
+  <link rel="stylesheet" href="stage55.css?v=0.6.3" />
+  <link rel="stylesheet" href="stage57.css?v=0.6.3" />
+  <link rel="stylesheet" href="stage58.css?v=0.6.3" />
+  <link rel="stylesheet" href="stage60.css?v=0.6.3" />
+  <link rel="stylesheet" href="stage61.css?v=0.6.3" />
+  <link rel="stylesheet" href="stage62.css?v=0.6.3" />
+  <link rel="stylesheet" href="stage63.css?v=0.6.3" />
 </head>
 <body>
   <main class="app-shell">
     <header class="topbar">
       <div class="brand-block">
-        <span class="eyebrow">CONTROLLED MARKET SYSTEM · VERSION v0.6.2</span>
+        <span class="eyebrow">CONTROLLED MARKET SYSTEM · VERSION v0.6.3</span>
         <h1>DEADLINE</h1>
       </div>
 
       <div class="top-status" aria-label="게임 상태">
-        <div class="status-chip">버전 <strong>v0.6.2</strong></div>
+        <div class="status-chip">버전 <strong>v0.6.3</strong></div>
         <div class="status-chip">마감 <strong id="deadlineStatus">1</strong></div>
         <div class="status-chip">라운드 <strong id="roundStatus">1 / 3</strong></div>
         <div class="status-chip">회전 <strong id="spinStatus">준비</strong></div>
@@ -151,63 +152,36 @@
     </section>
   </main>
 
-  <aside id="itemTray" class="items-preview compact-item-tray" aria-label="현재 보유 아이템">
-    <div class="drawer-header">
-      <strong>보유 아이템</strong>
-      <span id="itemTrayCount">0 / 6</span>
-    </div>
-
-    <section class="drawer-stats">
-      <span class="drawer-section-label">현재 상태</span>
-      <div class="drawer-stat-grid">
-        <div><span>행운</span><strong>0</strong></div>
-        <div><span>패턴 배율</span><strong>×1.00</strong></div>
-        <div><span>전체 배율</span><strong>×1.00</strong></div>
-        <div><span>현재 방식</span><strong id="modeStatus">-</strong></div>
-      </div>
-    </section>
-
-    <div class="drawer-item-heading">
-      <strong>보유 아이템 0 / 6</strong>
-      <span>6단계 상점</span>
-    </div>
-    <div id="itemTraySlots" class="empty-slots">
-      <div class="item-tray-slot is-empty"></div><div class="item-tray-slot is-empty"></div><div class="item-tray-slot is-empty"></div>
-      <div class="item-tray-slot is-empty"></div><div class="item-tray-slot is-empty"></div><div class="item-tray-slot is-empty"></div>
-    </div>
-
-    <div id="itemSellPopover" class="item-sell-popover" hidden>
-      <div class="item-sell-card">
-        <strong id="itemSellName">아이템</strong>
-        <span id="itemSellEffect">효과 준비 중</span>
-        <div class="item-sell-price-grid">
-          <div>
-            <small>구매가</small>
-            <b id="itemBuyValue">T 0</b>
-          </div>
-          <div class="sell-price">
-            <small>판매가</small>
-            <b id="itemSellValue">T 1</b>
-          </div>
+  <div id="itemSellPopover" class="item-sell-popover" hidden>
+    <div class="item-sell-card">
+      <strong id="itemSellName">아이템</strong>
+      <span id="itemSellEffect">효과 준비 중</span>
+      <div class="item-sell-price-grid">
+        <div>
+          <small>구매가</small>
+          <b id="itemBuyValue">T 0</b>
         </div>
-        <div class="item-sell-actions">
-          <button id="itemSellConfirm" class="sell-confirm" type="button">판매</button>
-          <button id="itemSellCancel" type="button">취소</button>
+        <div class="sell-price">
+          <small>판매가</small>
+          <b id="itemSellValue">T 1</b>
         </div>
       </div>
+      <div class="item-sell-actions">
+        <button id="itemSellConfirm" class="sell-confirm" type="button">판매</button>
+        <button id="itemSellCancel" type="button">취소</button>
+      </div>
     </div>
-    <p>아이템 효과는 다음 단계에서 연결합니다.</p>
-  </aside>
+  </div>
 
-  <script src="data.js?v=0.6.2"></script>
-  <script src="effects.js?v=0.6.2"></script>
-  <script src="game.js?v=0.6.2"></script>
-  <script src="vault.js?v=0.6.2"></script>
-  <script src="stage55.js?v=0.6.2"></script>
-  <script src="stage57.js?v=0.6.2"></script>
-  <script src="stage58.js?v=0.6.2"></script>
-  <script src="stage60.js?v=0.6.2"></script>
-  <script src="stage61.js?v=0.6.2"></script>
-  <script src="stage62.js?v=0.6.2"></script>
+  <script src="data.js?v=0.6.3"></script>
+  <script src="effects.js?v=0.6.3"></script>
+  <script src="game.js?v=0.6.3"></script>
+  <script src="vault.js?v=0.6.3"></script>
+  <script src="stage55.js?v=0.6.3"></script>
+  <script src="stage57.js?v=0.6.3"></script>
+  <script src="stage58.js?v=0.6.3"></script>
+  <script src="stage60.js?v=0.6.3"></script>
+  <script src="stage61.js?v=0.6.3"></script>
+  <script src="stage62.js?v=0.6.3"></script>
 </body>
 </html>
