@@ -5,6 +5,7 @@
   Game.stage = 5;
   Game.status = "EXPLICIT_ROUND_START";
   Game.awaitingRoundStart = false;
+  Game.pendingModeTickets = 0;
 
   const previousInit = Game.init;
   const previousShowRoundChoice = Game.showRoundChoice;
@@ -17,6 +18,7 @@
 
   Game.init = function () {
     this.awaitingRoundStart = false;
+    this.pendingModeTickets = 0;
     this.roundStartButton = document.querySelector("#roundStartButton");
 
     previousInit.call(this);
@@ -29,6 +31,7 @@
 
   Game.showRoundChoice = function (...args) {
     this.awaitingRoundStart = false;
+    this.pendingModeTickets = 0;
     const result = previousShowRoundChoice.apply(this, args);
     this.stageStatus.textContent = "5단계 · 방식 선택";
     this.spinButton.textContent = "리롤";
@@ -40,9 +43,16 @@
     if (this.finalPaymentPhase || this.gameOver || this.runComplete) return;
 
     this.awaitingRoundStart = false;
+    this.pendingModeTickets = 0;
     const result = previousStartRound.call(this, modeId);
 
     if (this.currentMode) {
+      // 기존 기반 로직은 방식 선택 시 티켓을 즉시 지급하므로 되돌린 뒤,
+      // 실제 시작 버튼을 누르는 순간 지급하도록 보류합니다.
+      const selectedTickets = this.currentMode.tickets ?? 0;
+      this.tickets = Math.max(0, this.tickets - selectedTickets);
+      this.pendingModeTickets = selectedTickets;
+
       this.awaitingRoundStart = true;
       this.roundStarted = false;
       this.spinButton.disabled = true;
@@ -73,6 +83,11 @@
       this.lockVaultFunding();
     } else if (!this.vaultDeposit) {
       this.selectedVaultTerm = null;
+    }
+
+    if (this.pendingModeTickets > 0) {
+      this.tickets += this.pendingModeTickets;
+      this.pendingModeTickets = 0;
     }
 
     // 이번 준비 구간에서 납부한 빨간 게이지를 확정 구간으로 전환합니다.
@@ -167,11 +182,13 @@
 
   Game.advanceDeadline = function () {
     this.awaitingRoundStart = false;
+    this.pendingModeTickets = 0;
     previousAdvanceDeadline.call(this);
   };
 
   Game.restartRun = function () {
     this.awaitingRoundStart = false;
+    this.pendingModeTickets = 0;
     previousRestartRun.call(this);
   };
 })();
