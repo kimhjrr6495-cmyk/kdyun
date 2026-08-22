@@ -1,0 +1,264 @@
+/* DEADLINE v1.0.4 — economy scaling / UI cleanup / compact contract HUD */
+
+/* ===== REMOVE LOW-VALUE COPY ===== */
+#deadlineStateBadge,
+#vaultLockState,
+.wallet-section > .progress-copy,
+.reference-section-header > small,
+#stage100ContractChip,
+#stage100StreakChip,
+.score-readout #patternList,
+.score-readout #scoreBreakdown,
+.score-readout #readoutDetail,
+.score-readout .stage90-feed,
+.score-readout .trigger-feed,
+.score-readout .score-item-effects {
+  display: none !important;
+}
+
+/* Top status no longer repeats Deadline / round information. */
+.top-status .status-chip:has(#deadlineStatus),
+.top-status .status-chip:has(#roundStatus) {
+  display: none !important;
+}
+
+/* ===== MACHINE HEADER: DEADLINE + ROUNDS LEFT ===== */
+.machine-header {
+  min-height: 64px !important;
+  padding: 9px 18px !important;
+  align-items: center !important;
+}
+
+.stage104-machine-left {
+  min-width: 0;
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+}
+
+.stage104-machine-left > #stage104DeadlineLabel {
+  margin-top: 4px;
+  font-size: 14px !important;
+  font-weight: 950 !important;
+  letter-spacing: -0.02em;
+  color: #111827;
+  white-space: nowrap;
+}
+
+#stageStatus {
+  font-size: 11px !important;
+  font-weight: 850 !important;
+  color: #64748B !important;
+  opacity: 1 !important;
+  white-space: nowrap;
+}
+
+/* Compensate for the slightly taller header without changing the fixed machine height. */
+.machine-stage {
+  padding-top: 14px !important;
+  padding-bottom: 14px !important;
+}
+
+/* ===== CONTRACT ICON HUD ===== */
+.stage104-contract-hud {
+  position: relative;
+  width: 34px;
+  min-width: 34px;
+  display: grid;
+  justify-items: center;
+  align-content: start;
+  gap: 1px;
+  margin-top: -1px;
+  z-index: 18;
+}
+
+.stage104-contract-hud[hidden] {
+  display: none !important;
+}
+
+.stage104-contract-rounds {
+  min-height: 11px;
+  color: #64748B;
+  font-size: 9px;
+  line-height: 1;
+  font-weight: 1000;
+  font-variant-numeric: tabular-nums;
+}
+
+.stage104-contract-icon {
+  width: 28px;
+  height: 28px;
+  display: grid;
+  place-items: center;
+  border: 1.5px solid #A8B4C2;
+  border-radius: 9px;
+  background: #F5F7FA;
+  font-size: 16px;
+  line-height: 1;
+  cursor: help;
+  transition: border-color 120ms ease, box-shadow 120ms ease, transform 120ms ease;
+}
+
+.stage104-contract-hud.tier-risk .stage104-contract-rounds {
+  color: #B8552A;
+}
+
+.stage104-contract-hud.tier-risk .stage104-contract-icon {
+  border-color: #D9683D;
+  background: #FFF0E8;
+  box-shadow: 0 0 10px rgba(217, 104, 61, 0.17);
+}
+
+.stage104-contract-hud.tier-extreme .stage104-contract-rounds {
+  color: #C62D4D;
+}
+
+.stage104-contract-hud.tier-extreme .stage104-contract-icon {
+  border-color: #E23858;
+  background: #FFE9EE;
+  box-shadow:
+    0 0 0 1px rgba(226, 56, 88, 0.10),
+    0 0 14px rgba(226, 56, 88, 0.25);
+}
+
+.stage104-contract-hud:hover .stage104-contract-icon {
+  transform: translateY(-1px);
+}
+
+.stage104-contract-hud.tier-risk:hover .stage104-contract-icon {
+  box-shadow: 0 0 16px rgba(217, 104, 61, 0.24);
+}
+
+.stage104-contract-hud.tier-extreme:hover .stage104-contract-icon {
+  box-shadow:
+    0 0 0 1px rgba(226, 56, 88, 0.15),
+    0 0 20px rgba(226, 56, 88, 0.34);
+}
+
+.stage104-contract-tooltip {
+  position: absolute;
+  left: 0;
+  top: calc(100% + 8px);
+  z-index: 80;
+  width: 260px;
+  padding: 11px 12px;
+  border: 1px solid #CBD5E1;
+  border-radius: 11px;
+  background: rgba(255, 255, 255, 0.98);
+  box-shadow: 0 14px 34px rgba(15, 23, 42, 0.16);
+  color: #111827;
+  text-align: left;
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transform: translateY(-3px);
+  transition: opacity 110ms ease, transform 110ms ease, visibility 110ms ease;
+}
+
+.stage104-contract-hud:hover .stage104-contract-tooltip {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+}
+
+.stage104-contract-tooltip > strong,
+.stage104-contract-tooltip > span,
+.stage104-contract-tooltip > b,
+.stage104-contract-tooltip > small {
+  display: block;
+}
+
+.stage104-contract-tooltip > strong {
+  font-size: 12px;
+  font-weight: 950;
+}
+
+.stage104-contract-tooltip > span {
+  margin-top: 6px;
+  color: #475569;
+  font-size: 10px;
+  font-weight: 750;
+  line-height: 1.5;
+}
+
+.stage104-contract-tooltip > b {
+  margin-top: 8px;
+  color: #0F8A69;
+  font-size: 10px;
+  font-weight: 900;
+}
+
+.stage104-contract-tooltip > small {
+  margin-top: 5px;
+  color: #64748B;
+  font-size: 9px;
+  font-weight: 800;
+}
+
+/* ===== MARKET BASE VALUE ===== */
+.stage104-market-reference {
+  min-height: 30px;
+  margin-bottom: 5px;
+  padding: 6px 8px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  border: 1px solid #D7DEE8;
+  border-radius: 9px;
+  background: #F8FAFC;
+  font-variant-numeric: tabular-nums;
+}
+
+.stage104-market-reference > span {
+  color: #64748B;
+  font-size: 9px;
+  font-weight: 850;
+}
+
+.stage104-market-reference > strong {
+  color: #111827;
+  font-size: 10px;
+  font-weight: 1000;
+}
+
+/* ===== CLEAN SETTLEMENT AREA ===== */
+.score-readout,
+.settlement-readout.score-readout {
+  display: grid !important;
+  place-items: center !important;
+  align-content: center !important;
+  grid-template-rows: auto auto !important;
+  gap: 13px !important;
+}
+
+.score-readout > #payoutValue {
+  margin: 0 !important;
+}
+
+.score-readout > #spinButton {
+  margin: 0 auto !important;
+}
+
+/* Exact balances remain readable even after compact notation is applied. */
+#walletValue,
+#bankValue,
+#deadlinePaidValue,
+#deadlineTargetValue,
+#stage99RoundWalletValue,
+#payoutValue {
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+@media (max-width: 760px) {
+  .machine-header {
+    min-height: 60px !important;
+    padding-left: 13px !important;
+    padding-right: 13px !important;
+  }
+
+  .stage104-contract-tooltip {
+    width: min(250px, calc(100vw - 48px));
+  }
+}
