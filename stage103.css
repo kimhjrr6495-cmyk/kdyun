@@ -1,0 +1,172 @@
+/* DEADLINE v1.0.3 — action bar cleanup / contract visual polish */
+
+/* ===== ROUND PREP: REMOVE THE HEAVY BACKDROP ===== */
+.machine-panel.round-prep-active .machine-stage::after,
+.machine-panel.is-awaiting-start .machine-stage::after {
+  opacity: 0 !important;
+  background: transparent !important;
+}
+
+.machine-panel.round-prep-active .machine-stage,
+.machine-panel.is-awaiting-start .machine-stage,
+.machine-panel.round-prep-active .machine-actions,
+.machine-panel.is-awaiting-start .machine-actions {
+  background: #FFFFFF !important;
+}
+
+.round-prep-panel {
+  background: transparent !important;
+  border: 0 !important;
+  box-shadow: none !important;
+  padding: 0 !important;
+}
+
+.round-prep-choice-group {
+  margin: 0 auto !important;
+  justify-content: center !important;
+}
+
+.round-prep-label {
+  display: none !important;
+}
+
+/* ===== BOTTOM ACTION BAR: RESTORE THE SMALL, EVEN TYPE SCALE ===== */
+.machine-actions {
+  align-items: center !important;
+}
+
+.machine-actions > #stage99RoundWallet,
+#patternTestButton,
+#actionShopButton {
+  min-height: 42px !important;
+  height: 42px !important;
+  margin: 0 !important;
+  align-self: center !important;
+  font-size: 11px !important;
+  font-weight: 850 !important;
+  line-height: 1 !important;
+  letter-spacing: -0.01em !important;
+}
+
+.machine-actions > #stage99RoundWallet {
+  flex: 0 0 205px !important;
+  width: 205px !important;
+  min-width: 205px !important;
+  max-width: 205px !important;
+  padding: 0 12px !important;
+}
+
+.machine-actions > #stage99RoundWallet > span,
+.machine-actions > #stage99RoundWallet > strong {
+  font-size: 11px !important;
+  font-weight: 850 !important;
+  line-height: 1 !important;
+  letter-spacing: -0.01em !important;
+}
+
+#patternTestButton,
+#actionShopButton {
+  padding-top: 0 !important;
+  padding-bottom: 0 !important;
+}
+
+/* ===== CONTRACT PICKER: NO CLOSE X ===== */
+.flow-overlay.is-contract-modal #shopCloseButton,
+.flow-overlay.is-contract-modal .shop-close-button {
+  display: none !important;
+}
+
+/* ===== CONTRACT CARD + ICON: ONE COLOR LANGUAGE PER TIER ===== */
+.stage100-contract-card.tier-standard {
+  border-color: #9EACBC !important;
+  box-shadow: 0 7px 18px rgba(71, 85, 105, 0.08) !important;
+}
+
+.stage100-contract-card.tier-standard .stage100-contract-icon {
+  border: 1.5px solid #9EACBC !important;
+  background: #F1F5F9 !important;
+  box-shadow: inset 0 0 0 1px rgba(100, 116, 139, 0.05) !important;
+}
+
+.stage100-contract-card.tier-risk {
+  border-color: #D9683D !important;
+  box-shadow:
+    0 0 0 1px rgba(217, 104, 61, 0.10),
+    0 0 18px rgba(217, 104, 61, 0.16),
+    0 9px 22px rgba(15, 23, 42, 0.08) !important;
+}
+
+.stage100-contract-card.tier-risk .stage100-contract-icon {
+  border: 1.5px solid #D9683D !important;
+  background: #FFF0E8 !important;
+  box-shadow:
+    inset 0 0 0 1px rgba(217, 104, 61, 0.08),
+    0 0 10px rgba(217, 104, 61, 0.13) !important;
+}
+
+.stage100-contract-card.tier-extreme {
+  border-color: #E23858 !important;
+  background:
+    radial-gradient(circle at 88% 8%, rgba(226, 56, 88, 0.09), transparent 31%),
+    linear-gradient(145deg, rgba(226, 56, 88, 0.065), transparent 48%),
+    #FFF9FA !important;
+  box-shadow:
+    0 0 0 1px rgba(226, 56, 88, 0.12),
+    0 0 22px rgba(226, 56, 88, 0.24),
+    0 10px 25px rgba(15, 23, 42, 0.09) !important;
+  animation: stage103ContractAura 3.1s ease-in-out infinite !important;
+}
+
+.stage100-contract-card.tier-extreme .stage100-contract-icon {
+  border: 1.5px solid #E23858 !important;
+  background: #FFE9EE !important;
+  box-shadow:
+    inset 0 0 0 1px rgba(226, 56, 88, 0.10),
+    0 0 13px rgba(226, 56, 88, 0.22) !important;
+}
+
+.stage100-contract-card.tier-risk:not(:disabled):hover {
+  border-color: #C9522D !important;
+  box-shadow:
+    0 0 0 1px rgba(217, 104, 61, 0.14),
+    0 0 24px rgba(217, 104, 61, 0.22),
+    0 13px 28px rgba(15, 23, 42, 0.10) !important;
+}
+
+.stage100-contract-card.tier-extreme:not(:disabled):hover {
+  border-color: #CC2747 !important;
+  box-shadow:
+    0 0 0 1px rgba(226, 56, 88, 0.18),
+    0 0 30px rgba(226, 56, 88, 0.32),
+    0 14px 30px rgba(15, 23, 42, 0.11) !important;
+}
+
+@keyframes stage103ContractAura {
+  0%, 100% {
+    box-shadow:
+      0 0 0 1px rgba(226, 56, 88, 0.10),
+      0 0 17px rgba(226, 56, 88, 0.18),
+      0 10px 24px rgba(15, 23, 42, 0.08);
+  }
+  50% {
+    box-shadow:
+      0 0 0 1px rgba(226, 56, 88, 0.15),
+      0 0 25px rgba(226, 56, 88, 0.28),
+      0 10px 25px rgba(15, 23, 42, 0.09);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .stage100-contract-card.tier-extreme {
+    animation: none !important;
+  }
+}
+
+@media (max-width: 760px) {
+  .machine-actions > #stage99RoundWallet {
+    flex-basis: 170px !important;
+    width: 170px !important;
+    min-width: 170px !important;
+    max-width: 170px !important;
+  }
+}
