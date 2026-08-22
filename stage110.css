@@ -1,0 +1,318 @@
+/* DEADLINE v1.1.0 — BUILD IDENTITY UPDATE */
+
+#stage105SlotMeta .stage105-contract-dock,
+#stage104ContractHud {
+  display: none !important;
+}
+
+.machine-panel {
+  position: relative !important;
+}
+
+.stage110-contract-ledger {
+  position: absolute;
+  left: 18px;
+  bottom: 54px;
+  z-index: 42;
+  max-width: calc(100% - 36px);
+  height: 34px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  overflow-x: auto;
+  overflow-y: visible;
+  scrollbar-width: none;
+  pointer-events: auto;
+}
+
+.stage110-contract-ledger::-webkit-scrollbar {
+  display: none;
+}
+
+.stage110-contract-ledger[hidden] {
+  display: none !important;
+}
+
+.stage110-contract-token {
+  position: relative;
+  flex: 0 0 auto;
+  width: 30px;
+  height: 30px;
+}
+
+.stage110-contract-token-icon {
+  position: relative;
+  width: 30px;
+  height: 30px;
+  display: grid;
+  place-items: center;
+  border: 1.5px solid #A8B4C2;
+  border-radius: 9px;
+  background: #F8FAFC;
+  font-size: 16px;
+  line-height: 1;
+  cursor: help;
+  box-shadow: 0 2px 7px rgba(15, 23, 42, 0.06);
+  transition: transform 120ms ease, box-shadow 120ms ease, border-color 120ms ease;
+}
+
+.stage110-contract-token-icon > b {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  display: grid;
+  place-items: center;
+  color: #111827;
+  font-size: 10px;
+  line-height: 1;
+  font-weight: 1000;
+  font-variant-numeric: tabular-nums;
+  pointer-events: none;
+  text-shadow: 0 0 2px #fff, 0 0 4px #fff, 0 1px 0 rgba(255,255,255,.95);
+}
+
+.stage110-contract-token.is-active.tier-standard .stage110-contract-token-icon {
+  border-color: #E45B69;
+  background: #FFF1F3;
+  box-shadow: 0 0 10px rgba(228, 91, 105, 0.16);
+}
+
+.stage110-contract-token.is-active.tier-risk .stage110-contract-token-icon {
+  border-color: #D9683D;
+  background: #FFF0E8;
+  box-shadow: 0 0 12px rgba(217, 104, 61, 0.20);
+}
+
+.stage110-contract-token.is-active.tier-extreme .stage110-contract-token-icon {
+  border-color: #E23858;
+  background: #FFE9EE;
+  box-shadow: 0 0 0 1px rgba(226, 56, 88, 0.10), 0 0 16px rgba(226, 56, 88, 0.30);
+}
+
+.stage110-contract-token.is-completed .stage110-contract-token-icon {
+  border-color: #3976D8;
+  background: #EEF5FF;
+  box-shadow: 0 0 0 1px rgba(57, 118, 216, 0.06), 0 0 10px rgba(57, 118, 216, 0.14);
+}
+
+.stage110-contract-token:hover .stage110-contract-token-icon {
+  transform: translateY(-1px);
+}
+
+.stage110-contract-token-tooltip {
+  position: absolute;
+  left: 0;
+  bottom: calc(100% + 8px);
+  z-index: 100;
+  width: 270px;
+  padding: 11px 12px;
+  border: 1px solid #CBD5E1;
+  border-radius: 11px;
+  background: rgba(255, 255, 255, 0.99);
+  box-shadow: 0 14px 34px rgba(15, 23, 42, 0.17);
+  color: #111827;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(4px);
+  transition: opacity 110ms ease, transform 110ms ease, visibility 110ms ease;
+  pointer-events: none;
+  text-align: left;
+}
+
+.stage110-contract-token:hover .stage110-contract-token-tooltip {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+}
+
+.stage110-contract-token-tooltip > strong,
+.stage110-contract-token-tooltip > span,
+.stage110-contract-token-tooltip > small,
+.stage110-contract-token-tooltip > b {
+  display: block;
+}
+
+.stage110-contract-token-tooltip > strong {
+  font-size: 12px;
+  font-weight: 950;
+}
+
+.stage110-contract-token-tooltip > span {
+  margin-top: 6px;
+  color: #475569;
+  font-size: 10px;
+  font-weight: 750;
+  line-height: 1.5;
+}
+
+.stage110-contract-token-tooltip > small {
+  margin-top: 5px;
+  color: #64748B;
+  font-size: 9px;
+  font-weight: 800;
+}
+
+.stage110-contract-token-tooltip > b {
+  margin-top: 7px;
+  color: #2767C8;
+  font-size: 10px;
+  font-weight: 950;
+  line-height: 1.45;
+}
+
+.stage110-contract-duration {
+  display: block;
+  margin: 5px 0 0;
+  color: #64748B;
+  font-size: 9px;
+  font-weight: 800;
+}
+
+.stage110-permanent-reward {
+  margin-top: 8px;
+  padding: 8px 9px;
+  border: 1px solid #BFD2F3;
+  border-radius: 9px;
+  background: #F3F7FF;
+}
+
+.stage110-permanent-reward > span,
+.stage110-permanent-reward > strong {
+  display: block;
+}
+
+.stage110-permanent-reward > span {
+  color: #64748B;
+  font-size: 9px;
+  font-weight: 850;
+}
+
+.stage110-permanent-reward > strong {
+  margin-top: 3px;
+  color: #245EB6;
+  font-size: 10px;
+  font-weight: 950;
+  line-height: 1.4;
+}
+
+.stage110-global-mult-row {
+  min-height: 29px;
+  margin-top: 5px;
+  padding: 6px 8px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  border: 1px solid #CBD5E1;
+  border-radius: 9px;
+  background: #F8FAFC;
+  font-variant-numeric: tabular-nums;
+}
+
+.stage110-global-mult-row > span {
+  color: #475569;
+  font-size: 9px;
+  font-weight: 900;
+}
+
+.stage110-global-mult-row > strong {
+  color: #111827;
+  font-size: 10px;
+  font-weight: 1000;
+}
+
+.stage110-inline-global-mult {
+  margin-left: auto;
+  padding-left: 5px;
+  color: #27705D;
+  font-size: 9px;
+  font-weight: 950;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.stage110-inline-global-mult[hidden] {
+  display: none !important;
+}
+
+.stage110-activation-log {
+  position: absolute;
+  top: 48px;
+  right: 14px;
+  z-index: 50;
+  width: 150px;
+  display: grid;
+  justify-items: stretch;
+  gap: 5px;
+  pointer-events: none;
+}
+
+.stage110-activation-log[hidden] {
+  display: none !important;
+}
+
+.stage110-activation-chip {
+  min-height: 38px;
+  padding: 8px 9px;
+  border: 1px solid #C9D4E0;
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.97);
+  box-shadow: 0 8px 20px rgba(15, 23, 42, 0.10);
+  animation: stage110LogIn 150ms cubic-bezier(.16,1,.3,1) both;
+}
+
+.stage110-activation-chip > strong,
+.stage110-activation-chip > small {
+  display: block;
+}
+
+.stage110-activation-chip > strong {
+  color: #111827;
+  font-size: 10px;
+  font-weight: 950;
+}
+
+.stage110-activation-chip > small {
+  margin-top: 3px;
+  color: #64748B;
+  font-size: 9px;
+  font-weight: 800;
+  line-height: 1.35;
+}
+
+.stage110-activation-chip.kind-trigger {
+  border-color: #9FD7C6;
+  background: #F0FBF7;
+}
+
+.stage110-activation-chip.is-leaving {
+  animation: stage110LogOut 150ms ease forwards;
+}
+
+@keyframes stage110LogIn {
+  from { opacity: 0; transform: translateX(8px) scale(.97); }
+  to { opacity: 1; transform: translateX(0) scale(1); }
+}
+
+@keyframes stage110LogOut {
+  from { opacity: 1; transform: translateX(0); }
+  to { opacity: 0; transform: translateX(8px); }
+}
+
+@media (max-width: 760px) {
+  .stage110-contract-ledger {
+    left: 13px;
+    bottom: 52px;
+    max-width: calc(100% - 26px);
+  }
+
+  .stage110-contract-token-tooltip {
+    width: min(260px, calc(100vw - 42px));
+  }
+
+  .stage110-activation-log {
+    top: 45px;
+    right: 9px;
+    width: 132px;
+  }
+}
