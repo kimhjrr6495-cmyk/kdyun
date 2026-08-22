@@ -244,7 +244,7 @@
       return;
     }
 
-    if (!Number.isFinite(this.stage104ContractRoundsRemaining) || this.stage104ContractRoundsRemaining <= 0) {
+    if (!Number.isFinite(this.stage104ContractRoundsRemaining)) {
       this.stage104ContractRoundsRemaining = this.getStage104ContractDuration(contract);
     }
 
@@ -271,6 +271,7 @@
   };
 
   Game.selectStage100Contract = function (...args) {
+    this.stage104ContractRoundsRemaining = null;
     const result = previousSelectStage100Contract.apply(this, args);
     this.stage104ContractRoundsRemaining = this.getStage104ContractDuration(this.stage100ActiveContract);
     this.updateStage104ContractHud();
@@ -279,7 +280,7 @@
 
   Game.skipStage100Contract = function (...args) {
     const result = previousSkipStage100Contract.apply(this, args);
-    this.stage104ContractRoundsRemaining = 0;
+    this.stage104ContractRoundsRemaining = null;
     this.updateStage104ContractHud();
     return result;
   };
@@ -289,14 +290,17 @@
     const countedRound = Boolean(contractBefore && !this.finalPaymentPhase && this.roundStarted);
     const result = await previousResolveRound.apply(this, args);
     if (countedRound && this.stage100ActiveContract === contractBefore) {
-      this.stage104ContractRoundsRemaining = Math.max(0, (Number(this.stage104ContractRoundsRemaining) || this.getStage104ContractDuration(contractBefore)) - 1);
+      const current = Number.isFinite(this.stage104ContractRoundsRemaining)
+        ? this.stage104ContractRoundsRemaining
+        : this.getStage104ContractDuration(contractBefore);
+      this.stage104ContractRoundsRemaining = Math.max(0, current - 1);
       this.updateStage104ContractHud();
     }
     return result;
   };
 
   Game.advanceDeadline = function (...args) {
-    this.stage104ContractRoundsRemaining = 0;
+    this.stage104ContractRoundsRemaining = null;
     const result = previousAdvanceDeadline.apply(this, args);
     this.updateStage104ContractHud();
     return result;
@@ -421,7 +425,7 @@
   };
 
   Game.init = function () {
-    this.stage104ContractRoundsRemaining = 0;
+    this.stage104ContractRoundsRemaining = null;
     this.patchStage104MarketItemData();
     const result = previousInit.call(this);
     this.installStage104MoneyObserver();
@@ -436,7 +440,7 @@
   };
 
   Game.restartRun = function (...args) {
-    this.stage104ContractRoundsRemaining = 0;
+    this.stage104ContractRoundsRemaining = null;
     const result = previousRestartRun.apply(this, args);
     this.patchStage104MarketItemData();
     this.syncStage104MarketScaledEffects();
