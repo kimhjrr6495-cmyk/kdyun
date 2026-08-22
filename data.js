@@ -4,7 +4,7 @@
 "use strict";
 
 const GAME_DATA = {
-  version: "v0.5.2",
+  version: "v0.5.3",
   stage: 5,
   board: { columns: 5, rows: 3 },
 
@@ -40,7 +40,7 @@ const GAME_DATA = {
     H3: { name: "가로 3", baseValue: 1 },
     H4: { name: "가로 4", baseValue: 2 },
     H5: { name: "가로 5", baseValue: 4 },
-    JACKPOT: { name: "JACKPOT", baseValue: 12 },
+    JACKPOT: { name: "잭팟", baseValue: 12 },
     V3: { name: "세로 3", baseValue: 1.5 },
     DIAG: { name: "대각선", baseValue: 2 },
     V: { name: "V", baseValue: 6 },
@@ -65,14 +65,14 @@ const GAME_DATA = {
     modes: {
       NORMAL: {
         id: "NORMAL",
-        name: "NORMAL",
+        name: "일반",
         spins: 6,
         tickets: 1,
         description: "6회전 · 티켓 +1"
       },
       RISK: {
         id: "RISK",
-        name: "RISK",
+        name: "위험",
         spins: 3,
         tickets: 3,
         description: "3회전 · 티켓 +3"
@@ -80,18 +80,25 @@ const GAME_DATA = {
     }
   },
 
-  // Stage 5.2 경제 규칙.
-  // 지갑은 자유 자금, 금고는 정기예치, Deadline Account는 회수 불가 납부금입니다.
-  // 금고/마감계좌는 현재 목표액의 5% 단위로만 돈을 넣습니다.
+  // Stage 5.3 경제 규칙.
+  // 마감/금고 예치는 현재 목표의 5% 단위입니다.
+  // 금고는 2라운드/4라운드 상품만 존재하며, 라운드마다 복리로 이자가 붙습니다.
   economy: {
     depositUnitRatio: 0.05,
-    vaultTicketThresholdRatio: 0.50,
     earlyPaymentTicketPerUnusedRound: 2,
     vaultTerms: {
-      2: { rounds: 2, rate: 0.30 },
-      3: { rounds: 3, rate: 0.45 },
-      4: { rounds: 4, rate: 0.65 },
-      5: { rounds: 5, rate: 0.90 }
+      2: {
+        rounds: 2,
+        roundRates: [0.15, 0.15],
+        ticketRounds: [2],
+        totalTickets: 1
+      },
+      4: {
+        rounds: 4,
+        roundRates: [0.15, 0.15, 0.25, 0.25],
+        ticketRounds: [2, 4],
+        totalTickets: 2
+      }
     }
   },
 
