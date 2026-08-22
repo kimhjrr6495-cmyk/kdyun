@@ -4,26 +4,27 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>DEADLINE — 슬롯 로그라이트</title>
-  <link rel="stylesheet" href="style.css?v=0.6.0" />
-  <link rel="stylesheet" href="vault.css?v=0.6.0" />
-  <link rel="stylesheet" href="stage55.css?v=0.6.0" />
-  <link rel="stylesheet" href="stage57.css?v=0.6.0" />
-  <link rel="stylesheet" href="stage58.css?v=0.6.0" />
-  <link rel="stylesheet" href="stage60.css?v=0.6.0" />
+  <link rel="stylesheet" href="style.css?v=0.6.1" />
+  <link rel="stylesheet" href="vault.css?v=0.6.1" />
+  <link rel="stylesheet" href="stage55.css?v=0.6.1" />
+  <link rel="stylesheet" href="stage57.css?v=0.6.1" />
+  <link rel="stylesheet" href="stage58.css?v=0.6.1" />
+  <link rel="stylesheet" href="stage60.css?v=0.6.1" />
+  <link rel="stylesheet" href="stage61.css?v=0.6.1" />
 </head>
 <body>
   <main class="app-shell">
     <header class="topbar">
       <div class="brand-block">
-        <span class="eyebrow">CONTROLLED MARKET SYSTEM · VERSION v0.6.0</span>
+        <span class="eyebrow">CONTROLLED MARKET SYSTEM · VERSION v0.6.1</span>
         <h1>DEADLINE</h1>
       </div>
 
       <div class="top-status" aria-label="게임 상태">
-        <div class="status-chip">버전 <strong>v0.6.0</strong></div>
+        <div class="status-chip">버전 <strong>v0.6.1</strong></div>
         <div class="status-chip">마감 <strong id="deadlineStatus">1</strong></div>
         <div class="status-chip">라운드 <strong id="roundStatus">1 / 3</strong></div>
-        <div class="status-chip">회전 <strong id="spinStatus">선택 대기</strong></div>
+        <div class="status-chip">회전 <strong id="spinStatus">준비</strong></div>
         <div class="status-chip">티켓 <strong id="ticketStatus">0</strong></div>
         <div id="deadlineRiskChip" class="status-chip danger-chip is-hidden">마감 위험</div>
       </div>
@@ -89,10 +90,25 @@
       <section id="machinePanel" class="panel machine-panel">
         <div class="machine-header">
           <strong>5 × 3 시장 연동 릴</strong>
-          <span id="stageStatus">6단계 · 상점 시스템</span>
+          <span id="stageStatus">6단계 · 라운드 준비</span>
         </div>
 
         <div class="machine-stage">
+          <div id="roundPrepPanel" class="round-prep-panel" hidden>
+            <div class="round-prep-choice-group" aria-label="리롤 횟수 선택">
+              <span class="round-prep-label">이번 라운드</span>
+              <button class="round-mode-select" data-prep-mode="NORMAL" type="button" aria-pressed="false">
+                <strong>7회 리롤</strong>
+                <small>티켓 +1</small>
+              </button>
+              <button class="round-mode-select" data-prep-mode="RISK" type="button" aria-pressed="false">
+                <strong>3회 리롤</strong>
+                <small>티켓 +3</small>
+              </button>
+            </div>
+            <button id="prepShopButton" class="prep-shop-button" type="button">상점</button>
+          </div>
+
           <div class="slot-machine" aria-label="5열 3행 슬롯">
             <div id="reels" class="reels" aria-live="polite"></div>
 
@@ -101,16 +117,16 @@
               <strong id="payoutValue">+ $ 0</strong>
               <div id="patternList" class="pattern-list" aria-live="polite"></div>
               <div id="scoreBreakdown" class="score-breakdown" aria-live="polite">
-                라운드 방식을 선택하면 회전을 시작할 수 있습니다.
+                라운드 준비
               </div>
-              <small id="readoutDetail">일반 또는 위험을 선택하세요.</small>
+              <small id="readoutDetail">납부 · 금고 · 상점을 정리한 뒤 리롤 횟수를 선택하세요.</small>
             </div>
           </div>
         </div>
 
         <div class="machine-actions">
-          <button id="spinButton" class="primary-action" disabled>리롤</button>
-          <button id="patternTestButton">패턴 테스트 1/9</button>
+          <button id="spinButton" class="primary-action" disabled>시작</button>
+          <button id="patternTestButton" disabled>패턴 테스트 1/9</button>
           <button disabled>심볼 정보</button>
           <span class="action-spacer"></span>
           <button disabled>출금하기</button>
@@ -118,12 +134,12 @@
 
         <div class="items-edge-tab">아이템</div>
 
-        <div id="flowOverlay" class="flow-overlay is-open" aria-live="polite">
+        <div id="flowOverlay" class="flow-overlay" aria-live="polite">
           <div class="flow-card">
-            <span id="flowEyebrow" class="flow-eyebrow">마감 1 · 라운드 1 / 3</span>
-            <h2 id="flowTitle">라운드 방식 선택</h2>
-            <p id="flowText">이번 라운드의 회전 수를 선택하세요.</p>
-            <div id="flowOptions" class="flow-options mode-only"></div>
+            <span id="flowEyebrow" class="flow-eyebrow">상태</span>
+            <h2 id="flowTitle">상점</h2>
+            <p id="flowText"></p>
+            <div id="flowOptions" class="flow-options"></div>
             <small id="flowFooter" class="flow-footer"></small>
           </div>
         </div>
@@ -131,10 +147,10 @@
     </section>
   </main>
 
-  <aside class="items-preview" aria-label="아이템 및 상태 패널">
+  <aside id="itemTray" class="items-preview compact-item-tray" aria-label="현재 보유 아이템">
     <div class="drawer-header">
-      <strong>아이템</strong>
-      <span>상태 / 보유 목록</span>
+      <strong>보유 아이템</strong>
+      <span id="itemTrayCount">0 / 6</span>
     </div>
 
     <section class="drawer-stats">
@@ -151,20 +167,31 @@
       <strong>보유 아이템 0 / 6</strong>
       <span>6단계 상점</span>
     </div>
-    <div class="empty-slots">
-      <div>비어 있음</div><div>비어 있음</div><div>비어 있음</div>
-      <div>비어 있음</div><div>비어 있음</div><div>비어 있음</div>
+    <div id="itemTraySlots" class="empty-slots">
+      <div class="item-tray-slot is-empty"></div><div class="item-tray-slot is-empty"></div><div class="item-tray-slot is-empty"></div>
+      <div class="item-tray-slot is-empty"></div><div class="item-tray-slot is-empty"></div><div class="item-tray-slot is-empty"></div>
+    </div>
+
+    <div id="itemSellPopover" class="item-sell-popover" hidden>
+      <strong id="itemSellName">아이템</strong>
+      <span id="itemSellEffect">효과 준비 중</span>
+      <small id="itemSellValue">판매 +1T</small>
+      <div class="item-sell-actions">
+        <button id="itemSellConfirm" class="sell-confirm" type="button">판매</button>
+        <button id="itemSellCancel" type="button">취소</button>
+      </div>
     </div>
     <p>아이템 효과는 다음 단계에서 연결합니다.</p>
   </aside>
 
-  <script src="data.js?v=0.6.0"></script>
-  <script src="effects.js?v=0.6.0"></script>
-  <script src="game.js?v=0.6.0"></script>
-  <script src="vault.js?v=0.6.0"></script>
-  <script src="stage55.js?v=0.6.0"></script>
-  <script src="stage57.js?v=0.6.0"></script>
-  <script src="stage58.js?v=0.6.0"></script>
-  <script src="stage60.js?v=0.6.0"></script>
+  <script src="data.js?v=0.6.1"></script>
+  <script src="effects.js?v=0.6.1"></script>
+  <script src="game.js?v=0.6.1"></script>
+  <script src="vault.js?v=0.6.1"></script>
+  <script src="stage55.js?v=0.6.1"></script>
+  <script src="stage57.js?v=0.6.1"></script>
+  <script src="stage58.js?v=0.6.1"></script>
+  <script src="stage60.js?v=0.6.1"></script>
+  <script src="stage61.js?v=0.6.1"></script>
 </body>
 </html>
