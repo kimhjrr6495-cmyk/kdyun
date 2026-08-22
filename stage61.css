@@ -1,0 +1,362 @@
+/* Stage 6.1 — 준비 허브 / 7·3 선택 / 수동 상점 / 컴팩트 아이템 트레이 */
+
+/* 슬롯 위 준비 선택 바: 레이아웃을 밀지 않고 기계 위에 떠 있습니다. */
+.round-prep-panel {
+  position: absolute;
+  top: 14px;
+  left: 24px;
+  right: 24px;
+  z-index: 11;
+  display: flex;
+  align-items: stretch;
+  justify-content: space-between;
+  gap: 10px;
+  pointer-events: auto;
+}
+
+.round-prep-panel[hidden] {
+  display: none !important;
+}
+
+.round-prep-choice-group {
+  display: flex;
+  align-items: stretch;
+  gap: 8px;
+  min-width: 0;
+}
+
+.round-prep-label {
+  display: grid;
+  align-content: center;
+  padding: 0 10px 0 2px;
+  font-size: 9px;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  opacity: 0.54;
+  white-space: nowrap;
+}
+
+.round-mode-select {
+  min-width: 128px;
+  min-height: 58px;
+  padding: 9px 12px;
+  display: grid;
+  align-content: center;
+  gap: 3px;
+  text-align: left;
+  background: rgba(247, 248, 250, 0.96);
+  border-color: rgba(26, 29, 35, 0.16);
+  box-shadow: 0 2px 8px rgba(26, 29, 35, 0.06);
+}
+
+.round-mode-select strong,
+.round-mode-select small {
+  display: block;
+}
+
+.round-mode-select strong {
+  font-size: 14px;
+  letter-spacing: -0.03em;
+}
+
+.round-mode-select small {
+  font-size: 9px;
+  font-weight: 850;
+  opacity: 0.48;
+}
+
+.round-mode-select.is-selected {
+  border-color: #1A1D23;
+  background: #FFFFFF;
+  box-shadow:
+    inset 0 0 0 1px #1A1D23,
+    0 4px 12px rgba(26, 29, 35, 0.09);
+  transform: translateY(-1px);
+}
+
+.round-mode-select[data-prep-mode="RISK"].is-selected {
+  border-color: var(--danger);
+  box-shadow:
+    inset 0 0 0 1px var(--danger),
+    0 4px 12px rgba(255, 92, 92, 0.1);
+}
+
+.prep-shop-button {
+  flex: 0 0 auto;
+  min-width: 92px;
+  min-height: 58px;
+  padding: 10px 15px;
+  border-color: rgba(26, 29, 35, 0.28);
+  background: rgba(247, 248, 250, 0.97);
+  box-shadow: 0 2px 8px rgba(26, 29, 35, 0.06);
+}
+
+/* 준비 상태에서는 슬롯/액션 바가 잠겨 보이되, 선택 완료 후 시작 버튼만 살아납니다. */
+.machine-panel.round-prep-active .machine-stage::after {
+  opacity: 1;
+  background: rgba(26, 29, 35, 0.18);
+}
+
+.machine-panel.round-prep-active .machine-stage {
+  background: #E9ECEF;
+}
+
+.machine-panel.round-prep-active .machine-actions {
+  background: #E9ECEF;
+}
+
+.machine-panel.round-prep-active #spinButton {
+  opacity: 1;
+  filter: none;
+}
+
+.machine-panel.round-prep-active:not(.has-mode-selection) #spinButton {
+  border-color: #D0D4DA;
+  background: #D0D4DA;
+  color: rgba(26, 29, 35, 0.4);
+  box-shadow: none;
+}
+
+.machine-panel.round-prep-active.has-mode-selection #spinButton {
+  border-color: #1A1D23;
+  background: #1A1D23;
+  color: #F7F8FA;
+  box-shadow: 0 3px 10px rgba(26, 29, 35, 0.14);
+}
+
+/* 리롤 선택 직후에는 자금 UI를 즉시 잠금 표현으로 전환합니다. */
+.deadline-account-section.is-round-locked,
+.vault-chamber.is-round-locked {
+  transition: background 160ms ease, border-color 160ms ease, opacity 160ms ease;
+}
+
+/* Stage 6.1 상점은 구매 중심: 보유 목록은 우측 하단 트레이가 담당합니다. */
+.shop-offers-section.shop-offers-only {
+  padding: 16px;
+}
+
+.flow-card:has(.shop-offers-only) {
+  width: min(860px, 100%);
+}
+
+/* 오른쪽 전체 서랍을 작은 우측 하단 아이템 트레이로 변경 */
+.items-preview.compact-item-tray {
+  right: 14px;
+  top: auto;
+  bottom: 14px;
+  width: 286px;
+  height: auto;
+  max-height: none;
+  padding: 12px;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  background: rgba(247, 248, 250, 0.97);
+  box-shadow: 0 8px 24px rgba(26, 29, 35, 0.1);
+  transform: none;
+  transition: none;
+  overflow: visible;
+  z-index: 24;
+}
+
+.items-preview.compact-item-tray:hover {
+  transform: none;
+}
+
+.compact-item-tray .drawer-header strong {
+  font-size: 12px;
+}
+
+.compact-item-tray .drawer-header span {
+  font-size: 10px;
+  font-weight: 900;
+  opacity: 0.58;
+}
+
+.compact-item-tray .drawer-stats {
+  margin-top: 8px;
+}
+
+.compact-item-tray .drawer-section-label,
+.compact-item-tray .drawer-item-heading,
+.compact-item-tray > p {
+  display: none;
+}
+
+.compact-item-tray .drawer-stat-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 5px;
+}
+
+.compact-item-tray .drawer-stat-grid > div {
+  min-width: 0;
+  padding: 6px;
+  border: 1px solid rgba(26, 29, 35, 0.08);
+  border-radius: 8px;
+  text-align: center;
+}
+
+.compact-item-tray .drawer-stat-grid span,
+.compact-item-tray .drawer-stat-grid strong {
+  display: block;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.compact-item-tray .drawer-stat-grid span {
+  font-size: 7px;
+  opacity: 0.42;
+}
+
+.compact-item-tray .drawer-stat-grid strong {
+  margin-top: 2px;
+  font-size: 9px;
+}
+
+.compact-item-tray .empty-slots {
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  gap: 5px;
+  margin-top: 9px;
+}
+
+.compact-item-tray .item-tray-slot {
+  position: relative;
+  min-width: 0;
+  min-height: 38px;
+  padding: 4px;
+  display: grid;
+  place-items: center;
+  border: 1px solid var(--line);
+  border-radius: 9px;
+  background: var(--bg);
+  box-shadow: none;
+}
+
+.compact-item-tray .item-tray-slot strong {
+  font-size: 9px;
+  letter-spacing: -0.03em;
+}
+
+.compact-item-tray .item-tray-slot.is-empty {
+  min-height: 38px;
+  opacity: 0.24;
+  background: rgba(26, 29, 35, 0.025);
+}
+
+.compact-item-tray .item-tray-slot:not(.is-empty)::after {
+  content: attr(data-tooltip);
+  position: absolute;
+  left: 50%;
+  bottom: calc(100% + 8px);
+  z-index: 40;
+  width: max-content;
+  max-width: 210px;
+  padding: 7px 9px;
+  border: 1px solid rgba(26, 29, 35, 0.12);
+  border-radius: 8px;
+  background: #1A1D23;
+  color: #F7F8FA;
+  font-size: 9px;
+  font-weight: 750;
+  line-height: 1.35;
+  white-space: normal;
+  opacity: 0;
+  pointer-events: none;
+  transform: translate(-50%, 3px);
+  transition: opacity 120ms ease, transform 120ms ease;
+}
+
+.compact-item-tray .item-tray-slot:not(.is-empty):hover::after {
+  opacity: 1;
+  transform: translate(-50%, 0);
+}
+
+.item-sell-popover {
+  position: absolute;
+  right: 0;
+  bottom: calc(100% + 8px);
+  width: 230px;
+  padding: 11px;
+  border: 1px solid var(--line);
+  border-radius: 11px;
+  background: #F7F8FA;
+  box-shadow: 0 10px 28px rgba(26, 29, 35, 0.14);
+}
+
+.item-sell-popover[hidden] {
+  display: none !important;
+}
+
+.item-sell-popover strong,
+.item-sell-popover span,
+.item-sell-popover small {
+  display: block;
+}
+
+.item-sell-popover strong {
+  font-size: 13px;
+}
+
+.item-sell-popover span {
+  margin-top: 4px;
+  font-size: 9px;
+  line-height: 1.4;
+  opacity: 0.54;
+}
+
+.item-sell-popover small {
+  margin-top: 8px;
+  font-size: 10px;
+  font-weight: 900;
+  color: var(--gain);
+}
+
+.item-sell-actions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 6px;
+  margin-top: 9px;
+}
+
+.item-sell-actions button {
+  min-height: 34px;
+  padding: 7px 8px;
+  box-shadow: none;
+  font-size: 9px;
+}
+
+.item-sell-actions .sell-confirm {
+  border-color: #1A1D23;
+  background: #1A1D23;
+  color: #F7F8FA;
+}
+
+@media (max-width: 780px) {
+  .round-prep-panel {
+    left: 14px;
+    right: 14px;
+    flex-direction: column;
+  }
+
+  .round-prep-choice-group {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .round-prep-label {
+    grid-column: 1 / -1;
+    padding: 0 0 2px;
+  }
+
+  .round-mode-select,
+  .prep-shop-button {
+    min-width: 0;
+  }
+
+  .items-preview.compact-item-tray {
+    right: 8px;
+    bottom: 8px;
+    width: min(286px, calc(100vw - 16px));
+  }
+}
