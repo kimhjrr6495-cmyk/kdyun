@@ -1,11 +1,11 @@
-// DEADLINE — Stage 5
-// 라운드 / 마감 / 경제 시스템과 점수 계산에 필요한 공용 게임 데이터.
+// DEADLINE — Stage 6
+// 라운드 / 마감 / 경제 / 상점 시스템에 필요한 공용 게임 데이터.
 
 "use strict";
 
 const GAME_DATA = {
-  version: "v0.5.8",
-  stage: 5,
+  version: "v0.6.0",
+  stage: 6,
   board: { columns: 5, rows: 3 },
 
   // 실제 점수 계산에 사용합니다. 등장 확률 가중치는 아직 연결하지 않습니다.
@@ -80,9 +80,8 @@ const GAME_DATA = {
     }
   },
 
-  // Stage 5.8 경제 규칙.
-  // 라운드 방식 선택 후 자금 배분 구간을 거친 뒤 별도 시작 버튼으로 라운드를 확정합니다.
-  // 시작 버튼은 회전을 소비하지 않으며, 시작 이후에만 실제 리롤을 사용할 수 있습니다.
+  // Stage 6에서도 Stage 5 경제 규칙을 유지합니다.
+  // 방식 선택 뒤 '시작' 상태에서 자금을 배분하고, 시작 후에만 실제 리롤을 사용합니다.
   economy: {
     depositUnitRatio: 0.05,
     earlyPaymentTicketPerUnusedRound: 2,
@@ -103,6 +102,14 @@ const GAME_DATA = {
         totalTickets: 2
       }
     }
+  },
+
+  // Stage 6 상점 뼈대. 실제 아이템 효과/20개 콘텐츠는 Stage 7에서 연결합니다.
+  shop: {
+    offerCount: 4,
+    maxOwnedItems: 6,
+    rerollStartCost: 1,
+    rerollCostStep: 1
   },
 
   // 개발 중 판정/점수 검수용 임시 샘플. 지갑/회전 수/티켓에는 영향 없음.
