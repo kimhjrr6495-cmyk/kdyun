@@ -1,15 +1,15 @@
-// DEADLINE — Stage 1
+// DEADLINE — Stage 2
 // 공용 게임 데이터. 이후 단계에서도 이 파일을 기준으로 확장합니다.
 
 "use strict";
 
 const GAME_DATA = {
-  version: "v0.1.3",
-  stage: 1,
+  version: "v0.2.0",
+  stage: 2,
   board: { columns: 5, rows: 3 },
 
-  // Stage 1에서는 확률/가치 계산 없이 동일 확률로 랜덤 선택합니다.
-  // 실제 등장 가중치와 점수 가치는 후속 단계에서 연결합니다.
+  // Stage 2까지는 등장 확률/가치 계산 없이 동일 확률로 랜덤 선택합니다.
+  // 실제 등장 가중치와 점수 가치는 Stage 3 이후 연결합니다.
   symbols: [
     { id: "CH", code: "CH", name: "체리" },
     { id: "CO", code: "CO", name: "코인" },
@@ -20,16 +20,37 @@ const GAME_DATA = {
     { id: "SV", code: "7", name: "세븐" }
   ],
 
-  // Stage 1 릴 감각 조절값.
-  // v0.1.3: 모든 릴이 함께 도는 공통 구간을 약 0.3초 늘렸습니다.
-  // 첫 릴은 약 1.55초에 멈추고 이후 릴은 0.155초 간격으로 순차 정지합니다.
-  // 최종 사운드/정지 이펙트가 들어갈 때 다시 미세조정할 예정입니다.
+  // Stage 1에서 확정한 v0.1.3 회전감 유지.
   reelMotion: {
     baseDuration: 1550,
     stopGap: 155,
     travelSymbols: 18,
     easing: "cubic-bezier(0.16, 1, 0.3, 1)"
   },
+
+  // 점수 배율 값은 Stage 3에서 실제 계산에 사용합니다.
+  patterns: {
+    H3: { name: "가로 3", multiplier: 1 },
+    H4: { name: "가로 4", multiplier: 2 },
+    H5: { name: "가로 5", multiplier: 4 },
+    V3: { name: "세로 3", multiplier: 1.5 },
+    DIAG: { name: "대각선", multiplier: 2 },
+    V: { name: "V", multiplier: 6 },
+    INV_V: { name: "역 V", multiplier: 6 },
+    X: { name: "X", multiplier: 8 }
+  },
+
+  // 2단계 검증용 임시 샘플. 패턴 테스트 버튼으로 순환합니다.
+  patternTests: [
+    { key: "H3", coords: [[0, 1], [1, 1], [2, 1]] },
+    { key: "H4", coords: [[0, 1], [1, 1], [2, 1], [3, 1]] },
+    { key: "H5", coords: [[0, 1], [1, 1], [2, 1], [3, 1], [4, 1]] },
+    { key: "V3", coords: [[2, 0], [2, 1], [2, 2]] },
+    { key: "DIAG", coords: [[0, 0], [1, 1], [2, 2]] },
+    { key: "V", coords: [[0, 0], [1, 1], [2, 2], [3, 1], [4, 0]] },
+    { key: "INV_V", coords: [[0, 2], [1, 1], [2, 0], [3, 1], [4, 2]] },
+    { key: "X", coords: [[0, 0], [4, 0], [2, 1], [0, 2], [4, 2]] }
+  ],
 
   palette: {
     background: "#F7F8FA",
