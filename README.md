@@ -92,17 +92,17 @@ ERROR EVENT의 기본 결과는 오류 1칸 복구 / 소액 현금 보상 / 티�
 
 | 등급 | 아이템 | 효과 |
 | --- | --- | --- |
-| RARE | 🃏 조커 카드 | WILD 등장 가중치 +2%p |
+| RARE | 🃏 조커 카드 | WILD 등장 가중치 +2 |
 | EPIC | 🎭 가면극 | WILD가 완성한 패턴 ×1.35 |
 | LEGENDARY | 👑 왕의 조커 | WILD가 💎·👑·7️⃣ 대체 시 ×1.50 |
 | RARE | 🧲 오류 수집기 | ERROR마다 $3 저장, 다음 당첨에 지급 |
-| RARE | ⚠️ 오버클럭 | ERROR +3%p, 모든 지급 ×1.20 |
+| RARE | ⚠️ 오버클럭 | ERROR 가중치 +3, 모든 지급 ×1.20 |
 | COMMON | 🔧 디버거 | 매 리롤 첫 ERROR 정상화 |
 | RARE | 💾 백업 파일 | ERROR 35% 확률로 직전 보드 심볼 복원 |
 | EPIC | ☣️ 오류 증폭기 | ERROR EVENT 시 ERROR당 $10 추가 |
 | LEGENDARY | 🖥️ 커널 패닉 | ERROR EVENT의 모든 ERROR를 WILD로 변환 |
 | EPIC | 🔀 글리치 라우터 | ERROR EVENT 때 ERROR 1개를 다른 셀과 교환 |
-| EPIC | 🎲 카오스 칩 | WILD / ERROR 가중치 각각 +2%p |
+| EPIC | 🎲 카오스 칩 | WILD / ERROR 가중치 각각 +2 |
 | LEGENDARY | 🃏 불안정한 조커 | ERROR가 35% 확률로 WILD 변환 |
 
 ERROR 관련 아이템이 실제 발동하면 기존 CloverPit식 오른쪽 슬라이드 아이템 카드 큐를 사용합니다.
