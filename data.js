@@ -4,7 +4,7 @@
 "use strict";
 
 const GAME_DATA = {
-  version: "v0.6.0",
+  version: "v0.6.1",
   stage: 6,
   board: { columns: 5, rows: 3 },
 
@@ -65,23 +65,23 @@ const GAME_DATA = {
     modes: {
       NORMAL: {
         id: "NORMAL",
-        name: "일반",
-        spins: 6,
+        name: "7회",
+        spins: 7,
         tickets: 1,
-        description: "6회전 · 티켓 +1"
+        description: "7회 리롤 · 티켓 +1"
       },
       RISK: {
         id: "RISK",
-        name: "위험",
+        name: "3회",
         spins: 3,
         tickets: 3,
-        description: "3회전 · 티켓 +3"
+        description: "3회 리롤 · 티켓 +3"
       }
     }
   },
 
-  // Stage 6에서도 Stage 5 경제 규칙을 유지합니다.
-  // 방식 선택 뒤 '시작' 상태에서 자금을 배분하고, 시작 후에만 실제 리롤을 사용합니다.
+  // Stage 6.1에서는 라운드 준비 화면에서 납부/금고/상점을 먼저 정리한 뒤
+  // 7회(+1T) 또는 3회(+3T)를 선택하고 시작 버튼으로 확정합니다.
   economy: {
     depositUnitRatio: 0.05,
     earlyPaymentTicketPerUnusedRound: 2,
