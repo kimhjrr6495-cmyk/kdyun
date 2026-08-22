@@ -24,22 +24,26 @@
 
 /* ===== MACHINE HEADER: DEADLINE + ROUNDS LEFT ===== */
 .machine-header {
-  min-height: 64px !important;
-  padding: 9px 18px !important;
+  min-height: 78px !important;
+  padding: 8px 18px !important;
   align-items: center !important;
 }
 
 .stage104-machine-left {
   min-width: 0;
-  display: flex;
-  align-items: flex-start;
-  gap: 10px;
+  min-height: 58px;
+  display: grid;
+  grid-template-rows: 18px 40px;
+  justify-items: start;
+  align-content: start;
+  gap: 0;
 }
 
 .stage104-machine-left > #stage104DeadlineLabel {
-  margin-top: 4px;
+  margin: 0;
   font-size: 14px !important;
   font-weight: 950 !important;
+  line-height: 18px;
   letter-spacing: -0.02em;
   color: #111827;
   white-space: nowrap;
@@ -53,10 +57,10 @@
   white-space: nowrap;
 }
 
-/* Compensate for the slightly taller header without changing the fixed machine height. */
+/* Keep the total fixed machine height stable after making the header taller. */
 .machine-stage {
-  padding-top: 14px !important;
-  padding-bottom: 14px !important;
+  padding-top: 10px !important;
+  padding-bottom: 10px !important;
 }
 
 /* ===== CONTRACT ICON HUD ===== */
@@ -68,7 +72,7 @@
   justify-items: center;
   align-content: start;
   gap: 1px;
-  margin-top: -1px;
+  margin-top: 0;
   z-index: 18;
 }
 
@@ -253,9 +257,14 @@
 
 @media (max-width: 760px) {
   .machine-header {
-    min-height: 60px !important;
+    min-height: 72px !important;
     padding-left: 13px !important;
     padding-right: 13px !important;
+  }
+
+  .stage104-machine-left {
+    min-height: 54px;
+    grid-template-rows: 17px 37px;
   }
 
   .stage104-contract-tooltip {
