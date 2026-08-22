@@ -4,6 +4,7 @@
 "use strict";
 
 const GAME_DATA = {
+  version: "v0.1.3",
   stage: 1,
   board: { columns: 5, rows: 3 },
 
@@ -20,10 +21,11 @@ const GAME_DATA = {
   ],
 
   // Stage 1 릴 감각 조절값.
-  // 2026-08-22 2차 조정: 이전 수정본보다 아주 조금 더 느리게 조정했습니다.
+  // v0.1.3: 모든 릴이 함께 도는 공통 구간을 약 0.3초 늘렸습니다.
+  // 첫 릴은 약 1.55초에 멈추고 이후 릴은 0.155초 간격으로 순차 정지합니다.
   // 최종 사운드/정지 이펙트가 들어갈 때 다시 미세조정할 예정입니다.
   reelMotion: {
-    baseDuration: 1250,
+    baseDuration: 1550,
     stopGap: 155,
     travelSymbols: 18,
     easing: "cubic-bezier(0.16, 1, 0.3, 1)"
