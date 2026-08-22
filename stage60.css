@@ -1,0 +1,236 @@
+/* Stage 6.0 — 상점 / 시작-리롤 단일 버튼 */
+
+/* 준비 중에는 기존 리롤 버튼 자리가 '시작' 버튼으로 바뀝니다. */
+.machine-panel.is-awaiting-start #spinButton {
+  position: relative;
+  z-index: 5;
+  opacity: 1;
+  filter: none;
+  border-color: #1A1D23;
+  background: #1A1D23;
+  color: #F7F8FA;
+  box-shadow: 0 3px 10px rgba(26, 29, 35, 0.14);
+}
+
+.machine-panel.is-awaiting-start #spinButton:not(:disabled):hover {
+  background: #2A2F37;
+  border-color: #2A2F37;
+}
+
+/* v0.5.8 중앙 시작 버튼은 더 이상 사용하지 않습니다. */
+.round-start-button {
+  display: none !important;
+}
+
+/* 상점 오버레이 */
+.flow-card:has(.shop-layout) {
+  width: min(980px, 100%);
+}
+
+.flow-options.shop-layout {
+  display: grid;
+  gap: 14px;
+}
+
+.shop-offers-section,
+.shop-owned-section {
+  display: grid;
+  gap: 9px;
+  padding: 14px;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  background: var(--bg);
+}
+
+.shop-section-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.shop-section-heading span {
+  font-size: 10px;
+  font-weight: 900;
+  letter-spacing: 0.06em;
+  opacity: 0.52;
+}
+
+.shop-section-heading strong {
+  font-size: 11px;
+  font-weight: 900;
+}
+
+.shop-offer-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.shop-offer-card {
+  min-width: 0;
+  min-height: 150px;
+  padding: 13px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  text-align: left;
+  box-shadow: none;
+}
+
+.shop-offer-card .shop-offer-kicker,
+.shop-offer-card strong,
+.shop-offer-card small,
+.shop-offer-card b {
+  display: block;
+}
+
+.shop-offer-card .shop-offer-kicker {
+  font-size: 8px;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  opacity: 0.42;
+}
+
+.shop-offer-card strong {
+  margin-top: 8px;
+  font-size: 16px;
+  line-height: 1.25;
+  letter-spacing: -0.035em;
+}
+
+.shop-offer-card small {
+  margin-top: 7px;
+  font-size: 9px;
+  font-weight: 750;
+  line-height: 1.45;
+  opacity: 0.48;
+}
+
+.shop-offer-card b {
+  margin-top: auto;
+  padding-top: 12px;
+  font-size: 12px;
+  color: var(--gain);
+}
+
+.shop-offer-card.is-sold {
+  background: #ECEEF1;
+}
+
+.shop-owned-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 7px;
+}
+
+.shop-owned-slot {
+  min-height: 72px;
+  padding: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  border: 1px solid var(--line);
+  border-radius: 11px;
+}
+
+.shop-owned-slot > div {
+  min-width: 0;
+}
+
+.shop-owned-slot strong,
+.shop-owned-slot small {
+  display: block;
+}
+
+.shop-owned-slot strong {
+  font-size: 11px;
+}
+
+.shop-owned-slot small {
+  margin-top: 3px;
+  font-size: 8px;
+  opacity: 0.42;
+}
+
+.shop-owned-slot button {
+  flex: 0 0 auto;
+  padding: 7px 9px;
+  box-shadow: none;
+  font-size: 9px;
+}
+
+.shop-owned-slot.is-empty {
+  justify-content: center;
+  color: rgba(26, 29, 35, 0.34);
+  background: rgba(26, 29, 35, 0.018);
+  font-size: 9px;
+  font-weight: 800;
+}
+
+.shop-actions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+
+.shop-reroll,
+.shop-continue {
+  min-height: 43px;
+  box-shadow: none;
+}
+
+.shop-reroll {
+  border-color: rgba(26, 29, 35, 0.24);
+}
+
+.shop-continue {
+  border-color: #1A1D23;
+  background: #1A1D23;
+  color: #F7F8FA;
+}
+
+.shop-continue:not(:disabled):hover {
+  background: #2A2F37;
+  border-color: #2A2F37;
+}
+
+/* 오른쪽 아이템 서랍의 실제 보유 슬롯 */
+.empty-slots .owned-drawer-item {
+  text-align: left;
+  align-content: center;
+}
+
+.empty-slots .owned-drawer-item strong,
+.empty-slots .owned-drawer-item small {
+  display: block;
+}
+
+.empty-slots .owned-drawer-item strong {
+  font-size: 10px;
+}
+
+.empty-slots .owned-drawer-item small {
+  margin-top: 3px;
+  font-size: 8px;
+  opacity: 0.42;
+}
+
+@media (max-width: 780px) {
+  .shop-offer-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .shop-owned-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 520px) {
+  .shop-offer-grid,
+  .shop-owned-grid,
+  .shop-actions {
+    grid-template-columns: 1fr;
+  }
+}
