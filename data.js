@@ -29,6 +29,7 @@ const GAME_DATA = {
   },
 
   // 점수 배율 값은 Stage 3에서 실제 계산에 사용합니다.
+  // JACKPOT 배율은 현재 임시값이며 Stage 3/밸런스 단계에서 다시 조정합니다.
   patterns: {
     H3: { name: "가로 3", multiplier: 1 },
     H4: { name: "가로 4", multiplier: 2 },
@@ -42,7 +43,7 @@ const GAME_DATA = {
   },
 
   // 2단계 검증용 임시 샘플. 패턴 테스트 버튼으로 순환합니다.
-  // 일반 패턴은 체리로 검사하고, JACKPOT만 세븐 5연속으로 검사합니다.
+  // JACKPOT 테스트는 '세븐 전용'이 아님을 확인하기 위해 체리로 15칸 전체를 채웁니다.
   patternTests: [
     { key: "H3", symbolId: "CH", coords: [[0, 1], [1, 1], [2, 1]] },
     { key: "H4", symbolId: "CH", coords: [[0, 1], [1, 1], [2, 1], [3, 1]] },
@@ -52,7 +53,7 @@ const GAME_DATA = {
     { key: "V", symbolId: "CH", coords: [[0, 0], [1, 1], [2, 2], [3, 1], [4, 0]] },
     { key: "INV_V", symbolId: "CH", coords: [[0, 2], [1, 1], [2, 0], [3, 1], [4, 2]] },
     { key: "X", symbolId: "CH", coords: [[0, 0], [4, 0], [2, 1], [0, 2], [4, 2]] },
-    { key: "JACKPOT", symbolId: "SV", coords: [[0, 1], [1, 1], [2, 1], [3, 1], [4, 1]] }
+    { key: "JACKPOT", symbolId: "CH", fullBoard: true }
   ],
 
   palette: {
