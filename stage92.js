@@ -7,6 +7,7 @@
 
   const previousInit = Game.init;
   const previousRestartRun = Game.restartRun;
+  const previousShowStage90Event = Game.showStage90Event;
 
   Game.resetStage92State = function () {
     if (this.stage92AlertHideTimer) window.clearTimeout(this.stage92AlertHideTimer);
@@ -16,6 +17,16 @@
     this.stage92AlertToken = 0;
     this.stage92AlertNames = [];
     this.stage92AlertLastAt = 0;
+  };
+
+  // 리롤 전에 작동하는 확률/Luck/증폭 알림은 오른쪽 상태 카드가 전담합니다.
+  // 패턴 정산 중 Modifier / 재발동 / 트리거 관련 이벤트 피드는 기존대로 유지합니다.
+  Game.showStage90Event = function (kind, title, detail = "") {
+    if (
+      this.stage91CapturePreSpin &&
+      ["chance", "luck", "boost"].includes(kind)
+    ) return;
+    return previousShowStage90Event?.call(this, kind, title, detail);
   };
 
   // v0.9.1의 릴 위 팝업을 머신 패널 오른쪽 아래의 고정 상태 카드로 교체합니다.
