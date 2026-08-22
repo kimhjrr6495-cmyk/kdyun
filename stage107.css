@@ -1,0 +1,59 @@
+/* DEADLINE v1.0.7 — fixed contract HUD position */
+
+/* The spin label and contract HUD no longer participate in the same flex flow. */
+#stage105SlotMeta.stage105-slot-meta {
+  position: absolute !important;
+  display: block !important;
+}
+
+#stage105SpinMeta.stage105-spin-meta {
+  position: absolute !important;
+  left: 0 !important;
+  top: 2px !important;
+  width: 76px !important;
+  min-width: 76px !important;
+  max-width: 76px !important;
+  justify-content: flex-start !important;
+}
+
+.stage105-contract-dock {
+  position: absolute !important;
+  left: 88px !important;
+  top: 1px !important;
+  width: 30px !important;
+  min-width: 30px !important;
+  height: 30px !important;
+  min-height: 30px !important;
+  margin: 0 !important;
+}
+
+.stage105-contract-dock[hidden],
+.stage105-contract-dock.is-empty {
+  display: none !important;
+}
+
+.stage105-contract-dock .stage104-contract-hud {
+  position: relative !important;
+  left: 0 !important;
+  top: 0 !important;
+  margin: 0 !important;
+}
+
+/* Round profit remains pinned to the exact center independently. */
+.stage106-round-profit-dock {
+  left: 50% !important;
+  top: 0 !important;
+  transform: translateX(-50%) !important;
+}
+
+@media (max-width: 760px) {
+  #stage105SpinMeta.stage105-spin-meta {
+    width: 70px !important;
+    min-width: 70px !important;
+    max-width: 70px !important;
+  }
+
+  .stage105-contract-dock {
+    left: 79px !important;
+  }
+}
