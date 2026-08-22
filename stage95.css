@@ -26,6 +26,11 @@
   border-color: color-mix(in srgb, var(--line) 90%, #B7BDC7);
 }
 
+/* JS가 Deadline 상태를 확정하기 전에도 금고가 잠깐 보이지 않도록 기본 숨김 */
+#vaultSection:not([aria-hidden="false"]) {
+  visibility: hidden;
+}
+
 /* 마감 1~2: 금고 UI 자체는 안 보이지만 레이아웃 자리만 그대로 유지 */
 .vault-chamber.stage95-vault-hidden {
   visibility: hidden !important;
