@@ -4,7 +4,7 @@
 "use strict";
 
 const GAME_DATA = {
-  version: "v0.5.5",
+  version: "v0.5.6",
   stage: 5,
   board: { columns: 5, rows: 3 },
 
@@ -80,9 +80,9 @@ const GAME_DATA = {
     }
   },
 
-  // Stage 5.5 경제 규칙.
-  // 납부는 라운드 방식 선택 후 첫 회전 전, 또는 0라운드 최종 납부에서만 가능합니다.
-  // 금고는 2라운드/4라운드 상품만 존재하며, 실제 라운드 종료마다 복리로 이자가 붙습니다.
+  // Stage 5.6 경제 규칙.
+  // 라운드 방식 선택 뒤 첫 회전 전이 자금 배분 구간입니다.
+  // 금고/마감계좌는 이 구간에서 조작되고 첫 회전 순간 잠깁니다.
   economy: {
     depositUnitRatio: 0.05,
     earlyPaymentTicketPerUnusedRound: 2,
