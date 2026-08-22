@@ -220,8 +220,21 @@ const Game = {
     const found = [];
     const { columns, rows } = GAME_DATA.board;
 
+    // JACKPOT: 5×3의 15칸 전체가 같은 심볼이면 성립합니다.
+    // 심볼 종류는 상관없고, 성립 시 다른 패턴 대신 JACKPOT 하나만 반환합니다.
+    const allCoords = [];
+    for (let col = 0; col < columns; col += 1) {
+      for (let row = 0; row < rows; row += 1) {
+        allCoords.push([col, row]);
+      }
+    }
+
+    const jackpotSymbol = this.matchCoordinates(allCoords);
+    if (jackpotSymbol) {
+      return [this.makePattern("JACKPOT", allCoords, jackpotSymbol)];
+    }
+
     // 가로: 하나의 연속 구간에서는 가장 큰 패턴만 인정합니다.
-    // 세븐 5연속은 일반 H5 대신 JACKPOT으로 승격합니다.
     for (let row = 0; row < rows; row += 1) {
       let col = 0;
       while (col < columns) {
@@ -238,12 +251,7 @@ const Game = {
 
         const length = col - start;
         if (length >= 3) {
-          let key;
-          if (length >= 5 && symbol?.id === "SV") key = "JACKPOT";
-          else if (length >= 5) key = "H5";
-          else if (length === 4) key = "H4";
-          else key = "H3";
-
+          const key = length >= 5 ? "H5" : length === 4 ? "H4" : "H3";
           const coords = Array.from(
             { length },
             (_, offset) => [start + offset, row]
@@ -290,7 +298,6 @@ const Game = {
         coords: [[0, 2], [1, 1], [2, 0], [3, 1], [4, 2]]
       },
       {
-        // X는 네 모서리 + 중앙 칸으로 정의합니다.
         key: "X",
         coords: [[0, 0], [4, 0], [2, 1], [0, 2], [4, 2]]
       }
@@ -343,11 +350,16 @@ const Game = {
       return;
     }
 
-    const hasJackpot = patterns.some((pattern) => pattern.key === "JACKPOT");
-    this.patternCount.textContent = hasJackpot
-      ? "JACKPOT"
-      : `${patterns.length} PATTERN`;
+    if (patterns[0]?.key === "JACKPOT") {
+      this.patternCount.textContent = "JACKPOT";
+      this.patternList.innerHTML =
+        `<span class="pattern-chip">JACKPOT · ${patterns[0].symbol.name} × 15</span>`;
+      this.readoutDetail.textContent =
+        testLabel || "15칸 전체가 같은 심볼입니다.";
+      return;
+    }
 
+    this.patternCount.textContent = `${patterns.length} PATTERN`;
     this.patternList.innerHTML = patterns
       .map(
         (pattern) =>
@@ -356,16 +368,21 @@ const Game = {
       .join("");
 
     this.readoutDetail.textContent =
-      testLabel ||
-      (hasJackpot
-        ? "세븐 5연속 JACKPOT 감지 · 전용 연출은 후속 단계에서 추가"
-        : "민트색 칸이 현재 감지된 패턴에 포함된 칸입니다.");
+      testLabel || "민트색 칸이 현재 감지된 패턴에 포함된 칸입니다.";
   },
 
   makePatternTestBoard(test) {
     const target = GAME_DATA.symbols.find(
       (symbol) => symbol.id === test.symbolId
     );
+
+    if (test.fullBoard) {
+      return Array.from(
+        { length: GAME_DATA.board.columns },
+        () => Array.from({ length: GAME_DATA.board.rows }, () => target)
+      );
+    }
+
     const fillerSymbols = GAME_DATA.symbols.filter(
       (symbol) => symbol.id !== target.id
     );
