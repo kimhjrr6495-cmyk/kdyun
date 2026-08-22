@@ -20,12 +20,11 @@ const GAME_DATA = {
   ],
 
   // Stage 1 릴 감각 조절값.
-  // 2026-08-22 조정: 전체 회전이 빠르다는 피드백을 반영해
-  // 기본 회전 시간과 각 릴의 정지 간격을 조금 늘렸습니다.
+  // 2026-08-22 2차 조정: 이전 수정본보다 아주 조금 더 느리게 조정했습니다.
   // 최종 사운드/정지 이펙트가 들어갈 때 다시 미세조정할 예정입니다.
   reelMotion: {
-    baseDuration: 1150,
-    stopGap: 145,
+    baseDuration: 1250,
+    stopGap: 155,
     travelSymbols: 18,
     easing: "cubic-bezier(0.16, 1, 0.3, 1)"
   },
