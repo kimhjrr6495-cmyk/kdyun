@@ -1,0 +1,29 @@
+/* v0.8.3 — 릴 3칸 높이와 실제 심볼 높이 정밀 일치 */
+
+/*
+  전역 box-sizing:border-box 상태에서 기존 282px 높이는
+  위/아래 1px 테두리 때문에 내부 clientHeight가 280px이었습니다.
+  실제 94px 심볼 3칸이 정확히 들어가도록 테두리 2px을 외곽 높이에 더합니다.
+*/
+.reel {
+  height: calc(var(--reel-row-height) * 3 + 2px);
+}
+
+.reel-track {
+  top: 0;
+}
+
+.reel-symbol {
+  height: var(--reel-row-height);
+  min-height: var(--reel-row-height);
+  max-height: var(--reel-row-height);
+}
+
+/* 행 구분선도 실제 94px 경계에 맞춥니다. */
+.reel::before {
+  top: var(--reel-row-height);
+}
+
+.reel::after {
+  top: calc(var(--reel-row-height) * 2);
+}
