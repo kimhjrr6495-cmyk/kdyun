@@ -218,7 +218,7 @@ const Game = {
     return {
       key,
       name: definition.name,
-      multiplier: definition.multiplier,
+      baseValue: definition.baseValue,
       coords,
       symbol
     };
@@ -319,16 +319,26 @@ const Game = {
 
   calculatePatternScore(pattern) {
     const base = pattern.symbol.value;
+    const symbolMultiplier = pattern.symbol.multiplier ?? 1;
     const count = pattern.coords.length;
-    const patternMultiplier = pattern.multiplier;
+    const patternBaseValue = pattern.baseValue;
+    const patternMultiplier = GAME_DATA.scoring.patternMultiplier;
     const globalMultiplier = GAME_DATA.scoring.globalMultiplier;
-    const raw = base * count * patternMultiplier * globalMultiplier;
+    const raw =
+      base *
+      symbolMultiplier *
+      count *
+      patternBaseValue *
+      patternMultiplier *
+      globalMultiplier;
     const amount = Math.round(raw);
 
     return {
       ...pattern,
       base,
+      symbolMultiplier,
       count,
+      patternBaseValue,
       patternMultiplier,
       globalMultiplier,
       raw,
@@ -383,7 +393,7 @@ const Game = {
     return `
       <div class="score-line">
         <span>${pattern.name} · ${pattern.symbol.name}</span>
-        <code>${pattern.base} × ${pattern.count} × ${this.formatMultiplier(pattern.patternMultiplier)} = ${rawText}</code>
+        <code>VALUE ${pattern.base} × SYMBOL ×${this.formatMultiplier(pattern.symbolMultiplier)} × COUNT ${pattern.count} × PATTERN VALUE ${this.formatMultiplier(pattern.patternBaseValue)} × PATTERN MULT ${this.formatMultiplier(pattern.patternMultiplier)} × GLOBAL ${this.formatMultiplier(pattern.globalMultiplier)} = ${rawText}</code>
       </div>
     `;
   },
@@ -447,8 +457,8 @@ const Game = {
     if (creditWallet) {
       this.updateWalletUI(false);
       this.readoutDetail.textContent = jackpot
-        ? `JACKPOT 정산 완료 · 지갑 +$${total.toLocaleString("ko-KR")}`
-        : `정산 완료 · 지갑 +$${total.toLocaleString("ko-KR")}`;
+        ? `JACKPOT 정산 완료 · 패턴 배율 ×${this.formatMultiplier(GAME_DATA.scoring.patternMultiplier)} 적용 · 지갑 +$${total.toLocaleString("ko-KR")}`
+        : `정산 완료 · 패턴 배율 ×${this.formatMultiplier(GAME_DATA.scoring.patternMultiplier)} 적용 · 지갑 +$${total.toLocaleString("ko-KR")}`;
     } else {
       this.readoutDetail.textContent =
         testLabel || `테스트 점수 +$${total.toLocaleString("ko-KR")} · 지갑 미반영`;
@@ -513,7 +523,7 @@ const Game = {
 
     await this.evaluateAndRenderScore({
       creditWallet: false,
-      testLabel: `테스트: ${definition.name} · 점수 미리보기이며 지갑에는 반영되지 않습니다.`
+      testLabel: `테스트: ${definition.name} · 패턴 배율 ×${this.formatMultiplier(GAME_DATA.scoring.patternMultiplier)} · 지갑 미반영`
     });
 
     this.patternTestButton.textContent =
