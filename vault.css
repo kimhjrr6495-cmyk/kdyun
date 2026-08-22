@@ -1,4 +1,17 @@
+/* Stage 5.4 — 자금 패널 / 금고 / 경고 UI */
+
+@media (min-width: 901px) {
+  .game-layout {
+    grid-template-columns: 380px minmax(0, 1fr);
+  }
+}
+
+.finance-panel {
+  gap: 18px;
+}
+
 .deadline-account-section,
+.wallet-section,
 .vault-section {
   display: grid;
   gap: 10px;
@@ -16,7 +29,8 @@
 }
 
 .vault-state-badge,
-.vault-round-copy {
+.vault-round-copy,
+.vault-lock-state {
   display: inline-flex;
   align-items: center;
   justify-content: flex-end;
@@ -46,10 +60,15 @@
   color: var(--danger);
 }
 
-.deadline-account-section {
+.deadline-account-section,
+.wallet-section {
   padding: 14px;
   border: 1px solid var(--line);
   border-radius: 13px;
+  background: var(--bg);
+}
+
+.deadline-account-section {
   transition: border-color 140ms ease, box-shadow 140ms ease;
 }
 
@@ -68,32 +87,46 @@
 
 .deadline-value-action-row {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) 78px;
+  grid-template-columns: minmax(0, 1fr) 72px;
   align-items: end;
   gap: 10px;
+  min-width: 0;
 }
 
 .deadline-account-values {
   display: flex;
   align-items: baseline;
-  gap: 7px;
+  gap: 6px;
   min-width: 0;
+  overflow: hidden;
+  white-space: nowrap;
+  flex-wrap: nowrap;
   font-variant-numeric: tabular-nums;
   font-feature-settings: "tnum" 1;
 }
 
 .deadline-account-values > strong {
   min-width: 0;
-  font-size: 30px;
+  flex: 0 1 auto;
+  font-size: clamp(18px, 1.9vw, 26px);
   font-weight: 950;
   letter-spacing: -0.05em;
+  line-height: 1.1;
+  white-space: nowrap;
 }
 
 .deadline-account-values > span {
+  flex: 0 1 auto;
   min-width: 0;
-  font-size: 12px;
+  font-size: 11px;
   font-weight: 850;
+  line-height: 1.1;
   opacity: 0.45;
+  white-space: nowrap;
+}
+
+.deadline-account-values > span b {
+  white-space: nowrap;
 }
 
 .payment-action {
@@ -148,33 +181,175 @@
   display: none !important;
 }
 
-.vault-section {
-  padding-top: 16px;
+.wallet-section {
+  padding-block: 16px;
 }
 
-.vault-section.is-active .vault-round-copy {
-  color: var(--ink);
+/* 금고: 지갑과 분리된 잠금 자산 영역 */
+.vault-chamber {
+  position: relative;
+  min-height: 212px;
+  margin-top: 4px;
+  padding: 18px;
+  border: 1px solid rgba(26, 29, 35, 0.24);
+  border-radius: 16px;
+  background:
+    linear-gradient(180deg, rgba(26, 29, 35, 0.018), transparent 45%),
+    var(--bg);
+  box-shadow:
+    inset 0 0 0 1px rgba(26, 29, 35, 0.035),
+    var(--shadow);
+  overflow: hidden;
+  transition: border-color 160ms ease, box-shadow 160ms ease, opacity 160ms ease;
 }
 
-.vault-section.is-funding .vault-round-copy {
+.vault-chamber::before,
+.vault-chamber::after {
+  content: "";
+  position: absolute;
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: rgba(26, 29, 35, 0.18);
+}
+
+.vault-chamber::before {
+  left: 9px;
+  top: 9px;
+}
+
+.vault-chamber::after {
+  right: 9px;
+  bottom: 9px;
+}
+
+.vault-chamber.is-active {
+  border-color: rgba(26, 29, 35, 0.62);
+  box-shadow:
+    inset 0 0 0 2px rgba(26, 29, 35, 0.045),
+    0 1px 3px rgba(0, 0, 0, 0.08);
+}
+
+.vault-chamber.is-funding {
+  border-color: rgba(0, 212, 146, 0.5);
+  box-shadow: inset 0 0 0 1px rgba(0, 212, 146, 0.08);
+}
+
+.vault-door-heading {
+  padding-bottom: 2px;
+}
+
+.vault-lock-state {
+  padding: 4px 8px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  opacity: 0.58;
+}
+
+.vault-chamber.is-active .vault-lock-state {
+  border-color: rgba(26, 29, 35, 0.42);
+  opacity: 0.88;
+}
+
+.vault-chamber.is-funding .vault-lock-state {
+  border-color: rgba(0, 212, 146, 0.42);
   color: var(--gain);
+  opacity: 1;
 }
 
-.vault-main-value-row {
-  display: flex;
-  align-items: baseline;
-  gap: 9px;
+.vault-door-body {
+  display: grid;
+  grid-template-columns: 50px minmax(0, 1fr);
+  align-items: center;
+  gap: 14px;
+  min-height: 88px;
+}
+
+.vault-lock-symbol {
+  position: relative;
+  width: 44px;
+  height: 54px;
+  color: var(--ink);
+  opacity: 0.22;
+  transition: opacity 160ms ease, transform 160ms ease;
+}
+
+.vault-chamber.is-active .vault-lock-symbol {
+  opacity: 0.72;
+}
+
+.vault-chamber.is-funding .vault-lock-symbol {
+  color: var(--gain);
+  opacity: 0.7;
+}
+
+.vault-lock-shackle {
+  position: absolute;
+  left: 9px;
+  top: 1px;
+  width: 26px;
+  height: 28px;
+  border: 4px solid currentColor;
+  border-bottom: 0;
+  border-radius: 15px 15px 0 0;
+}
+
+.vault-lock-body {
+  position: absolute;
+  left: 3px;
+  right: 3px;
+  bottom: 1px;
+  height: 34px;
+  border: 2px solid currentColor;
+  border-radius: 9px;
+  background: var(--bg);
+}
+
+.vault-lock-body::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 10px;
+  width: 5px;
+  height: 10px;
+  border-radius: 4px;
+  background: currentColor;
+  transform: translateX(-50%);
+}
+
+.vault-balance-block {
   min-width: 0;
 }
 
-.vault-rate-value {
-  min-height: 24px;
-  font-size: 16px;
-  font-weight: 900;
-  letter-spacing: -0.03em;
-  color: var(--gain);
+.vault-money-value {
+  white-space: nowrap;
+}
+
+.vault-current-rate {
+  margin-top: 4px;
+  min-height: 16px;
+  font-size: 10px;
+  font-weight: 850;
+  line-height: 1.4;
+  opacity: 0.52;
   font-variant-numeric: tabular-nums;
   font-feature-settings: "tnum" 1;
+}
+
+.vault-current-rate.is-applying {
+  color: var(--gain);
+  opacity: 1;
+}
+
+.vault-divider {
+  height: 1px;
+  background: rgba(26, 29, 35, 0.12);
+}
+
+.vault-round-copy {
+  justify-content: flex-start;
+  font-size: 11px;
+  opacity: 0.7;
 }
 
 .vault-ticket-progress {
@@ -187,7 +362,7 @@
 
 /* 라운드 시작 화면: 라운드 방식 + 금고 설정 */
 .flow-card {
-  width: min(850px, 100%);
+  width: min(900px, 100%);
 }
 
 .flow-options.has-vault-setup {
@@ -196,7 +371,7 @@
 
 .round-choice-layout {
   display: grid;
-  grid-template-columns: minmax(0, 1.35fr) minmax(235px, 0.85fr);
+  grid-template-columns: minmax(0, 1.35fr) minmax(250px, 0.85fr);
   gap: 12px;
   align-items: stretch;
 }
@@ -233,6 +408,13 @@
   display: grid;
   align-content: start;
   gap: 9px;
+  position: relative;
+  overflow: hidden;
+}
+
+.round-vault-setup.is-locked {
+  border-color: rgba(26, 29, 35, 0.5);
+  box-shadow: inset 0 0 0 1px rgba(26, 29, 35, 0.04);
 }
 
 .round-vault-heading {
@@ -251,6 +433,26 @@
   font-size: 9px;
   font-weight: 850;
   opacity: 0.48;
+}
+
+.round-vault-lockline {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  padding: 9px 10px;
+  border: 1px solid rgba(26, 29, 35, 0.14);
+  border-radius: 10px;
+  background: rgba(26, 29, 35, 0.025);
+  font-size: 10px;
+  font-weight: 850;
+}
+
+.round-vault-lock-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--ink);
+  opacity: 0.55;
 }
 
 .round-vault-terms {
@@ -321,32 +523,97 @@
 
 .round-vault-help,
 .round-vault-copy,
-.round-vault-ticket {
+.round-vault-ticket,
+.round-vault-current-rate {
   font-size: 9px;
   font-weight: 800;
   line-height: 1.4;
   opacity: 0.5;
 }
 
-.round-vault-locked-value {
-  margin-top: 5px;
+.round-vault-locked-value,
+.round-vault-funding-value {
+  margin-top: 2px;
   font-size: 28px;
   font-weight: 950;
   letter-spacing: -0.055em;
   font-variant-numeric: tabular-nums;
   font-feature-settings: "tnum" 1;
+  white-space: nowrap;
 }
 
-.round-vault-locked-value small {
-  margin-left: 4px;
-  color: var(--gain);
-  font-size: 13px;
-  font-weight: 900;
+.round-vault-current-rate {
+  opacity: 0.68;
 }
 
 .round-vault-ticket {
   color: var(--ink);
   opacity: 0.62;
+}
+
+/* 아이템 서랍으로 이동한 상태 정보 */
+.drawer-stats {
+  margin-top: 18px;
+  padding: 14px 0 16px;
+  border-top: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+}
+
+.drawer-section-label {
+  display: block;
+  margin-bottom: 9px;
+  font-size: 9px;
+  font-weight: 900;
+  letter-spacing: 0.09em;
+  opacity: 0.45;
+}
+
+.drawer-stat-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+
+.drawer-stat-grid > div {
+  min-height: 62px;
+  padding: 10px;
+  border: 1px solid var(--line);
+  border-radius: 11px;
+}
+
+.drawer-stat-grid span,
+.drawer-stat-grid strong {
+  display: block;
+}
+
+.drawer-stat-grid span {
+  font-size: 9px;
+  font-weight: 800;
+  opacity: 0.48;
+}
+
+.drawer-stat-grid strong {
+  margin-top: 5px;
+  font-size: 16px;
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: "tnum" 1;
+}
+
+.drawer-item-heading {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+  margin-top: 16px;
+}
+
+.drawer-item-heading strong {
+  font-size: 13px;
+}
+
+.drawer-item-heading span {
+  font-size: 9px;
+  opacity: 0.42;
 }
 
 @media (max-width: 900px) {
@@ -361,7 +628,15 @@
 
 @media (max-width: 560px) {
   .deadline-value-action-row {
-    grid-template-columns: minmax(0, 1fr) 72px;
+    grid-template-columns: minmax(0, 1fr) 64px;
+  }
+
+  .deadline-account-values > strong {
+    font-size: 19px;
+  }
+
+  .deadline-account-values > span {
+    font-size: 10px;
   }
 
   .round-mode-grid,
