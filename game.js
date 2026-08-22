@@ -130,8 +130,6 @@ const Game = {
     const finalStartIndex = sequence.length - GAME_DATA.board.rows;
     const distance = finalStartIndex * symbolHeight;
     const duration = config.baseDuration + index * config.stopGap;
-    const easing =
-      index >= config.lateReelStartIndex ? config.lateEasing : config.easing;
 
     void track.offsetHeight;
 
@@ -162,7 +160,7 @@ const Game = {
 
       requestAnimationFrame(() => {
         requestAnimationFrame(() => {
-          track.style.transition = `transform ${duration}ms ${easing}`;
+          track.style.transition = `transform ${duration}ms ${config.easing}`;
           track.style.transform = `translate3d(0, -${distance}px, 0)`;
         });
       });
