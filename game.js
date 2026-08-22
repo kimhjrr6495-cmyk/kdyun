@@ -1,17 +1,19 @@
-// DEADLINE — Stage 2
-// 현재 단계 목표: 5×3 결과에서 패턴을 정확히 찾아내고 임시 강조합니다.
-// 실제 점수 계산, 지갑 반영, 최종 당첨 연출은 아직 연결하지 않습니다.
+// DEADLINE — Stage 3
+// 패턴 점수를 계산하고 실제 회전 보상을 지갑에 반영합니다.
+// 마감/라운드/상점/아이템 로직은 아직 연결하지 않습니다.
 
 "use strict";
 
 const Game = {
-  stage: 2,
-  status: "PATTERN_DETECTION",
+  stage: 3,
+  status: "SCORE_SYSTEM",
   isSpinning: false,
   testSpinCount: 0,
   patternTestIndex: 0,
   currentColumns: [],
   lastPatterns: [],
+  wallet: 0,
+  deadlineTarget: 80,
 
   init() {
     this.reelsEl = document.querySelector("#reels");
@@ -19,9 +21,14 @@ const Game = {
     this.patternTestButton = document.querySelector("#patternTestButton");
     this.spinStatus = document.querySelector("#spinStatus");
     this.stageStatus = document.querySelector("#stageStatus");
-    this.patternCount = document.querySelector("#patternCount");
+    this.payoutValue = document.querySelector("#payoutValue");
     this.patternList = document.querySelector("#patternList");
+    this.scoreBreakdown = document.querySelector("#scoreBreakdown");
     this.readoutDetail = document.querySelector("#readoutDetail");
+    this.walletValue = document.querySelector("#walletValue");
+    this.progressFill = document.querySelector("#progressFill");
+    this.progressCopy = document.querySelector("#progressCopy");
+    this.machinePanel = document.querySelector("#machinePanel");
 
     this.currentColumns = Array.from(
       { length: GAME_DATA.board.columns },
@@ -30,9 +37,9 @@ const Game = {
 
     this.renderReels();
     this.bindInputs();
-    this.evaluateAndRenderPatterns();
+    this.updateWalletUI(false);
 
-    console.info(`DEADLINE ${GAME_DATA.version}: pattern detection loaded.`);
+    console.info(`DEADLINE ${GAME_DATA.version}: score system loaded.`);
   },
 
   bindInputs() {
@@ -77,7 +84,7 @@ const Game = {
     return `
       <div class="reel-symbol" data-symbol="${symbol.id}"${coordinateAttrs}>
         <b>${symbol.code}</b>
-        <small>${symbol.name}</small>
+        <small>${symbol.name} · ${symbol.value}</small>
       </div>
     `;
   },
@@ -103,7 +110,7 @@ const Game = {
     this.spinButton.disabled = true;
     this.patternTestButton.disabled = true;
     this.spinButton.textContent = "회전 중";
-    this.clearPatternDisplay();
+    this.clearScoreDisplay();
     this.readoutDetail.textContent = "시장 데이터 동기화 중...";
 
     const reels = [...this.reelsEl.querySelectorAll(".reel")];
@@ -122,8 +129,9 @@ const Game = {
     this.renderReels();
     this.testSpinCount += 1;
     this.spinStatus.textContent = `TEST ${this.testSpinCount}`;
-    this.stageStatus.textContent = "STAGE 2 · PATTERN DETECTION";
-    this.evaluateAndRenderPatterns();
+    this.stageStatus.textContent = "STAGE 3 · SCORE SYSTEM";
+
+    await this.evaluateAndRenderScore({ creditWallet: true });
 
     this.spinButton.disabled = false;
     this.patternTestButton.disabled = false;
@@ -198,11 +206,11 @@ const Game = {
     const first = this.symbolAt(coords[0][0], coords[0][1]);
     if (!first) return null;
 
-    const matches = coords.every(
+    return coords.every(
       ([col, row]) => this.symbolAt(col, row)?.id === first.id
-    );
-
-    return matches ? first : null;
+    )
+      ? first
+      : null;
   },
 
   makePattern(key, coords, symbol) {
@@ -220,8 +228,7 @@ const Game = {
     const found = [];
     const { columns, rows } = GAME_DATA.board;
 
-    // JACKPOT: 5×3의 15칸 전체가 같은 심볼이면 성립합니다.
-    // 심볼 종류는 상관없고, 성립 시 다른 패턴 대신 JACKPOT 하나만 반환합니다.
+    // JACKPOT: 15칸 전체가 같은 심볼이면 다른 패턴보다 우선합니다.
     const allCoords = [];
     for (let col = 0; col < columns; col += 1) {
       for (let row = 0; row < rows; row += 1) {
@@ -234,7 +241,7 @@ const Game = {
       return [this.makePattern("JACKPOT", allCoords, jackpotSymbol)];
     }
 
-    // 가로: 하나의 연속 구간에서는 가장 큰 패턴만 인정합니다.
+    // 가로: 동일 연속 구간에서는 가장 큰 패턴만 인정합니다.
     for (let row = 0; row < rows; row += 1) {
       let col = 0;
       while (col < columns) {
@@ -268,7 +275,7 @@ const Game = {
       if (symbol) found.push(this.makePattern("V3", coords, symbol));
     }
 
-    // 3칸 대각선: ↘ / ↗ 방향 모두 검사합니다.
+    // 3칸 대각선 ↘ / ↗
     for (let startCol = 0; startCol <= columns - 3; startCol += 1) {
       const down = [
         [startCol, 0],
@@ -287,7 +294,6 @@ const Game = {
       if (upSymbol) found.push(this.makePattern("DIAG", up, upSymbol));
     }
 
-    // 5×3 전용 특수 패턴.
     const specialShapes = [
       {
         key: "V",
@@ -311,28 +317,39 @@ const Game = {
     return found;
   },
 
-  clearPatternDisplay() {
-    this.lastPatterns = [];
-    this.patternCount.textContent = "판정 중";
-    this.patternList.innerHTML = "";
-    this.reelsEl
-      .querySelectorAll(".pattern-hit")
-      .forEach((cell) => cell.classList.remove("pattern-hit"));
+  calculatePatternScore(pattern) {
+    const base = pattern.symbol.value;
+    const count = pattern.coords.length;
+    const patternMultiplier = pattern.multiplier;
+    const globalMultiplier = GAME_DATA.scoring.globalMultiplier;
+    const raw = base * count * patternMultiplier * globalMultiplier;
+    const amount = Math.round(raw);
+
+    return {
+      ...pattern,
+      base,
+      count,
+      patternMultiplier,
+      globalMultiplier,
+      raw,
+      amount
+    };
   },
 
-  evaluateAndRenderPatterns(testLabel = "") {
-    const patterns = this.detectPatterns();
-    this.lastPatterns = patterns;
+  scorePatterns(patterns) {
+    const scored = patterns.map((pattern) => this.calculatePatternScore(pattern));
+    const total = scored.reduce((sum, pattern) => sum + pattern.amount, 0);
+    return { scored, total };
+  },
 
+  highlightPatterns(patterns) {
     this.reelsEl
       .querySelectorAll(".pattern-hit")
       .forEach((cell) => cell.classList.remove("pattern-hit"));
 
     const hitKeys = new Set();
     patterns.forEach((pattern) => {
-      pattern.coords.forEach(([col, row]) => {
-        hitKeys.add(`${col}:${row}`);
-      });
+      pattern.coords.forEach(([col, row]) => hitKeys.add(`${col}:${row}`));
     });
 
     hitKeys.forEach((key) => {
@@ -342,33 +359,113 @@ const Game = {
       );
       if (cell) cell.classList.add("pattern-hit");
     });
+  },
+
+  clearScoreDisplay() {
+    this.lastPatterns = [];
+    this.payoutValue.textContent = "+ $ 0";
+    this.patternList.innerHTML = "";
+    this.scoreBreakdown.textContent = "판정 중...";
+    this.reelsEl
+      .querySelectorAll(".pattern-hit")
+      .forEach((cell) => cell.classList.remove("pattern-hit"));
+  },
+
+  formatMultiplier(value) {
+    return Number.isInteger(value) ? String(value) : value.toFixed(1);
+  },
+
+  breakdownHTML(pattern) {
+    const rawText = Number.isInteger(pattern.raw)
+      ? `$ ${pattern.amount.toLocaleString("ko-KR")}`
+      : `${pattern.raw.toFixed(1)} → $ ${pattern.amount.toLocaleString("ko-KR")}`;
+
+    return `
+      <div class="score-line">
+        <span>${pattern.name} · ${pattern.symbol.name}</span>
+        <code>${pattern.base} × ${pattern.count} × ${this.formatMultiplier(pattern.patternMultiplier)} = ${rawText}</code>
+      </div>
+    `;
+  },
+
+  async evaluateAndRenderScore({ creditWallet = false, testLabel = "" } = {}) {
+    const patterns = this.detectPatterns();
+    this.lastPatterns = patterns;
+    this.highlightPatterns(patterns);
 
     if (patterns.length === 0) {
-      this.patternCount.textContent = "0 PATTERN";
+      this.payoutValue.textContent = "+ $ 0";
       this.patternList.innerHTML = '<span class="pattern-empty">일치 패턴 없음</span>';
-      this.readoutDetail.textContent = testLabel || "이번 결과에는 패턴이 없습니다.";
-      return;
-    }
-
-    if (patterns[0]?.key === "JACKPOT") {
-      this.patternCount.textContent = "JACKPOT";
-      this.patternList.innerHTML =
-        `<span class="pattern-chip">JACKPOT · ${patterns[0].symbol.name} × 15</span>`;
+      this.scoreBreakdown.textContent = "이번 회전 지급액: $ 0";
       this.readoutDetail.textContent =
-        testLabel || "15칸 전체가 같은 심볼입니다.";
-      return;
+        testLabel || "이번 결과에는 점수가 발생하지 않았습니다.";
+      return 0;
     }
 
-    this.patternCount.textContent = `${patterns.length} PATTERN`;
-    this.patternList.innerHTML = patterns
+    const { scored, total } = this.scorePatterns(patterns);
+    const jackpot = scored[0]?.key === "JACKPOT";
+
+    this.patternList.innerHTML = scored
       .map(
         (pattern) =>
-          `<span class="pattern-chip">${pattern.name} · ${pattern.symbol.name}</span>`
+          `<span class="pattern-chip">${pattern.name} · ${pattern.symbol.name} +$${pattern.amount.toLocaleString("ko-KR")}</span>`
       )
       .join("");
 
-    this.readoutDetail.textContent =
-      testLabel || "민트색 칸이 현재 감지된 패턴에 포함된 칸입니다.";
+    this.scoreBreakdown.innerHTML = scored
+      .map((pattern) => this.breakdownHTML(pattern))
+      .join("");
+
+    const oldWallet = this.wallet;
+    const newWallet = creditWallet ? oldWallet + total : oldWallet;
+
+    if (creditWallet) this.wallet = newWallet;
+
+    if (total > 0) {
+      EffectsManager.flashWin(this.machinePanel);
+
+      const animations = [
+        EffectsManager.animateNumber(this.payoutValue, 0, total, {
+          duration: GAME_DATA.scoring.countUpDuration,
+          prefix: "+ $ "
+        })
+      ];
+
+      if (creditWallet) {
+        EffectsManager.pulseWallet(this.walletValue);
+        animations.push(
+          EffectsManager.animateNumber(this.walletValue, oldWallet, newWallet, {
+            duration: GAME_DATA.scoring.countUpDuration,
+            prefix: "$ "
+          })
+        );
+      }
+
+      await Promise.all(animations);
+    }
+
+    if (creditWallet) {
+      this.updateWalletUI(false);
+      this.readoutDetail.textContent = jackpot
+        ? `JACKPOT 정산 완료 · 지갑 +$${total.toLocaleString("ko-KR")}`
+        : `정산 완료 · 지갑 +$${total.toLocaleString("ko-KR")}`;
+    } else {
+      this.readoutDetail.textContent =
+        testLabel || `테스트 점수 +$${total.toLocaleString("ko-KR")} · 지갑 미반영`;
+    }
+
+    return total;
+  },
+
+  updateWalletUI(updateText = true) {
+    if (updateText) {
+      this.walletValue.textContent = `$ ${this.wallet.toLocaleString("ko-KR")}`;
+    }
+
+    const ratio = Math.min(1, this.wallet / this.deadlineTarget);
+    this.progressFill.style.width = `${ratio * 100}%`;
+    this.progressCopy.textContent =
+      `$ ${this.wallet.toLocaleString("ko-KR")} / $ ${this.deadlineTarget.toLocaleString("ko-KR")}`;
   },
 
   makePatternTestBoard(test) {
@@ -403,7 +500,7 @@ const Game = {
     return board;
   },
 
-  showNextPatternTest() {
+  async showNextPatternTest() {
     if (this.isSpinning) return;
 
     const tests = GAME_DATA.patternTests;
@@ -413,9 +510,11 @@ const Game = {
     this.patternTestIndex = (this.patternTestIndex + 1) % tests.length;
     this.currentColumns = this.makePatternTestBoard(test);
     this.renderReels();
-    this.evaluateAndRenderPatterns(
-      `테스트 보드: ${definition.name} · 버튼을 다시 누르면 다음 패턴`
-    );
+
+    await this.evaluateAndRenderScore({
+      creditWallet: false,
+      testLabel: `테스트: ${definition.name} · 점수 미리보기이며 지갑에는 반영되지 않습니다.`
+    });
 
     this.patternTestButton.textContent =
       `패턴 테스트 ${this.patternTestIndex + 1}/${tests.length}`;
