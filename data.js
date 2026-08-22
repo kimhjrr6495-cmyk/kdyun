@@ -4,20 +4,20 @@
 "use strict";
 
 const GAME_DATA = {
-  version: "v0.3.0",
+  version: "v0.3.1",
   stage: 3,
   board: { columns: 5, rows: 3 },
 
-  // Stage 3부터 기본 가치를 실제 점수 계산에 사용합니다.
+  // Stage 3부터 기본 가치와 심볼 배율을 실제 점수 계산에 사용합니다.
   // 등장 확률 가중치는 아직 연결하지 않고, 현재 회전 결과는 기존처럼 동일 확률입니다.
   symbols: [
-    { id: "CH", code: "CH", name: "체리", value: 2 },
-    { id: "CO", code: "CO", name: "코인", value: 2 },
-    { id: "BL", code: "BL", name: "벨", value: 3 },
-    { id: "ST", code: "ST", name: "스타", value: 4 },
-    { id: "DM", code: "DM", name: "다이아", value: 6 },
-    { id: "CR", code: "CR", name: "크라운", value: 8 },
-    { id: "SV", code: "7", name: "세븐", value: 12 }
+    { id: "CH", code: "CH", name: "체리", value: 2, multiplier: 1 },
+    { id: "CO", code: "CO", name: "코인", value: 2, multiplier: 1 },
+    { id: "BL", code: "BL", name: "벨", value: 3, multiplier: 1 },
+    { id: "ST", code: "ST", name: "스타", value: 4, multiplier: 1 },
+    { id: "DM", code: "DM", name: "다이아", value: 6, multiplier: 1 },
+    { id: "CR", code: "CR", name: "크라운", value: 8, multiplier: 1 },
+    { id: "SV", code: "7", name: "세븐", value: 12, multiplier: 1 }
   ],
 
   // Stage 1에서 확정한 v0.1.3 회전감 유지.
@@ -28,25 +28,27 @@ const GAME_DATA = {
     easing: "cubic-bezier(0.16, 1, 0.3, 1)"
   },
 
-  // Stage 3 점수 공식:
-  // 심볼 기본 가치 × 패턴 포함 칸 수 × 패턴 배율
-  // 각 패턴 결과는 정수 화폐를 위해 Math.round로 반올림합니다.
+  // v0.3.1 점수 공식:
+  // 심볼 기본 가치 × 심볼 배율 × 패턴 포함 칸 수 × 패턴 기본값 × 패턴 배율 × 전체 배율
+  // JACKPOT의 12도 '잭팟 전용 최종 배율'이 아니라 패턴 기본값입니다.
+  // 따라서 앞으로 패턴 배율/전체 배율이 오르면 JACKPOT에도 동일하게 적용됩니다.
   scoring: {
+    patternMultiplier: 1,
     globalMultiplier: 1,
     rounding: "round",
     countUpDuration: 520
   },
 
   patterns: {
-    H3: { name: "가로 3", multiplier: 1 },
-    H4: { name: "가로 4", multiplier: 2 },
-    H5: { name: "가로 5", multiplier: 4 },
-    JACKPOT: { name: "JACKPOT", multiplier: 12 },
-    V3: { name: "세로 3", multiplier: 1.5 },
-    DIAG: { name: "대각선", multiplier: 2 },
-    V: { name: "V", multiplier: 6 },
-    INV_V: { name: "역 V", multiplier: 6 },
-    X: { name: "X", multiplier: 8 }
+    H3: { name: "가로 3", baseValue: 1 },
+    H4: { name: "가로 4", baseValue: 2 },
+    H5: { name: "가로 5", baseValue: 4 },
+    JACKPOT: { name: "JACKPOT", baseValue: 12 },
+    V3: { name: "세로 3", baseValue: 1.5 },
+    DIAG: { name: "대각선", baseValue: 2 },
+    V: { name: "V", baseValue: 6 },
+    INV_V: { name: "역 V", baseValue: 6 },
+    X: { name: "X", baseValue: 8 }
   },
 
   // 개발 중 판정/점수 검증용 임시 샘플.
