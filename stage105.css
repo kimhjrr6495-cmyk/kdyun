@@ -1,0 +1,135 @@
+/* DEADLINE v1.0.5 — machine header layout fix / slot HUD relocation */
+
+/* ===== THIN MACHINE HEADER ===== */
+.machine-header {
+  min-height: 44px !important;
+  height: 44px !important;
+  padding: 0 18px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  gap: 16px !important;
+}
+
+.stage104-machine-left {
+  min-width: 0 !important;
+  min-height: 0 !important;
+  height: 44px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: flex-start !important;
+  gap: 0 !important;
+}
+
+.stage104-machine-left > #stage104DeadlineLabel {
+  margin: 0 !important;
+  line-height: 1 !important;
+  font-size: 14px !important;
+  font-weight: 950 !important;
+  white-space: nowrap !important;
+}
+
+#stageStatus {
+  margin: 0 !important;
+  line-height: 1 !important;
+  font-size: 11px !important;
+  font-weight: 850 !important;
+  white-space: nowrap !important;
+  text-align: right !important;
+}
+
+/* 회전 정보가 슬롯 영역 B로 이동했으므로 상단 중복 칩 제거 */
+.top-status .status-chip:has(#spinStatus) {
+  display: none !important;
+}
+
+/* ===== SLOT AREA META ROW: B = SPINS, A = CONTRACT ===== */
+.machine-stage {
+  position: relative !important;
+  padding-top: 44px !important;
+  padding-bottom: 10px !important;
+}
+
+.stage105-slot-meta {
+  position: absolute;
+  top: 7px;
+  left: 18px;
+  height: 34px;
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  z-index: 24;
+  pointer-events: none;
+}
+
+.stage105-spin-meta {
+  min-width: 78px;
+  height: 30px;
+  padding: 0 10px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  border: 1px solid #D7DEE8;
+  border-radius: 9px;
+  background: rgba(255, 255, 255, 0.92);
+  color: #64748B;
+  font-size: 10px;
+  line-height: 1;
+  font-weight: 900;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+  box-shadow: 0 3px 10px rgba(15, 23, 42, 0.035);
+}
+
+.stage105-spin-meta.is-active {
+  color: #111827;
+  border-color: #C8D2DF;
+}
+
+.stage105-contract-dock {
+  min-width: 34px;
+  min-height: 34px;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  pointer-events: auto;
+}
+
+.stage105-contract-dock .stage104-contract-hud {
+  margin: -1px 0 0 !important;
+  pointer-events: auto;
+}
+
+/* Contract tooltip should open from the new A position inside the slot area. */
+.stage105-contract-dock .stage104-contract-tooltip {
+  left: 0 !important;
+  top: calc(100% + 7px) !important;
+}
+
+@media (max-width: 760px) {
+  .machine-header {
+    min-height: 42px !important;
+    height: 42px !important;
+    padding-left: 13px !important;
+    padding-right: 13px !important;
+  }
+
+  .stage104-machine-left {
+    height: 42px !important;
+  }
+
+  .machine-stage {
+    padding-top: 42px !important;
+  }
+
+  .stage105-slot-meta {
+    left: 13px;
+    top: 6px;
+    gap: 9px;
+  }
+
+  .stage105-spin-meta {
+    min-width: 70px;
+    padding: 0 8px;
+  }
+}
