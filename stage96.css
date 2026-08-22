@@ -1,0 +1,322 @@
+/* DEADLINE v0.9.6 — SHINY / 코인 리롤 / 다크 모드 */
+
+/* ===== SHINY ===== */
+.shop-offer-card.is-shiny,
+.shop-owned-card.is-shiny {
+  position: relative;
+  border-width: 2px !important;
+  isolation: isolate;
+}
+
+.shop-offer-card.is-shiny::before,
+.shop-owned-card.is-shiny::before {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  inset: 0;
+  border-radius: inherit;
+  background:
+    radial-gradient(circle at 14% 8%, rgba(121, 236, 255, 0.16), transparent 32%),
+    radial-gradient(circle at 88% 82%, rgba(194, 137, 255, 0.14), transparent 36%),
+    linear-gradient(120deg, rgba(255,255,255,0.82), rgba(223, 245, 255, 0.40) 32%, rgba(242, 228, 255, 0.38) 68%, rgba(255,255,255,0.78));
+  pointer-events: none;
+}
+
+.shop-offer-card.is-shiny::after,
+.shop-owned-card.is-shiny::after {
+  content: "";
+  position: absolute;
+  z-index: 0;
+  top: -45%;
+  bottom: -45%;
+  left: -55%;
+  width: 34%;
+  transform: rotate(14deg);
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.34), transparent);
+  opacity: 0.62;
+  pointer-events: none;
+  animation: stage96ShinySweep 5.8s ease-in-out infinite;
+}
+
+.shop-offer-card.is-shiny > *,
+.shop-owned-card.is-shiny > * {
+  position: relative;
+  z-index: 1;
+}
+
+.shop-offer-card.is-shiny.rarity-common,
+.shop-owned-card.is-shiny.rarity-common {
+  border-color: rgba(111, 132, 154, 0.82) !important;
+  box-shadow: 0 0 15px rgba(133, 172, 204, 0.19), 0 5px 16px rgba(26,29,35,0.08) !important;
+}
+
+.shop-offer-card.is-shiny.rarity-rare,
+.shop-owned-card.is-shiny.rarity-rare {
+  border-color: rgba(76, 140, 236, 0.92) !important;
+  box-shadow: 0 0 18px rgba(63,111,198,0.28), 0 5px 17px rgba(26,29,35,0.08) !important;
+}
+
+.shop-offer-card.is-shiny.rarity-epic,
+.shop-owned-card.is-shiny.rarity-epic {
+  border-color: rgba(145, 103, 235, 0.94) !important;
+  box-shadow: 0 0 21px rgba(118,86,197,0.34), 0 6px 18px rgba(26,29,35,0.09) !important;
+}
+
+.shop-offer-card.is-shiny.rarity-legendary,
+.shop-owned-card.is-shiny.rarity-legendary {
+  border-color: rgba(226, 176, 65, 0.96) !important;
+  box-shadow: 0 0 24px rgba(202,150,34,0.39), 0 6px 19px rgba(26,29,35,0.10) !important;
+}
+
+.shop-shiny-badge {
+  position: absolute !important;
+  left: 10px;
+  top: 10px;
+  min-height: 20px;
+  padding: 4px 7px;
+  display: inline-flex;
+  align-items: center;
+  border: 1px solid rgba(92, 119, 144, 0.34);
+  border-radius: 999px;
+  background: rgba(255,255,255,0.72);
+  font-size: 7px;
+  font-weight: 950;
+  letter-spacing: 0.08em;
+  color: #4D6579;
+  box-shadow: 0 0 9px rgba(120, 195, 231, 0.16);
+}
+
+.shop-shiny-trait {
+  margin-top: 7px;
+  padding: 7px 8px;
+  display: grid;
+  gap: 2px;
+  border: 1px solid rgba(94, 119, 144, 0.17);
+  border-radius: 9px;
+  background: rgba(255,255,255,0.46);
+  text-align: left;
+}
+
+.shop-shiny-trait b {
+  font-size: 8px;
+  font-weight: 950;
+  letter-spacing: 0.02em;
+}
+
+.shop-shiny-trait small {
+  font-size: 7px;
+  font-weight: 800;
+  line-height: 1.35;
+  opacity: 0.62;
+}
+
+.shop-shiny-mini {
+  position: absolute !important;
+  right: 8px;
+  top: 8px;
+  font-size: 7px;
+  font-weight: 950;
+  letter-spacing: 0.04em;
+  opacity: 0.78;
+}
+
+.stage96-dividend-line {
+  color: #92701C;
+  font-weight: 900;
+}
+
+.stage96-shop-wallet {
+  font-weight: 900;
+  font-variant-numeric: tabular-nums;
+}
+
+.stage96-coin-reroll {
+  min-width: 160px;
+}
+
+@keyframes stage96ShinySweep {
+  0%, 38% { left: -55%; opacity: 0; }
+  48% { opacity: 0.55; }
+  64% { left: 126%; opacity: 0; }
+  100% { left: 126%; opacity: 0; }
+}
+
+/* ===== 테마 토글 ===== */
+.stage96-theme-toggle {
+  min-height: 32px;
+  padding: 7px 11px;
+  cursor: pointer;
+}
+
+/* ===== DARK MODE ===== */
+body.theme-dark {
+  --bg: #111419;
+  --ink: #E8ECF2;
+  --line: #363C46;
+  --gain: #25D9A0;
+  --danger: #FF7070;
+  --shadow: 0 2px 8px rgba(0,0,0,0.28);
+  background: #111419;
+  color: #E8ECF2;
+}
+
+body.theme-dark.stage95-visual-test {
+  --line: #3B424D;
+  --shadow: 0 2px 8px rgba(0,0,0,0.30);
+}
+
+body.theme-dark .panel,
+body.theme-dark .deadline-account-section,
+body.theme-dark .wallet-section,
+body.theme-dark .vault-chamber,
+body.theme-dark .reference-section,
+body.theme-dark .flow-card,
+body.theme-dark .settlement-readout,
+body.theme-dark .score-readout,
+body.theme-dark .mini-card,
+body.theme-dark .final-payment-panel,
+body.theme-dark .round-prep-panel,
+body.theme-dark .shop-owned-panel,
+body.theme-dark .shop-main-section {
+  background-color: #15191F !important;
+  color: var(--ink);
+}
+
+body.theme-dark button,
+body.theme-dark .status-chip,
+body.theme-dark .vault-state-badge,
+body.theme-dark .vault-lock-state {
+  background-color: #171B22;
+  color: var(--ink);
+  border-color: #3A424D;
+}
+
+body.theme-dark button:not(:disabled):hover {
+  background-color: #1D232B;
+  border-color: #505A67;
+}
+
+body.theme-dark .payment-action,
+body.theme-dark .primary-action {
+  background: #E7EBF1 !important;
+  color: #111419 !important;
+  border-color: #E7EBF1 !important;
+}
+
+body.theme-dark .reels-shell,
+body.theme-dark .reel,
+body.theme-dark .reel-track,
+body.theme-dark .reel-symbol[data-symbol] {
+  background: #13171D !important;
+}
+
+body.theme-dark .reel-symbol.pattern-hit,
+body.theme-dark .reel-symbol.pattern-sequence-hit,
+body.theme-dark .reel-symbol.pattern-fx-hit,
+body.theme-dark .reel-symbol[data-symbol="WD"].pattern-hit,
+body.theme-dark .reel-symbol[data-symbol="WD"].pattern-sequence-hit,
+body.theme-dark .reel-symbol[data-symbol="WD"].pattern-fx-hit {
+  background: #1D242C !important;
+}
+
+body.theme-dark .shop-offer-card,
+body.theme-dark .shop-owned-card {
+  background: #171B22 !important;
+  color: var(--ink);
+}
+
+body.theme-dark .shop-owned-card.is-empty {
+  background: #13171D !important;
+}
+
+body.theme-dark .shop-rarity-badge,
+body.theme-dark .shop-shiny-badge,
+body.theme-dark .shop-shiny-trait {
+  background-color: rgba(24, 29, 37, 0.88);
+}
+
+body.theme-dark .shop-offer-card.is-shiny::before,
+body.theme-dark .shop-owned-card.is-shiny::before {
+  background:
+    radial-gradient(circle at 14% 8%, rgba(82, 199, 230, 0.16), transparent 34%),
+    radial-gradient(circle at 88% 82%, rgba(157, 103, 226, 0.17), transparent 38%),
+    linear-gradient(120deg, rgba(29,35,43,0.98), rgba(25,40,49,0.86) 35%, rgba(38,29,49,0.83) 68%, rgba(29,35,43,0.98));
+}
+
+body.theme-dark .shop-offer-card.is-shiny::after,
+body.theme-dark .shop-owned-card.is-shiny::after {
+  background: linear-gradient(90deg, transparent, rgba(210,239,255,0.18), transparent);
+}
+
+body.theme-dark .reference-section,
+body.theme-dark .reference-row,
+body.theme-dark .stat-reference-row {
+  border-color: rgba(89, 99, 113, 0.42);
+}
+
+body.theme-dark .progress-track {
+  background: #303741;
+}
+
+body.theme-dark .stage90-event,
+body.theme-dark .symbol-modifier-badge {
+  background: rgba(25, 30, 38, 0.95);
+  border-color: #414A56;
+  color: var(--ink);
+}
+
+body.theme-dark .stage91-item-alert.stage93-activation-card {
+  background: rgba(20, 25, 32, 0.985);
+  color: var(--ink);
+  border-color: #414955;
+}
+
+body.theme-dark .stage93-activation-mark {
+  background: #181D24;
+  border-color: #3C4550;
+}
+
+body.theme-dark .stage95-vault-unlock-banner {
+  background: rgba(19, 24, 30, 0.94);
+  color: var(--ink);
+}
+
+body.theme-dark .flow-overlay::before,
+body.theme-dark .flow-overlay {
+  color: var(--ink);
+}
+
+body.theme-dark .reference-probability,
+body.theme-dark .reference-section-header small,
+body.theme-dark .progress-copy,
+body.theme-dark .deadline-warning-copy,
+body.theme-dark .flow-footer,
+body.theme-dark .readout-detail {
+  color: var(--ink);
+}
+
+body.theme-dark .shop-offer-card:disabled,
+body.theme-dark button:disabled {
+  opacity: 0.48;
+}
+
+body.theme-dark .stage96-dividend-line {
+  color: #E6BD55;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .shop-offer-card.is-shiny::after,
+  .shop-owned-card.is-shiny::after {
+    animation: none !important;
+  }
+}
+
+@media (max-width: 760px) {
+  .stage96-coin-reroll {
+    min-width: 0;
+  }
+
+  .shop-shiny-trait {
+    padding: 6px 7px;
+  }
+}
