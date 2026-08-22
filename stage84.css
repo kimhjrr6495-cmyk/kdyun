@@ -1,0 +1,57 @@
+/* v0.8.4 — 이모지 심볼 / 릴 내부 가로 구분선 제거 */
+
+/* 하나의 세로 릴 안에서는 위/중간/아래 칸을 선으로 나누지 않습니다. */
+.reel::before,
+.reel::after {
+  display: none !important;
+}
+
+.reel-symbol {
+  border-bottom: 0 !important;
+}
+
+/* 릴 심볼은 텍스트 코드 대신 큰 이모지를 중심으로 표시 */
+.reel-symbol .symbol-emoji {
+  display: block;
+  font-family: "Apple Color Emoji", "Segoe UI Emoji", "Noto Color Emoji", sans-serif;
+  font-size: 38px;
+  line-height: 1;
+  letter-spacing: 0;
+  font-weight: 400;
+  transform: translateZ(0);
+}
+
+.reel-symbol small {
+  margin-top: 7px;
+  font-size: 9px;
+  font-weight: 850;
+  letter-spacing: 0.02em;
+  opacity: 0.42;
+}
+
+/* 가격표 구조는 유지하고 심볼 이름 칸만 아이콘처럼 읽히게 정리 */
+.reference-name.reference-symbol-emoji {
+  font-family: "Apple Color Emoji", "Segoe UI Emoji", "Noto Color Emoji", sans-serif;
+  font-size: 16px;
+  line-height: 1;
+  letter-spacing: 0;
+  opacity: 1;
+  text-align: center;
+}
+
+/* 당첨 확대 시에도 이모지가 과도하게 흐려지지 않도록 */
+.reel-symbol.pattern-fx-hit .symbol-emoji,
+.reel-symbol.pattern-sequence-hit .symbol-emoji,
+.reel-symbol.pattern-hit .symbol-emoji {
+  filter: saturate(1.08) brightness(1.03);
+}
+
+@media (max-width: 700px) {
+  .reel-symbol .symbol-emoji {
+    font-size: 33px;
+  }
+
+  .reference-name.reference-symbol-emoji {
+    font-size: 15px;
+  }
+}
