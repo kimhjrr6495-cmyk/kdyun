@@ -1,0 +1,115 @@
+/* Stage 5.8 — 방식 선택 비활성 / 자금 배분 / 시작 버튼 / 리롤 분리 */
+
+/* 방식 선택 중에는 금고와 마감 계좌 모두 조작 불가라는 느낌을 명확히 표시 */
+.deadline-account-section.is-mode-selecting,
+.vault-chamber.is-mode-selecting {
+  background: #ECEEF1;
+  border-color: #D8DCE2;
+  box-shadow: none;
+}
+
+.deadline-account-section.is-mode-selecting .payment-action {
+  border-color: #D0D4DA;
+  background: #D0D4DA;
+  color: rgba(26, 29, 35, 0.42);
+  opacity: 1;
+}
+
+.deadline-account-section.is-mode-selecting .vault-state-badge,
+.vault-chamber.is-mode-selecting .vault-lock-state,
+.vault-chamber.is-mode-selecting .vault-current-rate,
+.vault-chamber.is-mode-selecting .vault-round-copy,
+.vault-chamber.is-mode-selecting .vault-ticket-progress {
+  opacity: 0.42;
+}
+
+.vault-chamber.is-mode-selecting .vault-lock-symbol {
+  opacity: 0.36;
+}
+
+.vault-chamber.is-mode-selecting .vault-inline-controls {
+  opacity: 0.36;
+  pointer-events: none;
+}
+
+/* 자금 배분 중에는 슬롯 + 하단 액션바를 하나의 비활성 플레이 영역으로 묶음 */
+.machine-panel.is-awaiting-start .machine-stage::after {
+  opacity: 1;
+  background: rgba(26, 29, 35, 0.19);
+}
+
+.machine-panel.is-awaiting-start .machine-stage {
+  background: #E9ECEF;
+}
+
+.machine-panel.is-awaiting-start .machine-actions {
+  position: relative;
+  background: #E9ECEF;
+  border-color: #D8DCE2;
+  transition: background 180ms ease, border-color 180ms ease;
+}
+
+.machine-panel.is-awaiting-start .machine-actions::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  pointer-events: none;
+  background: rgba(26, 29, 35, 0.08);
+}
+
+.machine-panel.is-awaiting-start .machine-actions button {
+  opacity: 0.38;
+  filter: grayscale(0.35);
+}
+
+/* 시작 버튼은 리롤과 별개이며 자금 배분을 끝내는 유일한 중앙 액션 */
+.round-start-button {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  z-index: 12;
+  min-width: 132px;
+  min-height: 50px;
+  padding: 12px 28px;
+  border: 1px solid #1A1D23;
+  border-radius: 13px;
+  background: #1A1D23;
+  color: #F7F8FA;
+  font-size: 15px;
+  font-weight: 950;
+  letter-spacing: -0.02em;
+  box-shadow: 0 4px 14px rgba(26, 29, 35, 0.16);
+  transform: translate(-50%, -50%);
+  transition:
+    transform 120ms ease,
+    background 120ms ease,
+    box-shadow 120ms ease,
+    opacity 120ms ease;
+}
+
+.round-start-button[hidden] {
+  display: none !important;
+}
+
+.round-start-button:not(:disabled):hover {
+  transform: translate(-50%, calc(-50% - 1px));
+  background: #2A2F37;
+}
+
+.round-start-button:not(:disabled):active {
+  transform: translate(-50%, -50%);
+}
+
+/* 실제 라운드가 시작되면 Stage 5.6의 잠금 카드가 적용되고 플레이 영역은 원래 밝기로 복구 */
+.machine-panel:not(.is-awaiting-start) .machine-actions {
+  background: var(--bg);
+}
+
+@media (max-width: 560px) {
+  .round-start-button {
+    min-width: 116px;
+    min-height: 46px;
+    font-size: 14px;
+  }
+}
