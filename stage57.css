@@ -1,0 +1,42 @@
+/* Stage 5.7 — 슬롯 위치 고정 / 라운드 준비 강조 */
+
+/* 왼쪽 금고 높이가 변해도 오른쪽 머신 패널이 같은 높이로 늘어나지 않게 분리 */
+.game-layout {
+  align-items: start;
+}
+
+.machine-panel {
+  width: 100%;
+  align-self: start;
+}
+
+/* 라운드 준비 중에는 슬롯 화면만 어둡게, 회전 버튼은 그대로 강조 */
+.machine-stage {
+  position: relative;
+}
+
+.machine-stage::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 7;
+  pointer-events: none;
+  background: rgba(26, 29, 35, 0.16);
+  opacity: 0;
+  transition: opacity 180ms ease;
+}
+
+.machine-panel.is-round-prep .machine-stage::after {
+  opacity: 1;
+}
+
+.machine-panel.is-round-prep .machine-stage {
+  background: #EEF0F3;
+  transition: background 180ms ease;
+}
+
+@media (max-width: 900px) {
+  .machine-panel {
+    align-self: stretch;
+  }
+}
