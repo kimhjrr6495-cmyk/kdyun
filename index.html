@@ -4,28 +4,29 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>DEADLINE — 슬롯 로그라이트</title>
-  <link rel="stylesheet" href="style.css?v=0.7.1" />
-  <link rel="stylesheet" href="vault.css?v=0.7.1" />
-  <link rel="stylesheet" href="stage55.css?v=0.7.1" />
-  <link rel="stylesheet" href="stage57.css?v=0.7.1" />
-  <link rel="stylesheet" href="stage58.css?v=0.7.1" />
-  <link rel="stylesheet" href="stage60.css?v=0.7.1" />
-  <link rel="stylesheet" href="stage61.css?v=0.7.1" />
-  <link rel="stylesheet" href="stage62.css?v=0.7.1" />
-  <link rel="stylesheet" href="stage63.css?v=0.7.1" />
-  <link rel="stylesheet" href="stage70.css?v=0.7.1" />
-  <link rel="stylesheet" href="stage71.css?v=0.7.1" />
+  <link rel="stylesheet" href="style.css?v=0.7.2" />
+  <link rel="stylesheet" href="vault.css?v=0.7.2" />
+  <link rel="stylesheet" href="stage55.css?v=0.7.2" />
+  <link rel="stylesheet" href="stage57.css?v=0.7.2" />
+  <link rel="stylesheet" href="stage58.css?v=0.7.2" />
+  <link rel="stylesheet" href="stage60.css?v=0.7.2" />
+  <link rel="stylesheet" href="stage61.css?v=0.7.2" />
+  <link rel="stylesheet" href="stage62.css?v=0.7.2" />
+  <link rel="stylesheet" href="stage63.css?v=0.7.2" />
+  <link rel="stylesheet" href="stage70.css?v=0.7.2" />
+  <link rel="stylesheet" href="stage71.css?v=0.7.2" />
+  <link rel="stylesheet" href="stage72.css?v=0.7.2" />
 </head>
 <body>
   <main class="app-shell">
     <header class="topbar">
       <div class="brand-block">
-        <span class="eyebrow">CONTROLLED MARKET SYSTEM · VERSION v0.7.1</span>
+        <span class="eyebrow">CONTROLLED MARKET SYSTEM · VERSION v0.7.2</span>
         <h1>DEADLINE</h1>
       </div>
 
       <div class="top-status" aria-label="게임 상태">
-        <div class="status-chip">버전 <strong>v0.7.1</strong></div>
+        <div class="status-chip">버전 <strong>v0.7.2</strong></div>
         <div class="status-chip">마감 <strong id="deadlineStatus">1</strong></div>
         <div class="status-chip">라운드 <strong id="roundStatus">1 / 3</strong></div>
         <div class="status-chip">회전 <strong id="spinStatus">준비</strong></div>
@@ -154,6 +155,33 @@
           </div>
         </div>
       </section>
+
+      <aside class="panel reference-rail" aria-label="심볼, 패턴, 통계 참조">
+        <section class="reference-section">
+          <div class="reference-section-header">
+            <span>심볼 가격</span>
+            <small>기본 가치</small>
+          </div>
+          <div id="symbolValueTable" class="reference-table"></div>
+        </section>
+
+        <section class="reference-section">
+          <div class="reference-section-header">
+            <span>패턴 배수</span>
+            <small>기본값</small>
+          </div>
+          <div id="patternValueTable" class="reference-table"></div>
+        </section>
+
+        <!-- TEMP: 밸런스 검수용 스탯 창. 최종 UI 단계에서 통째로 제거 예정. -->
+        <section class="reference-section stats-reference-section">
+          <div class="reference-section-header">
+            <span>스탯</span>
+            <small class="temp-badge">임시</small>
+          </div>
+          <div id="runStatsGrid" class="run-stats-grid"></div>
+        </section>
+      </aside>
     </section>
   </main>
 
@@ -180,17 +208,18 @@
     </div>
   </div>
 
-  <script src="data.js?v=0.7.1"></script>
-  <script src="effects.js?v=0.7.1"></script>
-  <script src="game.js?v=0.7.1"></script>
-  <script src="vault.js?v=0.7.1"></script>
-  <script src="stage55.js?v=0.7.1"></script>
-  <script src="stage57.js?v=0.7.1"></script>
-  <script src="stage58.js?v=0.7.1"></script>
-  <script src="stage60.js?v=0.7.1"></script>
-  <script src="stage61.js?v=0.7.1"></script>
-  <script src="stage62.js?v=0.7.1"></script>
-  <script src="stage70.js?v=0.7.1"></script>
-  <script src="stage71.js?v=0.7.1"></script>
+  <script src="data.js?v=0.7.2"></script>
+  <script src="effects.js?v=0.7.2"></script>
+  <script src="game.js?v=0.7.2"></script>
+  <script src="vault.js?v=0.7.2"></script>
+  <script src="stage55.js?v=0.7.2"></script>
+  <script src="stage57.js?v=0.7.2"></script>
+  <script src="stage58.js?v=0.7.2"></script>
+  <script src="stage60.js?v=0.7.2"></script>
+  <script src="stage61.js?v=0.7.2"></script>
+  <script src="stage62.js?v=0.7.2"></script>
+  <script src="stage70.js?v=0.7.2"></script>
+  <script src="stage71.js?v=0.7.2"></script>
+  <script src="stage72.js?v=0.7.2"></script>
 </body>
 </html>
