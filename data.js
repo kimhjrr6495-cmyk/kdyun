@@ -4,7 +4,7 @@
 "use strict";
 
 const GAME_DATA = {
-  version: "v0.5.6",
+  version: "v0.5.7",
   stage: 5,
   board: { columns: 5, rows: 3 },
 
@@ -80,7 +80,7 @@ const GAME_DATA = {
     }
   },
 
-  // Stage 5.6 경제 규칙.
+  // Stage 5.7 경제 규칙.
   // 라운드 방식 선택 뒤 첫 회전 전이 자금 배분 구간입니다.
   // 금고/마감계좌는 이 구간에서 조작되고 첫 회전 순간 잠깁니다.
   economy: {
