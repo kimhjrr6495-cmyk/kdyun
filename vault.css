@@ -1,0 +1,115 @@
+.vault-section {
+  display: grid;
+  gap: 10px;
+}
+
+.vault-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.vault-heading .label {
+  margin-bottom: 0;
+}
+
+.vault-state-badge {
+  display: inline-flex;
+  align-items: center;
+  min-height: 22px;
+  padding: 3px 7px;
+  border: 1px solid rgba(0, 212, 146, 0.35);
+  border-radius: 999px;
+  color: var(--gain);
+  font-size: 9px;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+}
+
+.vault-state-badge.is-locked {
+  border-color: var(--ink);
+  color: var(--ink);
+}
+
+.vault-status-copy {
+  min-height: 16px;
+  font-size: 10px;
+  font-weight: 800;
+  line-height: 1.45;
+  opacity: 0.58;
+}
+
+.vault-term-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 7px;
+}
+
+.vault-term-button {
+  min-height: 58px;
+  padding: 8px 9px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+  text-align: left;
+}
+
+.vault-term-button strong {
+  font-size: 15px;
+  letter-spacing: -0.03em;
+}
+
+.vault-term-button small {
+  margin-top: 2px;
+  font-size: 9px;
+  font-weight: 800;
+  opacity: 0.5;
+}
+
+.vault-term-button.is-selected {
+  border-color: var(--gain);
+  background: rgba(0, 212, 146, 0.06);
+  box-shadow: inset 0 0 0 1px rgba(0, 212, 146, 0.12);
+}
+
+.vault-deposit-actions {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.vault-deposit-actions button {
+  min-width: 0;
+  padding-left: 7px;
+  padding-right: 7px;
+  font-size: 10px;
+}
+
+.vault-preview {
+  min-height: 48px;
+  padding: 9px 10px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  font-size: 10px;
+  font-weight: 750;
+  line-height: 1.5;
+  opacity: 0.66;
+}
+
+.vault-preview strong {
+  font-size: 11px;
+  color: var(--ink);
+}
+
+@media (max-width: 900px) {
+  .vault-term-grid {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 560px) {
+  .vault-term-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
