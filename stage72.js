@@ -200,6 +200,9 @@
       }
 
       this.machinePanel.classList.remove("is-pattern-revealing");
+      this.reelsEl
+        .querySelectorAll(".pattern-sequence-hit")
+        .forEach((cell) => cell.classList.remove("pattern-sequence-hit"));
       this.highlightPatterns(patterns);
       this.patternList.innerHTML = scored.map((pattern) => this.patternChipHTML72(pattern)).join("");
       this.scoreBreakdown.innerHTML = scored.map((pattern) => this.breakdownHTML(pattern)).join("");
