@@ -1,0 +1,66 @@
+/* DEADLINE v0.9.4 — WILD / ERROR / Stage 9 마무리 UI */
+
+/* 특수 심볼도 기존 미니멀 릴 배경을 유지하고 이모지 자체로만 구분합니다. */
+.reel-symbol[data-symbol="WD"],
+.reel-symbol[data-symbol="ER"] {
+  background: var(--bg) !important;
+}
+
+.reel-symbol[data-symbol="WD"] .symbol-emoji,
+.reel-symbol[data-symbol="ER"] .symbol-emoji {
+  font-size: 40px;
+}
+
+.reel-symbol[data-symbol="WD"] .symbol-emoji {
+  filter: saturate(0.9);
+}
+
+.reel-symbol[data-symbol="ER"] .symbol-emoji {
+  opacity: 0.86;
+}
+
+/* 오른쪽 참조표의 WILD / ERROR는 가격 대신 역할을 표시합니다. */
+.symbol-reference-row.stage94-special-reference .reference-current-value {
+  font-size: 8px;
+  letter-spacing: 0.04em;
+  opacity: 0.64;
+  transform: none;
+  text-shadow: none;
+}
+
+.symbol-reference-row.is-wild-reference .reference-current-value {
+  color: #7656C5;
+}
+
+.symbol-reference-row.is-error-reference .reference-current-value {
+  color: var(--danger);
+}
+
+.symbol-reference-row.is-wild-reference,
+.symbol-reference-row.is-error-reference {
+  border-bottom-style: dashed;
+}
+
+/* ERROR EVENT는 기존 트리거 피드 안에서 짧고 명확하게 표시합니다. */
+.stage90-event-error {
+  border-color: rgba(255, 92, 92, 0.30);
+  background: rgba(255, 92, 92, 0.045);
+}
+
+.stage94-score-summary {
+  border-top-color: rgba(255, 92, 92, 0.18);
+}
+
+/* WILD가 들어간 당첨도 기존 패턴 테두리 스타일을 유지합니다. */
+.reel-symbol[data-symbol="WD"].pattern-hit,
+.reel-symbol[data-symbol="WD"].pattern-sequence-hit,
+.reel-symbol[data-symbol="WD"].pattern-fx-hit {
+  background: #FFFFFF !important;
+}
+
+@media (max-width: 700px) {
+  .reel-symbol[data-symbol="WD"] .symbol-emoji,
+  .reel-symbol[data-symbol="ER"] .symbol-emoji {
+    font-size: 35px;
+  }
+}
