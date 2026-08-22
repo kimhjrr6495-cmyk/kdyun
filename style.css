@@ -6,6 +6,7 @@
   --danger: #FF5C5C;
   --shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
   --radius: 16px;
+  --reel-row-height: 94px;
 }
 
 * { box-sizing: border-box; }
@@ -19,13 +20,23 @@ html, body {
 }
 
 body { min-height: 100vh; }
-
 button { font: inherit; }
 
-button:disabled {
-  cursor: default;
-  opacity: 0.42;
+button {
+  border: 1px solid var(--line);
+  border-radius: 11px;
+  padding: 10px 13px;
+  background: var(--bg);
+  color: var(--ink);
+  font-weight: 850;
+  box-shadow: var(--shadow);
+  transition: transform 100ms ease, opacity 100ms ease, border-color 100ms ease;
 }
+
+button:not(:disabled) { cursor: pointer; }
+button:not(:disabled):hover { transform: translateY(-1px); }
+button:not(:disabled):active { transform: translateY(0); }
+button:disabled { cursor: default; opacity: 0.42; }
 
 .app-shell {
   width: min(1280px, calc(100vw - 28px));
@@ -157,16 +168,6 @@ button:disabled {
 
 .button-row { margin-top: 9px; }
 
-button {
-  border: 1px solid var(--line);
-  border-radius: 11px;
-  padding: 10px 13px;
-  background: var(--bg);
-  color: var(--ink);
-  font-weight: 850;
-  box-shadow: var(--shadow);
-}
-
 .mini-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -222,34 +223,74 @@ button {
 
 .slot-machine { width: min(770px, 100%); }
 
-.reels-grid {
+/* Stage 1: 15개의 독립 카드가 아니라 5개의 세로 릴로 구성 */
+.reels {
   display: grid;
-  grid-template-columns: repeat(5, 1fr);
+  grid-template-columns: repeat(5, minmax(0, 1fr));
   gap: 9px;
 }
 
-.slot-cell {
-  min-height: 94px;
+.reel {
+  height: calc(var(--reel-row-height) * 3);
+  position: relative;
+  overflow: hidden;
   border: 1px solid var(--line);
   border-radius: 14px;
+  background: var(--bg);
+  box-shadow: var(--shadow);
+}
+
+.reel::before,
+.reel::after {
+  content: "";
+  position: absolute;
+  z-index: 3;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: var(--line);
+  pointer-events: none;
+}
+
+.reel::before { top: 33.333%; }
+.reel::after { top: 66.666%; }
+
+.reel-track {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  will-change: transform;
+  backface-visibility: hidden;
+}
+
+.reel-symbol {
+  height: var(--reel-row-height);
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
+  border-bottom: 1px solid var(--line);
   background: var(--bg);
+  transform: translateZ(0);
 }
 
-.slot-cell b {
+.reel-symbol b {
   font-size: 28px;
   letter-spacing: -0.04em;
 }
 
-.slot-cell small {
+.reel-symbol small {
   margin-top: 3px;
   font-size: 9px;
   font-weight: 800;
   letter-spacing: 0.08em;
   opacity: 0.42;
+}
+
+/* 최종 정지 순간의 아주 미세한 시각 피드백. 최종 이펙트는 후속 단계에서 별도 제작. */
+.reel-settled {
+  border-color: var(--ink);
 }
 
 .settlement-readout {
@@ -370,10 +411,10 @@ button {
 }
 
 @media (max-width: 900px) {
+  :root { --reel-row-height: 72px; }
   .topbar { align-items: flex-start; flex-direction: column; }
   .top-status { justify-content: flex-start; }
   .game-layout { grid-template-columns: 1fr; }
   .info-panel { min-height: auto; }
-  .slot-cell { min-height: 72px; }
-  .slot-cell b { font-size: 22px; }
+  .reel-symbol b { font-size: 22px; }
 }
