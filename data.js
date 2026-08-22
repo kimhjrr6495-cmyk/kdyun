@@ -4,11 +4,12 @@
 "use strict";
 
 const GAME_DATA = {
-  version: "v0.7.2",
+  version: "v0.7.3",
   stage: 7,
   board: { columns: 5, rows: 3 },
 
-  // 등장 확률 가중치는 아직 연결하지 않습니다. 현재 심볼 선택은 균등 랜덤입니다.
+  // 현재 randomSymbol()은 아래 7종을 균등 랜덤으로 선택합니다.
+  // 따라서 실제 등장확률은 각 1/7 = 약 14.3%입니다. 가중치 시스템은 아직 미구현입니다.
   symbols: [
     { id: "CH", code: "CH", name: "체리", value: 2, multiplier: 1 },
     { id: "CO", code: "CO", name: "코인", value: 2, multiplier: 1 },
