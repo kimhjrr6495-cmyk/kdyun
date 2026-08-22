@@ -1,0 +1,238 @@
+/* DEADLINE v0.9.0 — 3×2 상점 / 등급 / Modifier / 이벤트 피드 */
+
+/* 상점 6칸: PC 3×2 */
+.flow-overlay.is-shop-modal .flow-card {
+  width: min(980px, 100%);
+}
+
+.shop-offer-grid {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.shop-offer-card {
+  position: relative;
+  min-height: 176px;
+  overflow: hidden;
+  border-width: 1px;
+  background: #F7F8FA;
+}
+
+.shop-offer-card .shop-item-mark {
+  font-size: 22px;
+}
+
+.shop-rarity-badge {
+  position: absolute;
+  right: 10px;
+  top: 10px;
+  min-height: 20px;
+  padding: 4px 7px;
+  display: inline-flex;
+  align-items: center;
+  border: 1px solid currentColor;
+  border-radius: 999px;
+  font-size: 7px;
+  font-weight: 950;
+  letter-spacing: 0.06em;
+  line-height: 1;
+  opacity: 0.74;
+}
+
+.shop-offer-card.rarity-common,
+.shop-owned-card.rarity-common {
+  --rarity-accent: #69717D;
+}
+
+.shop-offer-card.rarity-rare,
+.shop-owned-card.rarity-rare {
+  --rarity-accent: #3F6FC6;
+}
+
+.shop-offer-card.rarity-epic,
+.shop-owned-card.rarity-epic {
+  --rarity-accent: #7656C5;
+}
+
+.shop-offer-card.rarity-legendary,
+.shop-owned-card.rarity-legendary {
+  --rarity-accent: #A97A18;
+}
+
+.shop-offer-card[class*="rarity-"],
+.shop-owned-card[class*="rarity-"] {
+  border-color: color-mix(in srgb, var(--rarity-accent) 34%, var(--line));
+}
+
+.shop-offer-card[class*="rarity-"] .shop-rarity-badge {
+  color: var(--rarity-accent);
+  background: color-mix(in srgb, var(--rarity-accent) 7%, #FFFFFF);
+}
+
+.shop-offer-card[class*="rarity-"] .shop-item-mark,
+.shop-owned-card[class*="rarity-"] .shop-owned-mark {
+  border-color: color-mix(in srgb, var(--rarity-accent) 20%, var(--line));
+}
+
+.shop-offer-card.rarity-legendary {
+  box-shadow: inset 0 0 0 1px rgba(169, 122, 24, 0.12);
+}
+
+.shop-offer-card.rarity-legendary:not(:disabled):hover {
+  border-color: rgba(169, 122, 24, 0.72);
+}
+
+.shop-owned-large-grid {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+/* 릴 Modifier: 원래 이모지는 유지하고 우측 상단에 작은 배지 */
+.symbol-modifier-stack {
+  position: absolute;
+  z-index: 6;
+  top: 7px;
+  right: 7px;
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  pointer-events: none;
+}
+
+.symbol-modifier-badge {
+  width: 21px;
+  height: 21px;
+  display: grid;
+  place-items: center;
+  border: 1px solid rgba(26, 29, 35, 0.12);
+  border-radius: 7px;
+  background: rgba(255, 255, 255, 0.94);
+  box-shadow: 0 2px 7px rgba(26, 29, 35, 0.08);
+  font-family: "Apple Color Emoji", "Segoe UI Emoji", "Noto Color Emoji", sans-serif;
+  font-size: 12px;
+  line-height: 1;
+}
+
+.symbol-modifier-badge.modifier-golden {
+  border-color: rgba(169, 122, 24, 0.34);
+}
+
+.symbol-modifier-badge.modifier-ticket {
+  border-color: rgba(63, 111, 198, 0.30);
+}
+
+.symbol-modifier-badge.modifier-repeat {
+  color: #7656C5;
+  border-color: rgba(118, 86, 197, 0.30);
+  font-family: inherit;
+  font-size: 15px;
+  font-weight: 950;
+}
+
+.symbol-modifier-badge.modifier-chain {
+  border-color: rgba(26, 29, 35, 0.24);
+}
+
+/* 확률 / Modifier / 재발동 이벤트를 트리거 피드와 겹치지 않게 얇게 표시 */
+.stage90-feed {
+  width: min(620px, 100%);
+  margin: 7px auto 2px;
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 5px;
+}
+
+.stage90-feed[hidden] {
+  display: none !important;
+}
+
+.stage90-event {
+  min-height: 25px;
+  padding: 5px 8px;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.88);
+  box-shadow: 0 2px 8px rgba(26, 29, 35, 0.05);
+  font-variant-numeric: tabular-nums;
+}
+
+.stage90-event strong {
+  font-size: 8px;
+  font-weight: 950;
+}
+
+.stage90-event small {
+  font-size: 8px;
+  font-weight: 800;
+  opacity: 0.52;
+}
+
+.stage90-event-golden,
+.stage90-event-legendary {
+  border-color: rgba(169, 122, 24, 0.32);
+}
+
+.stage90-event-repeat,
+.stage90-event-growth {
+  border-color: rgba(118, 86, 197, 0.28);
+}
+
+.stage90-event-ticket,
+.stage90-event-chance,
+.stage90-event-luck {
+  border-color: rgba(63, 111, 198, 0.26);
+}
+
+.stage90-event-chain,
+.stage90-event-boost,
+.stage90-event-cash {
+  border-color: rgba(0, 172, 124, 0.26);
+}
+
+/* 기존 릴 미니멀 디자인은 유지. Modifier 배지가 들어가도 셀 배경색은 중립 */
+.reel-symbol[data-symbol] {
+  background: var(--bg) !important;
+}
+
+.reel-symbol.pattern-hit,
+.reel-symbol.pattern-sequence-hit,
+.reel-symbol.pattern-fx-hit {
+  background: #FFFFFF !important;
+}
+
+/* 임시 밸런스 스탯의 Stage 9 행 */
+.stage90-stat-row strong {
+  font-variant-numeric: tabular-nums;
+}
+
+@media (max-width: 760px) {
+  .shop-offer-grid,
+  .shop-owned-large-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .shop-offer-card {
+    min-height: 162px;
+  }
+}
+
+@media (max-width: 480px) {
+  .shop-offer-grid,
+  .shop-owned-large-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .symbol-modifier-stack {
+    top: 6px;
+    right: 6px;
+  }
+
+  .symbol-modifier-badge {
+    width: 19px;
+    height: 19px;
+    font-size: 11px;
+  }
+}
