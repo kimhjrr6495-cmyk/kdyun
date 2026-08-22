@@ -1,0 +1,154 @@
+/* DEADLINE v1.0.2 — control layout / disabled state / prep choice polish */
+
+/* ===== ROUND ACTION LAYOUT ===== */
+.machine-actions {
+  display: flex !important;
+  align-items: center !important;
+  gap: 10px !important;
+}
+
+.machine-actions > * {
+  margin-top: 0 !important;
+  margin-bottom: 0 !important;
+  transform: none !important;
+}
+
+/* '이번 라운드 수익'을 기존 하단 리롤 슬롯으로 이동한 뒤 버튼 높이에 맞춥니다. */
+.machine-actions > #stage99RoundWallet {
+  flex: 0 0 205px !important;
+  width: 205px !important;
+  min-width: 205px !important;
+  max-width: 205px !important;
+  min-height: 48px !important;
+  height: 48px !important;
+  margin: 0 !important;
+  padding: 0 13px !important;
+  align-self: center !important;
+  border-radius: 11px !important;
+}
+
+.machine-actions > #stage99RoundWallet > span {
+  font-size: 9px !important;
+}
+
+.machine-actions > #stage99RoundWallet > strong {
+  font-size: 17px !important;
+}
+
+/* 리롤 버튼을 기존 라운드 수익 위치로 이동: 현재 지급액 바로 아래 중앙. */
+.score-readout > #spinButton {
+  width: min(250px, calc(100% - 24px)) !important;
+  min-width: 210px !important;
+  max-width: 250px !important;
+  min-height: 44px !important;
+  height: 44px !important;
+  margin: 5px auto 6px !important;
+  padding: 0 20px !important;
+  align-self: center !important;
+  border-radius: 11px !important;
+  font-size: 13px !important;
+  font-weight: 1000 !important;
+  letter-spacing: -0.02em;
+}
+
+.score-readout > #spinButton:not([hidden]) {
+  display: block !important;
+}
+
+/* 하단 버튼의 세로 중심선을 완전히 통일합니다. */
+#patternTestButton,
+#actionShopButton {
+  min-height: 48px !important;
+  height: 48px !important;
+  margin: 0 !important;
+  align-self: center !important;
+  position: static !important;
+  top: auto !important;
+  bottom: auto !important;
+  transform: none !important;
+}
+
+#actionShopButton {
+  min-width: 108px !important;
+  padding-top: 0 !important;
+  padding-bottom: 0 !important;
+}
+
+/* ===== CLEAR DISABLED STATE ===== */
+#deadlineDepositButton.payment-action:disabled,
+#actionShopButton.action-shop-button:disabled,
+.score-readout > #spinButton.primary-action:disabled {
+  background: #E5E7EB !important;
+  border-color: #D1D5DB !important;
+  color: #9CA3AF !important;
+  box-shadow: none !important;
+  opacity: 1 !important;
+  filter: none !important;
+  cursor: not-allowed !important;
+  transform: none !important;
+}
+
+#deadlineDepositButton.payment-action:disabled:hover,
+#actionShopButton.action-shop-button:disabled:hover,
+.score-readout > #spinButton.primary-action:disabled:hover {
+  background: #E5E7EB !important;
+  border-color: #D1D5DB !important;
+  color: #9CA3AF !important;
+}
+
+/* ===== PRE-ROUND MODE CHOICES: LIGHT CARDS ===== */
+.round-mode-select {
+  background: #FFFFFF !important;
+  color: #111827 !important;
+  border: 1.5px solid #CBD5E1 !important;
+  box-shadow: 0 4px 12px rgba(15, 23, 42, 0.055) !important;
+  filter: none !important;
+}
+
+.round-mode-select:not(:disabled):hover {
+  background: #F8FAFC !important;
+  border-color: #94A3B8 !important;
+  box-shadow: 0 6px 16px rgba(15, 23, 42, 0.08) !important;
+}
+
+.round-mode-select[aria-pressed="true"] {
+  background: #F1F6FA !important;
+  border: 2px solid #64748B !important;
+  box-shadow: 0 0 0 3px rgba(100, 116, 139, 0.08) !important;
+}
+
+.round-mode-select > strong {
+  color: #111827 !important;
+  font-weight: 1000 !important;
+}
+
+.round-mode-select > small {
+  color: #0F8A69 !important;
+  font-weight: 900 !important;
+}
+
+.round-mode-select[data-prep-mode="RISK"] > small {
+  color: #B83250 !important;
+}
+
+.round-mode-select:disabled,
+.round-mode-select.stage100-mode-blocked {
+  background: #F3F4F6 !important;
+  border-color: #E5E7EB !important;
+  color: #9CA3AF !important;
+  box-shadow: none !important;
+  opacity: 0.68 !important;
+}
+
+@media (max-width: 760px) {
+  .machine-actions > #stage99RoundWallet {
+    flex-basis: 170px !important;
+    width: 170px !important;
+    min-width: 170px !important;
+    max-width: 170px !important;
+  }
+
+  .score-readout > #spinButton {
+    min-width: 180px !important;
+  }
+}
