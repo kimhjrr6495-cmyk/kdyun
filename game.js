@@ -1,34 +1,57 @@
-// DEADLINE — Stage 3
-// 패턴 점수를 계산하고 실제 회전 보상을 지갑에 반영합니다.
-// v0.3.2: 겹쳐 성립하는 패턴은 모두 합산하며 JACKPOT도 추가 보너스로 계산합니다.
+// DEADLINE — Stage 4
+// 패턴/점수 시스템 위에 라운드 선택, 회전 제한, 마감 성공/실패 루프를 연결합니다.
+// 금고/이자/실제 마감 정산/조기상환/상점은 후속 단계에서 구현합니다.
 
 "use strict";
 
 const Game = {
-  stage: 3,
-  status: "SCORE_SYSTEM",
+  stage: 4,
+  status: "DEADLINE_LOOP",
   isSpinning: false,
-  testSpinCount: 0,
+  isResolvingRound: false,
   patternTestIndex: 0,
   currentColumns: [],
   lastPatterns: [],
+
   wallet: 0,
-  deadlineTarget: 80,
+  bank: 0,
+  tickets: 0,
+  deadlineIndex: 0,
+  round: 1,
+  currentMode: null,
+  spinsRemaining: 0,
+  spinsTotal: 0,
+  gameOver: false,
+  runComplete: false,
 
   init() {
     this.reelsEl = document.querySelector("#reels");
     this.spinButton = document.querySelector("#spinButton");
     this.patternTestButton = document.querySelector("#patternTestButton");
+    this.deadlineStatus = document.querySelector("#deadlineStatus");
+    this.roundStatus = document.querySelector("#roundStatus");
     this.spinStatus = document.querySelector("#spinStatus");
+    this.ticketStatus = document.querySelector("#ticketStatus");
+    this.modeStatus = document.querySelector("#modeStatus");
     this.stageStatus = document.querySelector("#stageStatus");
     this.payoutValue = document.querySelector("#payoutValue");
     this.patternList = document.querySelector("#patternList");
     this.scoreBreakdown = document.querySelector("#scoreBreakdown");
     this.readoutDetail = document.querySelector("#readoutDetail");
     this.walletValue = document.querySelector("#walletValue");
+    this.bankValue = document.querySelector("#bankValue");
+    this.deadlineTargetValue = document.querySelector("#deadlineTargetValue");
     this.progressFill = document.querySelector("#progressFill");
     this.progressCopy = document.querySelector("#progressCopy");
+    this.panelNote = document.querySelector("#panelNote");
     this.machinePanel = document.querySelector("#machinePanel");
+
+    this.flowOverlay = document.querySelector("#flowOverlay");
+    this.flowEyebrow = document.querySelector("#flowEyebrow");
+    this.flowTitle = document.querySelector("#flowTitle");
+    this.flowText = document.querySelector("#flowText");
+    this.flowOptions = document.querySelector("#flowOptions");
+    this.flowFooter = document.querySelector("#flowFooter");
 
     this.currentColumns = Array.from(
       { length: GAME_DATA.board.columns },
@@ -37,14 +60,37 @@ const Game = {
 
     this.renderReels();
     this.bindInputs();
-    this.updateWalletUI(false);
+    this.updateAllUI();
+    this.showRoundChoice();
 
-    console.info(`DEADLINE ${GAME_DATA.version}: score system loaded.`);
+    console.info(`DEADLINE ${GAME_DATA.version}: deadline loop loaded.`);
+  },
+
+  get deadlineNumber() {
+    return this.deadlineIndex + 1;
+  },
+
+  get deadlineTarget() {
+    return GAME_DATA.deadline.targets[this.deadlineIndex];
+  },
+
+  get roundsPerDeadline() {
+    return GAME_DATA.deadline.roundsPerDeadline;
   },
 
   bindInputs() {
     this.spinButton.addEventListener("click", () => this.spin());
     this.patternTestButton.addEventListener("click", () => this.showNextPatternTest());
+
+    this.flowOptions.addEventListener("click", (event) => {
+      const button = event.target.closest("button[data-action]");
+      if (!button) return;
+
+      const action = button.dataset.action;
+      if (action === "start-round") this.startRound(button.dataset.mode);
+      if (action === "next-deadline") this.advanceDeadline();
+      if (action === "restart-run") this.restartRun();
+    });
 
     window.addEventListener("keydown", (event) => {
       if (event.code !== "Space" || event.repeat) return;
@@ -56,6 +102,7 @@ const Game = {
         target?.isContentEditable;
 
       if (isTyping) return;
+
       event.preventDefault();
       this.spin();
     });
@@ -102,7 +149,17 @@ const Game = {
   },
 
   async spin() {
-    if (this.isSpinning) return;
+    if (
+      this.isSpinning ||
+      this.isResolvingRound ||
+      this.gameOver ||
+      this.runComplete ||
+      !this.currentMode ||
+      this.spinsRemaining <= 0 ||
+      this.flowOverlay.classList.contains("is-open")
+    ) {
+      return;
+    }
 
     this.isSpinning = true;
     this.spinButton.disabled = true;
@@ -125,22 +182,34 @@ const Game = {
 
     this.currentColumns = nextColumns;
     this.renderReels();
-    this.testSpinCount += 1;
-    this.spinStatus.textContent = `TEST ${this.testSpinCount}`;
-    this.stageStatus.textContent = "STAGE 3 · SCORE SYSTEM";
 
     await this.evaluateAndRenderScore({ creditWallet: true });
+
+    this.spinsRemaining = Math.max(0, this.spinsRemaining - 1);
+    this.updateAllUI();
+
+    this.isSpinning = false;
+
+    if (this.spinsRemaining <= 0) {
+      this.isResolvingRound = true;
+      this.spinButton.disabled = true;
+      this.patternTestButton.disabled = true;
+      this.spinButton.textContent = "정산 중";
+      await this.wait(420);
+      this.resolveRound();
+      return;
+    }
 
     this.spinButton.disabled = false;
     this.patternTestButton.disabled = false;
     this.spinButton.textContent = "회전";
-    this.isSpinning = false;
   },
 
   animateReel(reel, index, finalColumn) {
     const track = reel.querySelector(".reel-track");
     const config = GAME_DATA.reelMotion;
     const symbolHeight = reel.clientHeight / GAME_DATA.board.rows;
+
     const startColumn = this.currentColumns[index];
     const middle = Array.from(
       { length: config.travelSymbols },
@@ -164,12 +233,14 @@ const Game = {
       const finish = () => {
         if (settled) return;
         settled = true;
+
         track.removeEventListener("transitionend", onEnd);
         track.style.transition = "none";
         track.style.transform = "translate3d(0, 0, 0)";
         track.innerHTML = finalColumn
           .map((symbol, row) => this.symbolHTML(symbol, index, row))
           .join("");
+
         reel.classList.add("reel-settled");
         window.setTimeout(() => reel.classList.remove("reel-settled"), 90);
         resolve();
@@ -223,8 +294,7 @@ const Game = {
     const found = [];
     const { columns, rows } = GAME_DATA.board;
 
-    // JACKPOT 여부는 먼저 기억만 해두고, 일반 패턴을 전부 검사한 뒤 마지막에 추가합니다.
-    // 따라서 15칸 동일 심볼이면 가로/세로/대각선/V/역V/X + JACKPOT이 모두 합산됩니다.
+    // JACKPOT은 일반 패턴을 대체하지 않고 마지막 보너스로 추가됩니다.
     const allCoords = [];
     for (let col = 0; col < columns; col += 1) {
       for (let row = 0; row < rows; row += 1) {
@@ -233,8 +303,7 @@ const Game = {
     }
     const jackpotSymbol = this.matchCoordinates(allCoords);
 
-    // 가로: 같은 연속 구간 안에서는 가장 큰 가로 패턴만 인정합니다.
-    // 예: 5연속은 H5 하나이며 H3/H4를 추가로 만들지 않습니다.
+    // 같은 가로 연속 구간에서는 가장 큰 가로 패턴만 인정합니다.
     for (let row = 0; row < rows; row += 1) {
       let col = 0;
       while (col < columns) {
@@ -261,14 +330,12 @@ const Game = {
       }
     }
 
-    // 세로 3
     for (let col = 0; col < columns; col += 1) {
       const coords = [[col, 0], [col, 1], [col, 2]];
       const symbol = this.matchCoordinates(coords);
       if (symbol) found.push(this.makePattern("V3", coords, symbol));
     }
 
-    // 대각선 3칸: 가능한 ↘ / ↗ 구간을 모두 검사합니다.
     for (let startCol = 0; startCol <= columns - 3; startCol += 1) {
       const down = [
         [startCol, 0],
@@ -287,7 +354,6 @@ const Game = {
       if (upSymbol) found.push(this.makePattern("DIAG", up, upSymbol));
     }
 
-    // V와 역V는 구성 대각선과 별개로 추가 점수를 받습니다.
     const specialShapes = [
       {
         key: "V",
@@ -308,7 +374,6 @@ const Game = {
       if (symbol) found.push(this.makePattern(key, coords, symbol));
     });
 
-    // JACKPOT은 일반 패턴을 대체하지 않고 마지막 보너스 패턴으로 추가합니다.
     if (jackpotSymbol) {
       found.push(this.makePattern("JACKPOT", allCoords, jackpotSymbol));
     }
@@ -427,6 +492,7 @@ const Game = {
 
     const oldWallet = this.wallet;
     const newWallet = creditWallet ? oldWallet + total : oldWallet;
+
     if (creditWallet) this.wallet = newWallet;
 
     if (total > 0) {
@@ -453,10 +519,10 @@ const Game = {
     }
 
     if (creditWallet) {
-      this.updateWalletUI(false);
+      this.updateEconomyUI(false);
       this.readoutDetail.textContent = jackpot
-        ? `JACKPOT + 모든 성립 패턴 합산 완료 · 지갑 +$${total.toLocaleString("ko-KR")}`
-        : `정산 완료 · 패턴 배율 ×${this.formatMultiplier(GAME_DATA.scoring.patternMultiplier)} 적용 · 지갑 +$${total.toLocaleString("ko-KR")}`;
+        ? `JACKPOT 포함 정산 완료 · 지갑 +$${total.toLocaleString("ko-KR")}`
+        : `정산 완료 · 지갑 +$${total.toLocaleString("ko-KR")}`;
     } else {
       this.readoutDetail.textContent =
         testLabel || `테스트 점수 +$${total.toLocaleString("ko-KR")} · 지갑 미반영`;
@@ -465,15 +531,218 @@ const Game = {
     return total;
   },
 
-  updateWalletUI(updateText = true) {
-    if (updateText) {
-      this.walletValue.textContent = `$ ${this.wallet.toLocaleString("ko-KR")}`;
+  startRound(modeId) {
+    if (this.gameOver || this.runComplete || this.isSpinning) return;
+
+    const mode = GAME_DATA.deadline.modes[modeId];
+    if (!mode) return;
+
+    this.currentMode = mode;
+    this.spinsRemaining = mode.spins;
+    this.spinsTotal = mode.spins;
+    this.tickets += mode.tickets;
+    this.isResolvingRound = false;
+
+    this.closeFlowOverlay();
+    this.clearScoreDisplay();
+    this.scoreBreakdown.textContent =
+      `${mode.name} 시작 · ${mode.spins}회전 · 티켓 +${mode.tickets}`;
+    this.readoutDetail.textContent =
+      `마감 ${this.deadlineNumber} · 라운드 ${this.round}/${this.roundsPerDeadline}`;
+
+    this.spinButton.disabled = false;
+    this.patternTestButton.disabled = false;
+    this.spinButton.textContent = "회전";
+    this.updateAllUI();
+  },
+
+  resolveRound() {
+    this.isResolvingRound = false;
+    this.currentMode = null;
+    this.spinsRemaining = 0;
+    this.spinsTotal = 0;
+    this.updateAllUI();
+
+    if (this.wallet >= this.deadlineTarget) {
+      this.showDeadlineSuccess();
+      return;
     }
 
-    const ratio = Math.min(1, this.wallet / this.deadlineTarget);
+    if (this.round < this.roundsPerDeadline) {
+      this.round += 1;
+      this.showRoundChoice();
+      return;
+    }
+
+    this.showGameOver();
+  },
+
+  showRoundChoice() {
+    this.spinButton.disabled = true;
+    this.patternTestButton.disabled = false;
+    this.spinButton.textContent = "회전";
+    this.currentMode = null;
+    this.spinsRemaining = 0;
+    this.spinsTotal = 0;
+    this.updateAllUI();
+
+    const normal = GAME_DATA.deadline.modes.NORMAL;
+    const risk = GAME_DATA.deadline.modes.RISK;
+
+    this.flowEyebrow.textContent =
+      `DEADLINE ${this.deadlineNumber} · ROUND ${this.round} / ${this.roundsPerDeadline}`;
+    this.flowTitle.textContent = "라운드 방식 선택";
+    this.flowText.textContent =
+      `목표 $${this.deadlineTarget.toLocaleString("ko-KR")} · 현재 $${this.wallet.toLocaleString("ko-KR")}`;
+    this.flowOptions.innerHTML = `
+      <button class="flow-choice" data-action="start-round" data-mode="NORMAL">
+        <span>${normal.name}</span>
+        <strong>${normal.spins} SPINS</strong>
+        <small>티켓 +${normal.tickets} · 안정적인 선택</small>
+      </button>
+      <button class="flow-choice risk" data-action="start-round" data-mode="RISK">
+        <span>${risk.name}</span>
+        <strong>${risk.spins} SPINS</strong>
+        <small>티켓 +${risk.tickets} · 적은 회전, 높은 보상</small>
+      </button>
+    `;
+    this.flowFooter.textContent =
+      "라운드가 끝날 때 목표 달성 여부를 확인합니다.";
+    this.openFlowOverlay();
+  },
+
+  showDeadlineSuccess() {
+    this.spinButton.disabled = true;
+    this.patternTestButton.disabled = true;
+    this.stageStatus.textContent = "STAGE 4 · DEADLINE CLEARED";
+
+    const isLast = this.deadlineIndex >= GAME_DATA.deadline.targets.length - 1;
+
+    this.flowEyebrow.textContent = `DEADLINE ${this.deadlineNumber} CLEARED`;
+    this.flowTitle.textContent = "마감 목표 달성";
+    this.flowText.textContent =
+      `$${this.wallet.toLocaleString("ko-KR")} / $${this.deadlineTarget.toLocaleString("ko-KR")}`;
+
+    if (isLast) {
+      this.runComplete = true;
+      this.flowOptions.innerHTML = `
+        <button class="flow-primary" data-action="restart-run">
+          <span>STAGE 4 LOOP CLEAR</span>
+          <strong>처음부터 다시 테스트</strong>
+        </button>
+      `;
+      this.flowFooter.textContent =
+        "최종 엔딩/Endless는 Stage 12에서 구현합니다.";
+    } else {
+      const nextTarget = GAME_DATA.deadline.targets[this.deadlineIndex + 1];
+      this.flowOptions.innerHTML = `
+        <button class="flow-primary" data-action="next-deadline">
+          <span>NEXT DEADLINE</span>
+          <strong>다음 목표 $${nextTarget.toLocaleString("ko-KR")}</strong>
+        </button>
+      `;
+      this.flowFooter.textContent =
+        "Stage 4에서는 목표액을 지갑에서 차감하지 않습니다. 실제 마감 정산은 Stage 5에서 연결합니다.";
+    }
+
+    this.openFlowOverlay();
+  },
+
+  showGameOver() {
+    this.gameOver = true;
+    this.spinButton.disabled = true;
+    this.patternTestButton.disabled = true;
+    this.stageStatus.textContent = "STAGE 4 · GAME OVER";
+
+    const shortfall = Math.max(0, this.deadlineTarget - this.wallet);
+    this.flowEyebrow.textContent = `DEADLINE ${this.deadlineNumber} FAILED`;
+    this.flowTitle.textContent = "GAME OVER";
+    this.flowText.textContent =
+      `목표까지 $${shortfall.toLocaleString("ko-KR")} 부족합니다.`;
+    this.flowOptions.innerHTML = `
+      <button class="flow-primary danger" data-action="restart-run">
+        <span>RESTART</span>
+        <strong>처음부터 다시 시작</strong>
+      </button>
+    `;
+    this.flowFooter.textContent =
+      `${this.roundsPerDeadline}라운드를 모두 사용했습니다.`;
+    this.openFlowOverlay();
+  },
+
+  advanceDeadline() {
+    if (this.deadlineIndex >= GAME_DATA.deadline.targets.length - 1) return;
+
+    this.deadlineIndex += 1;
+    this.round = 1;
+    this.currentMode = null;
+    this.spinsRemaining = 0;
+    this.spinsTotal = 0;
+    this.isResolvingRound = false;
+    this.stageStatus.textContent = "STAGE 4 · DEADLINE LOOP";
+    this.updateAllUI();
+    this.showRoundChoice();
+  },
+
+  restartRun() {
+    this.wallet = 0;
+    this.bank = 0;
+    this.tickets = 0;
+    this.deadlineIndex = 0;
+    this.round = 1;
+    this.currentMode = null;
+    this.spinsRemaining = 0;
+    this.spinsTotal = 0;
+    this.gameOver = false;
+    this.runComplete = false;
+    this.isSpinning = false;
+    this.isResolvingRound = false;
+    this.patternTestIndex = 0;
+
+    this.currentColumns = Array.from(
+      { length: GAME_DATA.board.columns },
+      () => this.randomColumn()
+    );
+    this.renderReels();
+    this.clearScoreDisplay();
+    this.stageStatus.textContent = "STAGE 4 · DEADLINE LOOP";
+    this.patternTestButton.textContent = `패턴 테스트 1/${GAME_DATA.patternTests.length}`;
+    this.updateAllUI();
+    this.showRoundChoice();
+  },
+
+  updateAllUI() {
+    this.deadlineStatus.textContent = String(this.deadlineNumber);
+    this.roundStatus.textContent = `${this.round} / ${this.roundsPerDeadline}`;
+    this.ticketStatus.textContent = String(this.tickets);
+    this.modeStatus.textContent = this.currentMode?.name ?? "-";
+
+    if (this.currentMode) {
+      this.spinStatus.textContent = `${this.spinsRemaining} / ${this.spinsTotal}`;
+    } else if (this.gameOver) {
+      this.spinStatus.textContent = "GAME OVER";
+    } else if (this.runComplete) {
+      this.spinStatus.textContent = "CLEAR";
+    } else {
+      this.spinStatus.textContent = "선택 대기";
+    }
+
+    this.deadlineTargetValue.textContent =
+      `$ ${this.deadlineTarget.toLocaleString("ko-KR")}`;
+    this.updateEconomyUI(true);
+  },
+
+  updateEconomyUI(updateWalletText = true) {
+    if (updateWalletText) {
+      this.walletValue.textContent = `$ ${this.wallet.toLocaleString("ko-KR")}`;
+    }
+    this.bankValue.textContent = `$ ${this.bank.toLocaleString("ko-KR")}`;
+
+    const totalForTarget = this.wallet + this.bank;
+    const ratio = Math.min(1, totalForTarget / this.deadlineTarget);
     this.progressFill.style.width = `${ratio * 100}%`;
     this.progressCopy.textContent =
-      `$ ${this.wallet.toLocaleString("ko-KR")} / $ ${this.deadlineTarget.toLocaleString("ko-KR")}`;
+      `$ ${totalForTarget.toLocaleString("ko-KR")} / $ ${this.deadlineTarget.toLocaleString("ko-KR")}`;
   },
 
   makePatternTestBoard(test) {
@@ -509,7 +778,7 @@ const Game = {
   },
 
   async showNextPatternTest() {
-    if (this.isSpinning) return;
+    if (this.isSpinning || this.isResolvingRound || this.gameOver || this.runComplete) return;
 
     const tests = GAME_DATA.patternTests;
     const test = tests[this.patternTestIndex % tests.length];
@@ -521,14 +790,23 @@ const Game = {
 
     await this.evaluateAndRenderScore({
       creditWallet: false,
-      testLabel: test.fullBoard
-        ? "JACKPOT 테스트 · 모든 일반 패턴 점수 + JACKPOT 보너스를 합산합니다."
-        : `테스트: ${definition.name} · 겹쳐 성립하는 패턴도 모두 합산 · 지갑 미반영`
+      testLabel: `개발 테스트: ${definition.name} · 지갑/회전 수 미반영`
     });
 
     this.patternTestButton.textContent =
       `패턴 테스트 ${this.patternTestIndex + 1}/${tests.length}`;
-    this.spinStatus.textContent = "PATTERN TEST";
+  },
+
+  openFlowOverlay() {
+    this.flowOverlay.classList.add("is-open");
+  },
+
+  closeFlowOverlay() {
+    this.flowOverlay.classList.remove("is-open");
+  },
+
+  wait(ms) {
+    return new Promise((resolve) => window.setTimeout(resolve, ms));
   }
 };
 
