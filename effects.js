@@ -1,11 +1,12 @@
-// DEADLINE — Stage 3
-// 점수 피드백용 최소 이펙트 모듈.
-// 최종 사운드/고급 연출은 Stage 12에서 다시 다듬습니다.
+// DEADLINE — Stage 4
+// 현재 사용하는 최소 점수 피드백 모듈.
+// 라운드/마감 흐름 자체는 game.js에서 처리하며,
+// 최종 사운드/고급 당첨/위험 연출은 Stage 12에서 다시 다듬습니다.
 
 "use strict";
 
 const EffectsManager = {
-  stage: 3,
+  stage: 4,
   enabled: true,
 
   easeOutCubic(t) {
@@ -18,9 +19,13 @@ const EffectsManager = {
     const duration = options.duration ?? 520;
     const prefix = options.prefix ?? "";
     const suffix = options.suffix ?? "";
-    const formatter = options.formatter ?? ((value) => Math.round(value).toLocaleString("ko-KR"));
+    const formatter =
+      options.formatter ?? ((value) => Math.round(value).toLocaleString("ko-KR"));
 
-    if (window.matchMedia?.("(prefers-reduced-motion: reduce)").matches || duration <= 0) {
+    if (
+      window.matchMedia?.("(prefers-reduced-motion: reduce)").matches ||
+      duration <= 0
+    ) {
       element.textContent = `${prefix}${formatter(to)}${suffix}`;
       return Promise.resolve();
     }
