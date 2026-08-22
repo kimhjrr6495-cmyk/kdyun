@@ -1,0 +1,182 @@
+/* DEADLINE v0.9.5 — 경제 UI / 마감 3 금고 해금 / 실험적 네온·테두리 대비 */
+
+/* ROLLBACK CANDIDATE: 아래 visual-test 블록은 사용자가 보고 되돌릴 수 있도록 body class로 분리합니다. */
+.stage95-visual-test {
+  --line: #CDD2DB;
+  --shadow: 0 1px 4px rgba(26, 29, 35, 0.085);
+}
+
+.stage95-visual-test .panel,
+.stage95-visual-test .reference-section,
+.stage95-visual-test .deadline-account-section,
+.stage95-visual-test .wallet-section,
+.stage95-visual-test .vault-chamber,
+.stage95-visual-test .reel,
+.stage95-visual-test .flow-card,
+.stage95-visual-test .shop-offer-card,
+.stage95-visual-test .shop-owned-card,
+.stage95-visual-test .final-payment-panel {
+  border-color: color-mix(in srgb, var(--line) 88%, #AEB4BE);
+}
+
+.stage95-visual-test .status-chip,
+.stage95-visual-test .vault-state-badge,
+.stage95-visual-test .vault-lock-state,
+.stage95-visual-test button {
+  border-color: color-mix(in srgb, var(--line) 90%, #B7BDC7);
+}
+
+/* 마감 1~2: 금고 UI 자체는 안 보이지만 레이아웃 자리만 그대로 유지 */
+.vault-chamber.stage95-vault-hidden {
+  visibility: hidden !important;
+  pointer-events: none !important;
+}
+
+/* 마감 3 진입 시 초록빛 해금 연출 */
+.vault-chamber.stage95-vault-unlocking {
+  visibility: visible !important;
+  border-color: rgba(0, 212, 146, 0.74) !important;
+  animation: stage95VaultUnlockGlow 900ms cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+.stage95-vault-unlock-banner {
+  position: absolute;
+  z-index: 8;
+  inset: 0;
+  display: grid;
+  place-content: center;
+  gap: 4px;
+  overflow: hidden;
+  text-align: center;
+  border-radius: inherit;
+  background: rgba(247, 248, 250, 0.90);
+  backdrop-filter: blur(5px);
+  pointer-events: none;
+}
+
+.stage95-vault-unlock-banner[hidden] {
+  display: none !important;
+}
+
+.stage95-vault-unlock-banner::before {
+  content: "";
+  position: absolute;
+  inset: -30% -60%;
+  background: linear-gradient(
+    100deg,
+    transparent 38%,
+    rgba(0, 212, 146, 0.04) 44%,
+    rgba(0, 212, 146, 0.28) 50%,
+    rgba(0, 212, 146, 0.05) 56%,
+    transparent 62%
+  );
+  transform: translateX(-48%);
+  animation: stage95VaultSweep 850ms ease-out both;
+}
+
+.stage95-vault-unlock-banner span,
+.stage95-vault-unlock-banner strong {
+  position: relative;
+  z-index: 1;
+}
+
+.stage95-vault-unlock-banner span {
+  color: var(--gain);
+  font-size: 10px;
+  font-weight: 950;
+  letter-spacing: 0.13em;
+}
+
+.stage95-vault-unlock-banner strong {
+  font-size: 14px;
+  font-weight: 950;
+  letter-spacing: -0.025em;
+}
+
+@keyframes stage95VaultUnlockGlow {
+  0% {
+    opacity: 0;
+    transform: translateY(4px) scale(0.985);
+    box-shadow: 0 0 0 rgba(0, 212, 146, 0);
+  }
+  38% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+    box-shadow: 0 0 0 1px rgba(0, 212, 146, 0.14), 0 0 24px rgba(0, 212, 146, 0.18);
+  }
+  100% {
+    opacity: 1;
+    transform: none;
+    box-shadow: 0 1px 4px rgba(26, 29, 35, 0.085);
+  }
+}
+
+@keyframes stage95VaultSweep {
+  from { transform: translateX(-48%); }
+  to { transform: translateX(48%); }
+}
+
+/* 마감 계좌: 이자 계좌라는 인상이 보이도록 기존 스타일은 유지하고 테두리만 조금 명확하게 */
+.stage95-visual-test .deadline-account-section {
+  box-shadow: inset 0 0 0 1px rgba(26, 29, 35, 0.018), var(--shadow);
+}
+
+/* ROLLBACK CANDIDATE: 상점 등급별 네온. 카드 배경은 중립을 유지하고 외곽광만 단계적으로 강화 */
+.stage95-visual-test .shop-offer-card.rarity-common:not(:disabled) {
+  box-shadow: 0 2px 8px rgba(26, 29, 35, 0.06);
+}
+
+.stage95-visual-test .shop-offer-card.rarity-rare:not(:disabled) {
+  border-color: rgba(63, 111, 198, 0.62);
+  box-shadow:
+    inset 0 0 0 1px rgba(63, 111, 198, 0.07),
+    0 0 12px rgba(63, 111, 198, 0.16),
+    0 4px 13px rgba(26, 29, 35, 0.07);
+}
+
+.stage95-visual-test .shop-offer-card.rarity-epic:not(:disabled) {
+  border-color: rgba(118, 86, 197, 0.70);
+  box-shadow:
+    inset 0 0 0 1px rgba(118, 86, 197, 0.09),
+    0 0 15px rgba(118, 86, 197, 0.23),
+    0 5px 15px rgba(26, 29, 35, 0.08);
+}
+
+.stage95-visual-test .shop-offer-card.rarity-legendary:not(:disabled) {
+  border-color: rgba(190, 137, 24, 0.82);
+  box-shadow:
+    inset 0 0 0 1px rgba(190, 137, 24, 0.12),
+    0 0 18px rgba(202, 150, 34, 0.30),
+    0 6px 17px rgba(26, 29, 35, 0.09);
+}
+
+.stage95-visual-test .shop-offer-card.rarity-rare .shop-rarity-badge {
+  text-shadow: 0 0 7px rgba(63, 111, 198, 0.28);
+}
+
+.stage95-visual-test .shop-offer-card.rarity-epic .shop-rarity-badge {
+  text-shadow: 0 0 8px rgba(118, 86, 197, 0.36);
+}
+
+.stage95-visual-test .shop-offer-card.rarity-legendary .shop-rarity-badge {
+  text-shadow: 0 0 9px rgba(190, 137, 24, 0.46);
+}
+
+.stage95-visual-test .shop-offer-card.rarity-rare:not(:disabled):hover,
+.stage95-visual-test .shop-offer-card.rarity-epic:not(:disabled):hover,
+.stage95-visual-test .shop-offer-card.rarity-legendary:not(:disabled):hover {
+  transform: translateY(-2px);
+}
+
+/* 0라운드 패널은 왼쪽 마감 계좌와 같은 숫자를 보며, 테두리 대비만 조금 더 선명하게 */
+.stage95-visual-test .final-payment-panel {
+  border-color: rgba(26, 29, 35, 0.24);
+  box-shadow: inset 0 0 0 1px rgba(26, 29, 35, 0.025);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .vault-chamber.stage95-vault-unlocking,
+  .stage95-vault-unlock-banner::before {
+    animation-duration: 1ms !important;
+  }
+}
