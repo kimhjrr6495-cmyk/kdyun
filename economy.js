@@ -11,16 +11,12 @@
 
   Object.defineProperty(Game, "totalFunds", {
     configurable: true,
-    get() {
-      return this.wallet + this.bank;
-    }
+    get() { return this.wallet + this.bank; }
   });
 
   Object.defineProperty(Game, "walletInterestRate", {
     configurable: true,
-    get() {
-      return GAME_DATA.economy.walletInterestRate;
-    }
+    get() { return GAME_DATA.economy.walletInterestRate; }
   });
 
   const originalInit = Game.init;
@@ -38,7 +34,6 @@
     this.interestRateValue = document.querySelector("#interestRateValue");
 
     originalInit.call(this);
-
     this.stage = 5;
     this.status = "ECONOMY";
     this.stageStatus.textContent = "STAGE 5 · ECONOMY";
@@ -48,7 +43,6 @@
 
   Game.bindInputs = function () {
     originalBindInputs.call(this);
-
     this.deposit25Button.addEventListener("click", () => this.depositToBank(0.25));
     this.depositAllButton.addEventListener("click", () => this.depositToBank(1));
     this.withdraw25Button.addEventListener("click", () => this.withdrawFromBank(0.25));
@@ -64,17 +58,11 @@
   };
 
   Game.canMoveMoney = function () {
-    return !(
-      this.isSpinning ||
-      this.isResolvingRound ||
-      this.gameOver ||
-      this.runComplete
-    );
+    return !(this.isSpinning || this.isResolvingRound || this.gameOver || this.runComplete);
   };
 
   Game.depositToBank = function (ratio) {
     if (!this.canMoveMoney() || this.wallet <= 0) return;
-
     const amount = ratio >= 1
       ? this.wallet
       : Math.min(this.wallet, Math.max(1, Math.floor(this.wallet * ratio)));
@@ -88,7 +76,6 @@
 
   Game.withdrawFromBank = function (ratio) {
     if (!this.canMoveMoney() || this.bank <= 0) return;
-
     const amount = ratio >= 1
       ? this.bank
       : Math.min(this.bank, Math.max(1, Math.floor(this.bank * ratio)));
@@ -105,7 +92,6 @@
     const interest = Math.max(0, Math.round(before * this.walletInterestRate));
     this.wallet += interest;
     this.lastInterest = interest;
-
     if (interest > 0) EffectsManager.pulseWallet(this.walletValue);
     return interest;
   };
@@ -114,7 +100,6 @@
     if (trigger === "ROUND_END" || this.currentMode) {
       return Math.max(0, this.roundsPerDeadline - this.round);
     }
-
     return Math.max(0, this.roundsPerDeadline - this.round + 1);
   };
 
@@ -132,20 +117,14 @@
     if (interest > 0) {
       this.scoreBreakdown.textContent =
         `라운드 ${completedRound} 이자 · $${walletBeforeInterest.toLocaleString("ko-KR")} × ${(this.walletInterestRate * 100).toFixed(0)}% = +$${interest.toLocaleString("ko-KR")}`;
-      this.readoutDetail.textContent =
-        `라운드 종료 이자 +$${interest.toLocaleString("ko-KR")}`;
+      this.readoutDetail.textContent = `라운드 종료 이자 +$${interest.toLocaleString("ko-KR")}`;
     } else {
-      this.scoreBreakdown.textContent =
-        `라운드 ${completedRound} 종료 · 지갑 이자 $0`;
+      this.scoreBreakdown.textContent = `라운드 ${completedRound} 종료 · 지갑 이자 $0`;
       this.readoutDetail.textContent = "라운드 종료 · 이자 $0";
     }
 
     if (this.totalFunds >= this.deadlineTarget) {
-      this.settleDeadline({
-        trigger: "ROUND_END",
-        interest,
-        completedRound
-      });
+      this.settleDeadline({ trigger: "ROUND_END", interest, completedRound });
       return;
     }
 
@@ -203,7 +182,7 @@
     interest = 0,
     completedRound = this.round
   } = {}) {
-    if (this.totalFunds < this.deadlineTarget) return false;
+    if (this.lastSettlement || this.totalFunds < this.deadlineTarget) return false;
 
     const target = this.deadlineTarget;
     let remaining = target;
@@ -215,7 +194,6 @@
     const fromBank = Math.min(this.bank, remaining);
     this.bank -= fromBank;
     remaining -= fromBank;
-
     if (remaining > 0) return false;
 
     const unusedRounds = this.getUnusedRoundCount(trigger);
@@ -246,20 +224,15 @@
 
   Game.attemptEarlyPayment = function () {
     if (
+      this.lastSettlement ||
       this.gameOver ||
       this.runComplete ||
       this.isSpinning ||
       this.isResolvingRound ||
       this.totalFunds < this.deadlineTarget
-    ) {
-      return;
-    }
+    ) return;
 
-    this.settleDeadline({
-      trigger: "EARLY",
-      interest: 0,
-      completedRound: this.round
-    });
+    this.settleDeadline({ trigger: "EARLY", interest: 0, completedRound: this.round });
   };
 
   Game.showDeadlineSuccess = function (settlement) {
@@ -286,8 +259,7 @@
           <strong>처음부터 다시 테스트</strong>
         </button>
       `;
-      this.flowFooter.textContent =
-        `${bonusText} · 최종 엔딩/Endless는 Stage 12에서 구현합니다.`;
+      this.flowFooter.textContent = `${bonusText} · 최종 엔딩/Endless는 Stage 12에서 구현합니다.`;
     } else {
       const nextTarget = GAME_DATA.deadline.targets[this.deadlineIndex + 1];
       this.flowOptions.innerHTML = `
@@ -366,13 +338,15 @@
 
   Game.updateFinancialControls = function () {
     const locked = !this.canMoveMoney();
-
     this.deposit25Button.disabled = locked || this.wallet <= 0;
     this.depositAllButton.disabled = locked || this.wallet <= 0;
     this.withdraw25Button.disabled = locked || this.bank <= 0;
     this.withdrawAllButton.disabled = locked || this.bank <= 0;
 
-    const canPay = !locked && this.totalFunds >= this.deadlineTarget;
+    const canPay =
+      !locked &&
+      !this.lastSettlement &&
+      this.totalFunds >= this.deadlineTarget;
     this.earlyPaymentButton.disabled = !canPay;
 
     if (canPay) {
