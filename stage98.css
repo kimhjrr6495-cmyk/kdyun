@@ -1,0 +1,115 @@
+/* DEADLINE v0.9.8 — stable market-linked reel layout */
+
+/*
+  리롤 결과 개수와 상관없이 시장 연동 릴 패널의 바깥 크기를 고정합니다.
+  패턴/트리거/아이템 피드는 정산 영역 내부에서만 변하고 머신 외곽을 밀지 않습니다.
+*/
+
+.machine-panel {
+  height: 640px;
+  min-height: 640px;
+  max-height: 640px;
+  align-self: start;
+}
+
+.machine-header {
+  flex: 0 0 auto;
+}
+
+.machine-stage {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow: hidden;
+}
+
+.machine-actions {
+  flex: 0 0 64px;
+  min-height: 64px;
+  max-height: 64px;
+}
+
+.slot-machine {
+  height: 470px;
+  min-height: 470px;
+  max-height: 470px;
+  display: grid;
+  grid-template-rows: calc(var(--reel-row-height) * 3) 188px;
+  align-content: start;
+}
+
+.reels-shell {
+  height: calc(var(--reel-row-height) * 3);
+  min-height: calc(var(--reel-row-height) * 3);
+  max-height: calc(var(--reel-row-height) * 3);
+}
+
+.score-readout,
+.settlement-readout.score-readout {
+  height: 188px;
+  min-height: 188px;
+  max-height: 188px;
+  overflow: hidden;
+  box-sizing: border-box;
+}
+
+/* 결과가 많아져도 각 표시 영역이 여러 줄로 머신 높이를 늘리지 않게 제한 */
+.score-readout .pattern-list {
+  flex: 0 0 27px;
+  width: min(650px, 100%);
+  min-height: 27px;
+  max-height: 27px;
+  margin: 3px auto 5px;
+  flex-wrap: nowrap;
+  overflow: hidden;
+}
+
+.score-readout .stage90-feed,
+.score-readout .trigger-feed {
+  flex: 0 0 26px;
+  min-height: 26px;
+  max-height: 26px;
+  flex-wrap: nowrap;
+  overflow: hidden;
+  margin-top: 2px;
+  margin-bottom: 2px;
+}
+
+.score-readout .score-breakdown {
+  flex: 0 0 46px;
+  height: 46px;
+  min-height: 46px;
+  max-height: 46px;
+  overflow: hidden;
+  margin-top: 3px;
+  margin-bottom: 5px;
+}
+
+.score-readout > small {
+  display: block;
+  width: min(650px, 100%);
+  min-height: 17px;
+  max-height: 17px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* 잭팟 피니시에서 패널 자체를 확대하지 않아 주변 UI 위치가 흔들리지 않게 함 */
+.machine-panel.pattern-jackpot-finish {
+  animation: none !important;
+  transform: none !important;
+}
+
+/* 화면이 좁아져도 높이 기준은 동일하게 유지하되 가로 폭만 반응형으로 둡니다. */
+@media (max-width: 700px) {
+  .machine-panel {
+    height: 620px;
+    min-height: 620px;
+    max-height: 620px;
+  }
+
+  .machine-stage {
+    padding-left: 14px;
+    padding-right: 14px;
+  }
+}
