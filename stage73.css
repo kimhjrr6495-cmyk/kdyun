@@ -1,0 +1,102 @@
+/* v0.7.3 — 실시간 가치 / 등장확률 / 강화 희귀도 표시 */
+
+.reference-section-header small {
+  white-space: nowrap;
+}
+
+/* 확률 | 심볼 | 현재 가치 순서. 기존 작은 참조 레일 폭 안에서 최대한 압축 */
+.symbol-reference-row {
+  grid-template-columns: 7px 36px minmax(0, 1fr) auto;
+  gap: 4px;
+}
+
+.reference-probability {
+  font-size: 8px;
+  font-weight: 850;
+  color: rgba(26, 29, 35, 0.48);
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+.reference-name {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.reference-current-value {
+  display: inline-flex;
+  align-items: baseline;
+  justify-content: flex-end;
+  gap: 3px;
+  white-space: nowrap;
+  color: var(--ink);
+  transition: color 160ms ease, text-shadow 160ms ease, transform 160ms ease;
+}
+
+.reference-modifier {
+  font-size: 7px;
+  font-weight: 900;
+  letter-spacing: -0.01em;
+  color: currentColor;
+  opacity: 0.68;
+}
+
+/* 값이 올라갈수록 숫자가 조금씩 더 귀해 보이도록 단계화 */
+.value-tier-1 .reference-current-value {
+  color: #2F806F;
+}
+
+.value-tier-2 .reference-current-value {
+  color: #5D63C8;
+  text-shadow: 0 0 7px rgba(93, 99, 200, 0.16);
+}
+
+.value-tier-3 .reference-current-value {
+  color: #A66C1D;
+  text-shadow: 0 0 8px rgba(166, 108, 29, 0.18);
+}
+
+.value-tier-4 .reference-current-value {
+  color: #B44283;
+  text-shadow: 0 0 9px rgba(180, 66, 131, 0.22);
+}
+
+.value-tier-down .reference-current-value {
+  color: var(--danger);
+  opacity: 0.72;
+}
+
+.value-tier-1 .reference-current-value,
+.value-tier-2 .reference-current-value,
+.value-tier-3 .reference-current-value,
+.value-tier-4 .reference-current-value {
+  transform: translateY(-0.2px);
+}
+
+.pattern-reference-row {
+  grid-template-columns: minmax(0, 1fr) auto;
+}
+
+/* 강화가 생겨도 표 높이가 급격히 늘지 않게 유지 */
+.symbol-reference-row,
+.pattern-reference-row {
+  min-height: 24px;
+}
+
+@media (max-width: 1180px) {
+  .symbol-reference-row {
+    grid-template-columns: 7px 38px minmax(0, 1fr) auto;
+  }
+}
+
+@media (max-width: 560px) {
+  .reference-current-value {
+    font-size: 8px;
+  }
+
+  .reference-modifier {
+    font-size: 6px;
+  }
+}
