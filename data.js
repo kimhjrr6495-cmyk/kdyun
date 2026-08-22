@@ -4,7 +4,7 @@
 "use strict";
 
 const GAME_DATA = {
-  version: "v0.5.3",
+  version: "v0.5.4",
   stage: 5,
   board: { columns: 5, rows: 3 },
 
@@ -33,7 +33,7 @@ const GAME_DATA = {
     patternMultiplier: 1,
     globalMultiplier: 1,
     rounding: "round",
-    countUpDuration: 520
+    countUpDuration: 600
   },
 
   patterns: {
@@ -80,12 +80,13 @@ const GAME_DATA = {
     }
   },
 
-  // Stage 5.3 경제 규칙.
+  // Stage 5.4 경제 규칙.
   // 마감/금고 예치는 현재 목표의 5% 단위입니다.
-  // 금고는 2라운드/4라운드 상품만 존재하며, 라운드마다 복리로 이자가 붙습니다.
+  // 금고는 2라운드/4라운드 상품만 존재하며, 실제 라운드 종료마다 복리로 이자가 붙습니다.
   economy: {
     depositUnitRatio: 0.05,
     earlyPaymentTicketPerUnusedRound: 2,
+    currencyAnimationDuration: 600,
     vaultTerms: {
       2: {
         rounds: 2,
