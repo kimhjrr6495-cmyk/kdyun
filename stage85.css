@@ -1,0 +1,35 @@
+/* v0.8.5 — 릴 이모지 단독 표시 / 심볼별 배경색 제거 */
+
+/* 모든 릴 셀은 동일한 중립 배경을 사용합니다. */
+.reel-symbol[data-symbol] {
+  background: var(--bg) !important;
+}
+
+/* 최종 당첨 상태에서도 심볼별 soft 배경색을 사용하지 않습니다. */
+.reel-symbol.pattern-hit,
+.reel-symbol.pattern-sequence-hit,
+.reel-symbol.pattern-fx-hit {
+  background: #FFFFFF !important;
+}
+
+/* 릴 안의 텍스트 이름은 완전히 제거하고 이모지만 중앙에 표시 */
+.reel-symbol small {
+  display: none !important;
+}
+
+.reel-symbol .symbol-emoji {
+  margin: 0;
+  font-size: 42px;
+  line-height: 1;
+}
+
+/* 심볼별 색상 변수는 배경이 아니라 당첨 테두리/라인/스파크용으로만 유지합니다. */
+.reel-symbol[data-symbol] b {
+  color: inherit;
+}
+
+@media (max-width: 700px) {
+  .reel-symbol .symbol-emoji {
+    font-size: 36px;
+  }
+}
