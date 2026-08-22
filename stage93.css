@@ -1,0 +1,241 @@
+/* DEADLINE v0.9.3 — CloverPit식 우측 발동 카드 / 참조표 재정렬 / 레일 확장 */
+
+/* 넓은 화면에서는 오른쪽 참조 레일을 넓혀 가격/성장 수치가 눌리지 않게 합니다. */
+@media (min-width: 1181px) {
+  .app-shell {
+    width: min(1600px, calc(100vw - 28px));
+  }
+
+  .game-layout {
+    grid-template-columns: 255px minmax(0, 1fr) 285px;
+  }
+
+  .reference-rail {
+    padding: 16px;
+  }
+}
+
+.reference-section {
+  padding: 13px 14px;
+}
+
+.reference-section-header {
+  margin-bottom: 10px;
+}
+
+/* 심볼 가격표: 이모지 → 확률 → 가격. 기존 왼쪽 색점은 제거합니다. */
+.symbol-reference-row {
+  min-height: 32px;
+  padding: 4px 2px;
+  grid-template-columns: 34px 56px minmax(0, 1fr) !important;
+  column-gap: 10px;
+  row-gap: 0;
+}
+
+.symbol-reference-row .reference-symbol-dot {
+  display: none !important;
+}
+
+.symbol-reference-row .reference-name {
+  grid-column: 1;
+  grid-row: 1;
+  justify-self: center;
+  overflow: visible;
+  text-overflow: clip;
+  font-family: "Apple Color Emoji", "Segoe UI Emoji", "Noto Color Emoji", sans-serif;
+  font-size: 18px !important;
+  line-height: 1;
+}
+
+.symbol-reference-row .reference-probability {
+  grid-column: 2;
+  grid-row: 1;
+  justify-self: start;
+  text-align: left;
+  font-size: 9px;
+  font-weight: 900;
+  color: rgba(26, 29, 35, 0.56);
+}
+
+.symbol-reference-row .reference-current-value {
+  grid-column: 3;
+  grid-row: 1;
+  justify-self: end;
+  min-width: 0;
+  max-width: 100%;
+  gap: 4px;
+  font-size: 10px;
+  font-weight: 950;
+  text-align: right;
+}
+
+.symbol-reference-row .reference-modifier {
+  font-size: 7px;
+  line-height: 1;
+}
+
+.pattern-reference-row,
+.stat-reference-row {
+  min-height: 30px;
+  padding: 4px 2px;
+}
+
+.pattern-reference-row {
+  grid-template-columns: minmax(0, 1fr) minmax(84px, auto);
+}
+
+.pattern-reference-row .reference-current-value,
+.stat-reference-row strong {
+  justify-self: end;
+  text-align: right;
+}
+
+/* v0.9.2 고정 상태창을 CloverPit처럼 오른쪽에서 튀어나오는 아이템 카드로 교체합니다. */
+.stage91-item-alert.stage93-activation-card {
+  position: absolute;
+  z-index: 32;
+  top: 106px;
+  right: 0;
+  left: auto;
+  bottom: auto;
+  width: min(300px, calc(100% - 28px));
+  min-width: 0;
+  max-width: none;
+  min-height: 106px;
+  padding: 13px 14px;
+  display: grid;
+  grid-template-columns: 54px minmax(0, 1fr);
+  align-items: center;
+  gap: 12px;
+  opacity: 0;
+  transform: translateX(calc(100% + 26px));
+  border: 1px solid rgba(26, 29, 35, 0.16);
+  border-left: 4px solid #69717D;
+  border-radius: 15px 0 0 15px;
+  background: rgba(250, 251, 252, 0.985);
+  color: var(--ink);
+  box-shadow: 0 12px 34px rgba(26, 29, 35, 0.14);
+  backdrop-filter: blur(9px);
+  pointer-events: none;
+  transition:
+    transform 190ms cubic-bezier(0.16, 1, 0.3, 1),
+    opacity 130ms ease;
+}
+
+.stage91-item-alert.stage93-activation-card[hidden] {
+  display: none !important;
+}
+
+.stage91-item-alert.stage93-activation-card.is-open {
+  opacity: 1;
+  transform: translateX(-18px);
+}
+
+.stage91-item-alert.stage93-activation-card.is-exiting {
+  opacity: 0;
+  transform: translateX(calc(100% + 26px));
+}
+
+.stage93-activation-mark {
+  width: 54px;
+  height: 54px;
+  display: grid;
+  place-items: center;
+  border: 1px solid rgba(26, 29, 35, 0.10);
+  border-radius: 12px;
+  background: #FFFFFF;
+  font-family: "Apple Color Emoji", "Segoe UI Emoji", "Noto Color Emoji", sans-serif;
+  font-size: 30px;
+  line-height: 1;
+}
+
+.stage93-activation-copy {
+  min-width: 0;
+  display: grid;
+  gap: 4px;
+}
+
+.stage93-activation-meta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.stage93-activation-label,
+.stage93-activation-rarity {
+  font-size: 7px;
+  font-weight: 950;
+  letter-spacing: 0.08em;
+}
+
+.stage93-activation-label {
+  opacity: 0.42;
+}
+
+.stage93-activation-rarity {
+  opacity: 0.62;
+}
+
+.stage93-activation-name {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 15px;
+  font-weight: 950;
+  letter-spacing: -0.02em;
+}
+
+.stage93-activation-effect {
+  display: -webkit-box;
+  overflow: hidden;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  font-size: 9px;
+  font-weight: 800;
+  line-height: 1.4;
+  opacity: 0.55;
+}
+
+.stage93-activation-card.rarity-rare {
+  border-left-color: #3F6FC6;
+}
+
+.stage93-activation-card.rarity-epic {
+  border-left-color: #7656C5;
+}
+
+.stage93-activation-card.rarity-legendary {
+  border-left-color: #A97A18;
+  box-shadow: 0 12px 34px rgba(26, 29, 35, 0.14), 0 0 18px rgba(169, 122, 24, 0.10);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .stage91-item-alert.stage93-activation-card {
+    transition-duration: 1ms !important;
+  }
+}
+
+@media (max-width: 760px) {
+  .symbol-reference-row {
+    grid-template-columns: 32px 54px minmax(0, 1fr) !important;
+  }
+
+  .stage91-item-alert.stage93-activation-card {
+    top: 82px;
+    width: min(270px, calc(100% - 20px));
+    min-height: 96px;
+    padding: 11px 12px;
+    grid-template-columns: 48px minmax(0, 1fr);
+  }
+
+  .stage91-item-alert.stage93-activation-card.is-open {
+    transform: translateX(-10px);
+  }
+
+  .stage93-activation-mark {
+    width: 48px;
+    height: 48px;
+    font-size: 27px;
+  }
+}
