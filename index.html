@@ -4,46 +4,47 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>DEADLINE — 슬롯 로그라이트</title>
-  <link rel="stylesheet" href="style.css?v=0.9.8" />
-  <link rel="stylesheet" href="vault.css?v=0.9.8" />
-  <link rel="stylesheet" href="stage55.css?v=0.9.8" />
-  <link rel="stylesheet" href="stage57.css?v=0.9.8" />
-  <link rel="stylesheet" href="stage58.css?v=0.9.8" />
-  <link rel="stylesheet" href="stage60.css?v=0.9.8" />
-  <link rel="stylesheet" href="stage61.css?v=0.9.8" />
-  <link rel="stylesheet" href="stage62.css?v=0.9.8" />
-  <link rel="stylesheet" href="stage63.css?v=0.9.8" />
-  <link rel="stylesheet" href="stage70.css?v=0.9.8" />
-  <link rel="stylesheet" href="stage71.css?v=0.9.8" />
-  <link rel="stylesheet" href="stage72.css?v=0.9.8" />
-  <link rel="stylesheet" href="stage73.css?v=0.9.8" />
-  <link rel="stylesheet" href="stage74.css?v=0.9.8" />
-  <link rel="stylesheet" href="stage75.css?v=0.9.8" />
-  <link rel="stylesheet" href="stage80.css?v=0.9.8" />
-  <link rel="stylesheet" href="stage83.css?v=0.9.8" />
-  <link rel="stylesheet" href="stage84.css?v=0.9.8" />
-  <link rel="stylesheet" href="stage85.css?v=0.9.8" />
-  <link rel="stylesheet" href="stage86.css?v=0.9.8" />
-  <link rel="stylesheet" href="stage90.css?v=0.9.8" />
-  <link rel="stylesheet" href="stage91.css?v=0.9.8" />
-  <link rel="stylesheet" href="stage92.css?v=0.9.8" />
-  <link rel="stylesheet" href="stage93.css?v=0.9.8" />
-  <link rel="stylesheet" href="stage94.css?v=0.9.8" />
-  <link rel="stylesheet" href="stage95.css?v=0.9.8" />
-  <link rel="stylesheet" href="stage96.css?v=0.9.8" />
-  <link rel="stylesheet" href="stage97.css?v=0.9.8" />
-  <link rel="stylesheet" href="stage98.css?v=0.9.8" />
+  <link rel="stylesheet" href="style.css?v=0.9.9" />
+  <link rel="stylesheet" href="vault.css?v=0.9.9" />
+  <link rel="stylesheet" href="stage55.css?v=0.9.9" />
+  <link rel="stylesheet" href="stage57.css?v=0.9.9" />
+  <link rel="stylesheet" href="stage58.css?v=0.9.9" />
+  <link rel="stylesheet" href="stage60.css?v=0.9.9" />
+  <link rel="stylesheet" href="stage61.css?v=0.9.9" />
+  <link rel="stylesheet" href="stage62.css?v=0.9.9" />
+  <link rel="stylesheet" href="stage63.css?v=0.9.9" />
+  <link rel="stylesheet" href="stage70.css?v=0.9.9" />
+  <link rel="stylesheet" href="stage71.css?v=0.9.9" />
+  <link rel="stylesheet" href="stage72.css?v=0.9.9" />
+  <link rel="stylesheet" href="stage73.css?v=0.9.9" />
+  <link rel="stylesheet" href="stage74.css?v=0.9.9" />
+  <link rel="stylesheet" href="stage75.css?v=0.9.9" />
+  <link rel="stylesheet" href="stage80.css?v=0.9.9" />
+  <link rel="stylesheet" href="stage83.css?v=0.9.9" />
+  <link rel="stylesheet" href="stage84.css?v=0.9.9" />
+  <link rel="stylesheet" href="stage85.css?v=0.9.9" />
+  <link rel="stylesheet" href="stage86.css?v=0.9.9" />
+  <link rel="stylesheet" href="stage90.css?v=0.9.9" />
+  <link rel="stylesheet" href="stage91.css?v=0.9.9" />
+  <link rel="stylesheet" href="stage92.css?v=0.9.9" />
+  <link rel="stylesheet" href="stage93.css?v=0.9.9" />
+  <link rel="stylesheet" href="stage94.css?v=0.9.9" />
+  <link rel="stylesheet" href="stage95.css?v=0.9.9" />
+  <link rel="stylesheet" href="stage96.css?v=0.9.9" />
+  <link rel="stylesheet" href="stage97.css?v=0.9.9" />
+  <link rel="stylesheet" href="stage98.css?v=0.9.9" />
+  <link rel="stylesheet" href="stage99.css?v=0.9.9" />
 </head>
 <body class="theme-dark">
   <main class="app-shell">
     <header class="topbar">
       <div class="brand-block">
-        <span class="eyebrow">CONTROLLED MARKET SYSTEM · VERSION v0.9.8</span>
+        <span class="eyebrow">CONTROLLED MARKET SYSTEM · VERSION v0.9.9</span>
         <h1>DEADLINE</h1>
       </div>
 
       <div class="top-status" aria-label="게임 상태">
-        <div class="status-chip">버전 <strong>v0.9.8</strong></div>
+        <div class="status-chip">버전 <strong>v0.9.9</strong></div>
         <div class="status-chip">마감 <strong id="deadlineStatus">1</strong></div>
         <div class="status-chip">라운드 <strong id="roundStatus">1 / 3</strong></div>
         <div class="status-chip">회전 <strong id="spinStatus">준비</strong></div>
@@ -71,8 +72,8 @@
             <span id="progressFill" class="progress-fill payment-progress-committed"></span>
             <span id="progressPendingFill" class="payment-progress-pending"></span>
           </div>
-          <div id="progressCopy" class="progress-copy">$ 0 / $ 80</div>
-          <div id="deadlineWarningCopy" class="deadline-warning-copy">미납 금액 $80</div>
+          <div id="progressCopy" class="progress-copy" hidden>$ 0 / $ 80</div>
+          <div id="deadlineWarningCopy" class="deadline-warning-copy" hidden>미납 금액 $80</div>
           <button id="deadlineConfirmButton" class="deadline-confirm-button legacy-confirm-button" hidden disabled aria-hidden="true">마감 확정</button>
         </section>
 
@@ -81,13 +82,13 @@
           <div class="wallet-balance-row">
             <div id="walletValue" class="money-value small">$ 0</div>
             <div class="wallet-ticket-value" aria-label="보유 티켓">
-              <span>T</span>
+              <span>🎟️</span>
               <strong id="ticketStatus">0</strong>
             </div>
           </div>
           <div class="progress-copy">자유롭게 사용할 수 있는 자금</div>
           <button id="devCreditButton" class="dev-credit-button" type="button" title="개발 테스트용: 지갑에 $100 추가">TEST +$100</button>
-          <button id="devTicketButton" class="dev-credit-button dev-ticket-button" type="button" title="개발 테스트용: 티켓 5개 추가">TEST +5T</button>
+          <button id="devTicketButton" class="dev-credit-button dev-ticket-button" type="button" title="개발 테스트용: 티켓 5개 추가">TEST +🎟️5</button>
         </section>
 
         <section id="vaultSection" class="vault-section vault-chamber">
@@ -132,11 +133,11 @@
                   <span class="round-prep-label">이번 라운드</span>
                   <button class="round-mode-select" data-prep-mode="NORMAL" type="button" aria-pressed="false">
                     <strong>7회 리롤</strong>
-                    <small>티켓 +1</small>
+                    <small>🎟️ +1</small>
                   </button>
                   <button class="round-mode-select" data-prep-mode="RISK" type="button" aria-pressed="false">
                     <strong>3회 리롤</strong>
-                    <small>티켓 +3</small>
+                    <small>🎟️ +3</small>
                   </button>
                 </div>
               </div>
@@ -145,6 +146,10 @@
             <div class="settlement-readout score-readout">
               <span>이번 회전 정산</span>
               <strong id="payoutValue">+ $ 0</strong>
+              <div id="stage99RoundWallet" class="stage99-round-wallet" aria-label="이번 라운드 수익">
+                <span>이번 라운드 수익</span>
+                <strong id="stage99RoundWalletValue">$ 0</strong>
+              </div>
               <div id="patternList" class="pattern-list" aria-live="polite"></div>
               <div id="scoreBreakdown" class="score-breakdown" aria-live="polite">라운드 준비</div>
               <small id="readoutDetail">납부 · 금고 · 상점을 정리한 뒤 리롤 횟수를 선택하세요.</small>
@@ -208,8 +213,8 @@
       <strong id="itemSellName">아이템</strong>
       <span id="itemSellEffect">효과</span>
       <div class="item-sell-price-grid">
-        <div><small>구매가</small><b id="itemBuyValue">T 0</b></div>
-        <div class="sell-price"><small>판매가</small><b id="itemSellValue">T 1</b></div>
+        <div><small>구매가</small><b id="itemBuyValue">🎟️ 0</b></div>
+        <div class="sell-price"><small>판매가</small><b id="itemSellValue">🎟️ 1</b></div>
       </div>
       <div class="item-sell-actions">
         <button id="itemSellConfirm" class="sell-confirm" type="button">판매</button>
@@ -218,40 +223,41 @@
     </div>
   </div>
 
-  <script src="data.js?v=0.9.8"></script>
-  <script src="effects.js?v=0.9.8"></script>
-  <script src="game.js?v=0.9.8"></script>
-  <script src="vault.js?v=0.9.8"></script>
-  <script src="stage55.js?v=0.9.8"></script>
-  <script src="stage57.js?v=0.9.8"></script>
-  <script src="stage58.js?v=0.9.8"></script>
-  <script src="stage60.js?v=0.9.8"></script>
-  <script src="stage61.js?v=0.9.8"></script>
-  <script src="stage62.js?v=0.9.8"></script>
-  <script src="stage70.js?v=0.9.8"></script>
-  <script src="stage71.js?v=0.9.8"></script>
-  <script src="stage72.js?v=0.9.8"></script>
-  <script src="stage73.js?v=0.9.8"></script>
-  <script src="stage74.js?v=0.9.8"></script>
-  <script src="stage75.js?v=0.9.8"></script>
-  <script src="stage80.js?v=0.9.8"></script>
-  <script src="stage81.js?v=0.9.8"></script>
-  <script src="stage82.js?v=0.9.8"></script>
-  <script src="stage83.js?v=0.9.8"></script>
-  <script src="stage84.js?v=0.9.8"></script>
-  <script src="stage85.js?v=0.9.8"></script>
-  <script src="stage86.js?v=0.9.8"></script>
-  <script src="stage90-items.js?v=0.9.8"></script>
-  <script src="stage90.js?v=0.9.8"></script>
-  <script src="stage90-fix.js?v=0.9.8"></script>
-  <script src="stage91.js?v=0.9.8"></script>
-  <script src="stage92.js?v=0.9.8"></script>
-  <script src="stage93.js?v=0.9.8"></script>
-  <script src="stage94-data.js?v=0.9.8"></script>
-  <script src="stage94.js?v=0.9.8"></script>
-  <script src="stage95.js?v=0.9.8"></script>
-  <script src="stage96.js?v=0.9.8"></script>
-  <script src="stage97.js?v=0.9.8"></script>
-  <script src="stage98.js?v=0.9.8"></script>
+  <script src="data.js?v=0.9.9"></script>
+  <script src="effects.js?v=0.9.9"></script>
+  <script src="game.js?v=0.9.9"></script>
+  <script src="vault.js?v=0.9.9"></script>
+  <script src="stage55.js?v=0.9.9"></script>
+  <script src="stage57.js?v=0.9.9"></script>
+  <script src="stage58.js?v=0.9.9"></script>
+  <script src="stage60.js?v=0.9.9"></script>
+  <script src="stage61.js?v=0.9.9"></script>
+  <script src="stage62.js?v=0.9.9"></script>
+  <script src="stage70.js?v=0.9.9"></script>
+  <script src="stage71.js?v=0.9.9"></script>
+  <script src="stage72.js?v=0.9.9"></script>
+  <script src="stage73.js?v=0.9.9"></script>
+  <script src="stage74.js?v=0.9.9"></script>
+  <script src="stage75.js?v=0.9.9"></script>
+  <script src="stage80.js?v=0.9.9"></script>
+  <script src="stage81.js?v=0.9.9"></script>
+  <script src="stage82.js?v=0.9.9"></script>
+  <script src="stage83.js?v=0.9.9"></script>
+  <script src="stage84.js?v=0.9.9"></script>
+  <script src="stage85.js?v=0.9.9"></script>
+  <script src="stage86.js?v=0.9.9"></script>
+  <script src="stage90-items.js?v=0.9.9"></script>
+  <script src="stage90.js?v=0.9.9"></script>
+  <script src="stage90-fix.js?v=0.9.9"></script>
+  <script src="stage91.js?v=0.9.9"></script>
+  <script src="stage92.js?v=0.9.9"></script>
+  <script src="stage93.js?v=0.9.9"></script>
+  <script src="stage94-data.js?v=0.9.9"></script>
+  <script src="stage94.js?v=0.9.9"></script>
+  <script src="stage95.js?v=0.9.9"></script>
+  <script src="stage96.js?v=0.9.9"></script>
+  <script src="stage97.js?v=0.9.9"></script>
+  <script src="stage98.js?v=0.9.9"></script>
+  <script src="stage99.js?v=0.9.9"></script>
 </body>
 </html>
