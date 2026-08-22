@@ -147,6 +147,8 @@
 
   // Stage 9의 기존 스핀 전 처리와 릴 회전 사이에 짧은 아이템 발동 알림을 삽입합니다.
   Game.spin = async function (...args) {
+    if (this.stage91PreSpinBusy) return;
+
     const actualSpin = Boolean(
       this.roundStarted &&
       this.currentMode &&
@@ -159,9 +161,7 @@
       !this.flowOverlay?.classList.contains("is-open")
     );
 
-    if (!actualSpin || this.stage91PreSpinBusy) {
-      return previousSpin.apply(this, args);
-    }
+    if (!actualSpin) return previousSpin.apply(this, args);
 
     this.stage91PreSpinBusy = true;
     try {
