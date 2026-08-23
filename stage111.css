@@ -1,0 +1,98 @@
+/* DEADLINE v1.1.1 — contract HUD + action alignment fix */
+
+/* Keep contract tokens clearly above the bottom action divider. */
+.stage110-contract-ledger {
+  bottom: 80px !important;
+  z-index: 64 !important;
+}
+
+/* The original nested tooltip is clipped by the horizontally scrollable ledger.
+   v1.1.1 renders a fixed portal tooltip instead. */
+.stage110-contract-token-tooltip {
+  display: none !important;
+}
+
+.stage111-contract-tooltip-portal {
+  position: fixed;
+  z-index: 9999;
+  width: 270px;
+  max-width: calc(100vw - 24px);
+  padding: 11px 12px;
+  border: 1px solid #CBD5E1;
+  border-radius: 11px;
+  background: rgba(255, 255, 255, 0.995);
+  box-shadow: 0 16px 36px rgba(15, 23, 42, 0.18);
+  color: #111827;
+  pointer-events: none;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(4px);
+  transition: opacity 110ms ease, transform 110ms ease, visibility 110ms ease;
+  text-align: left;
+}
+
+.stage111-contract-tooltip-portal.is-visible {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+}
+
+.stage111-contract-tooltip-portal > strong,
+.stage111-contract-tooltip-portal > span,
+.stage111-contract-tooltip-portal > small,
+.stage111-contract-tooltip-portal > b {
+  display: block;
+}
+
+.stage111-contract-tooltip-portal > strong {
+  font-size: 12px;
+  font-weight: 950;
+}
+
+.stage111-contract-tooltip-portal > span {
+  margin-top: 6px;
+  color: #475569;
+  font-size: 10px;
+  font-weight: 750;
+  line-height: 1.5;
+}
+
+.stage111-contract-tooltip-portal > small {
+  margin-top: 5px;
+  color: #64748B;
+  font-size: 9px;
+  font-weight: 800;
+  line-height: 1.45;
+}
+
+.stage111-contract-tooltip-portal > b {
+  margin-top: 7px;
+  color: #2767C8;
+  font-size: 10px;
+  font-weight: 950;
+  line-height: 1.45;
+}
+
+/* True optical/box centering for the two bottom action buttons. */
+#patternTestButton,
+#actionShopButton {
+  box-sizing: border-box !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  height: 42px !important;
+  min-height: 42px !important;
+  padding: 0 14px !important;
+  line-height: 1 !important;
+  vertical-align: middle !important;
+}
+
+@media (max-width: 760px) {
+  .stage110-contract-ledger {
+    bottom: 78px !important;
+  }
+
+  .stage111-contract-tooltip-portal {
+    width: min(260px, calc(100vw - 24px));
+  }
+}
