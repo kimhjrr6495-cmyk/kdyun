@@ -9,6 +9,51 @@
   const previousRestartRun = Game.restartRun;
   const previousUpdateAllUI = Game.updateAllUI;
 
+  Game.normalizeStage111RollText = function (value) {
+    let text = String(value ?? "").replace(/리롤/g, "↻ ROLL");
+    text = text.replace(/\bROLL\b/g, (match, offset, source) => {
+      return source.slice(Math.max(0, offset - 2), offset) === "↻ " ? match : "↻ ROLL";
+    });
+    return text;
+  };
+
+  // v1.1.0의 광범위한 ROLL 치환이 CONTROLLED 안의 ROLL까지 건드리던 문제를 막습니다.
+  // 기존 MutationObserver도 이 메서드를 동적으로 호출하므로 여기서 안전한 버전으로 교체합니다.
+  Game.applyStage110RollTerminology = function (root = document.body) {
+    if (!root) return;
+    const normalize = (value) => this.normalizeStage111RollText(value);
+
+    const normalizeElementAttributes = (element) => {
+      if (!(element instanceof Element)) return;
+      ["title", "aria-label"].forEach((name) => {
+        if (!element.hasAttribute(name)) return;
+        const before = element.getAttribute(name) || "";
+        const after = normalize(before);
+        if (after !== before) element.setAttribute(name, after);
+      });
+    };
+
+    if (root.nodeType === Node.TEXT_NODE) {
+      const parent = root.parentElement;
+      if (parent?.closest("script, style, noscript")) return;
+      const before = root.nodeValue || "";
+      const after = normalize(before);
+      if (after !== before) root.nodeValue = after;
+      return;
+    }
+
+    if (!(root instanceof Element) && root !== document.body) return;
+    if (root instanceof Element && root.closest("script, style, noscript")) return;
+
+    if (root instanceof Element) normalizeElementAttributes(root);
+    root.querySelectorAll?.("[title], [aria-label]").forEach(normalizeElementAttributes);
+
+    const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT);
+    const nodes = [];
+    while (walker.nextNode()) nodes.push(walker.currentNode);
+    nodes.forEach((node) => this.applyStage110RollTerminology(node));
+  };
+
   Game.ensureStage111ContractTooltipPortal = function () {
     let portal = document.querySelector("#stage111ContractTooltipPortal");
     if (!portal) {
@@ -104,6 +149,7 @@
     const result = previousInit.apply(this, args);
     this.ensureStage111ContractTooltipPortal();
     this.bindStage111ContractTooltips();
+    this.applyStage110RollTerminology(document.body);
     this.updateStage111VersionUI();
     this.stage = 10;
     this.status = "CONTRACT_HUD_ACTION_ALIGN_111";
@@ -116,6 +162,7 @@
     this.hideStage111ContractTooltip();
     const result = previousRestartRun.apply(this, args);
     this.bindStage111ContractTooltips();
+    this.applyStage110RollTerminology(document.body);
     this.updateStage111VersionUI();
     this.stage = 10;
     this.updateAllUI?.();
