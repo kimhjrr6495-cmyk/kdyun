@@ -1,2 +1,56 @@
-/* DEADLINE v1.3.0 */
-#deadlineDepositButton{display:none!important;}
+/* DEADLINE — v1.3.0 economy & luck rebalance */
+
+#deadlineDepositButton {
+  display: none !important;
+}
+
+#deadlineAccountSection {
+  position: relative;
+  transition: border-color 150ms ease, box-shadow 150ms ease, background-color 150ms ease, transform 120ms ease;
+}
+
+#deadlineAccountSection.stage130-can-deposit {
+  cursor: pointer;
+  border-color: rgba(15, 157, 118, 0.48) !important;
+  background: linear-gradient(180deg, #ffffff 0%, #f5fffb 100%);
+  box-shadow: 0 0 0 1px rgba(15, 157, 118, 0.05), 0 8px 22px rgba(15, 157, 118, 0.08);
+}
+
+#deadlineAccountSection.stage130-can-deposit:hover {
+  border-color: rgba(15, 157, 118, 0.72) !important;
+  box-shadow: 0 0 0 2px rgba(15, 157, 118, 0.10), 0 10px 26px rgba(15, 157, 118, 0.11);
+  transform: translateY(-1px);
+}
+
+#deadlineAccountSection.stage130-can-deposit:active {
+  transform: translateY(0);
+}
+
+#deadlineAccountSection.stage130-can-deposit:focus-visible {
+  outline: 3px solid rgba(15, 157, 118, 0.18);
+  outline-offset: 3px;
+}
+
+#deadlineAccountSection.stage130-cannot-deposit {
+  cursor: default;
+}
+
+.stage130-deposit-hint {
+  min-height: 17px;
+  margin-top: 8px;
+  font-size: 11px;
+  line-height: 1.35;
+  font-weight: 700;
+  color: #64748b;
+}
+
+#deadlineAccountSection.stage130-can-deposit .stage130-deposit-hint {
+  color: #087f5b;
+}
+
+.stage130-early-clear-reward {
+  display: block;
+  margin-top: 8px;
+  font-size: 13px;
+  color: #087f5b;
+}
