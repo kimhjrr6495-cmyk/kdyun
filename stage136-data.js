@@ -31,5 +31,76 @@
     if (GAME_DATA.shinyTraits?.LUCK) GAME_DATA.shinyTraits.LUCK.note = "매 ↻ ROLL Permanent LUCK +1";
   };
 
+  // UI hotfix: only the board-local LUCK SURGE popup is allowed.
+  // Item effects, trigger payouts, sounds and board-local source FX continue to work.
+  Game.s136InstallQuietNotifications = function () {
+    let style = document.querySelector("#stage136QuietNotifications");
+    if (!style) {
+      style = document.createElement("style");
+      style.id = "stage136QuietNotifications";
+      style.textContent = `
+        #stage90Feed,
+        #stage91ItemAlert,
+        #triggerFeed,
+        #triggerChainHud,
+        .stage90-event-feed,
+        .stage91-item-alert,
+        .stage93-activation-card,
+        .trigger-feed,
+        .trigger-chain-hud { display:none !important; visibility:hidden !important; pointer-events:none !important; }
+      `;
+      document.head.appendChild(style);
+    }
+
+    const removeLegacyNodes = () => {
+      document.querySelectorAll("#stage90Feed,#stage91ItemAlert,#triggerFeed,#triggerChainHud").forEach((el) => el.remove());
+      this.stage90Feed = null;
+      this.stage91ItemAlert = null;
+      this.triggerFeed = null;
+      this.triggerChainHud = null;
+      this.stage93ActivationQueue = [];
+      this.stage93ActivationBusy = false;
+    };
+
+    this.showStage90Event = function () {};
+    this.ensureStage91ItemAlert = function () { removeLegacyNodes(); return null; };
+    this.queueStage93ActivationCard = function () {};
+    this.runStage93ActivationQueue = async function () {
+      this.stage93ActivationQueue = [];
+      this.stage93ActivationBusy = false;
+    };
+    this.playStage91ItemAlert = async function () {};
+    this.queueStage94ItemCard = function () {};
+
+    this.ensureTriggerUI = function () { removeLegacyNodes(); };
+    this.renderTriggerActivation = function () {};
+    this.renderTriggerFinalSummary = function () {};
+    this.clearTriggerUI = function () {
+      removeLegacyNodes();
+      this.reelsEl?.closest(".reels-shell")?.classList.remove("trigger-chain-pulse");
+    };
+
+    removeLegacyNodes();
+  };
+
+  const installSurgeOnly = () => {
+    Game.s136InstallQuietNotifications?.();
+    const original = Game.s136ShowLuckPop;
+    if (typeof original !== "function" || original.stage136SurgeOnly) return;
+    const surgeOnly = function (text, level = 0) {
+      if (!String(text || "").includes("LUCK SURGE")) return;
+      return original.call(this, text, level);
+    };
+    surgeOnly.stage136SurgeOnly = true;
+    Game.s136ShowLuckPop = surgeOnly;
+  };
+
   Game.patchStage136LuckData();
+  Game.s136InstallQuietNotifications();
+  if (document.readyState === "loading") {
+    window.addEventListener("DOMContentLoaded", installSurgeOnly, { once:true });
+  } else {
+    queueMicrotask(installSurgeOnly);
+  }
+  window.addEventListener("load", installSurgeOnly, { once:true });
 })();
